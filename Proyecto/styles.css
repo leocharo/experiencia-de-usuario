@@ -1,0 +1,192 @@
+/* Variables de Color (Puedes ajustarlas a tu paleta del logo) */
+
+:root {
+    --primary-color: #3b5998;
+    /* Azul oscuro (para texto principal) */
+    --secondary-color: #2c3e50;
+    /* Azul muy oscuro (para inputs) */
+    --card-background: rgba(255, 255, 255, 0.2);
+    /* Fondo de la tarjeta transparente */
+    --border-color: rgba(255, 255, 255, 0.4);
+    --button-background: linear-gradient(135deg, #6a85b6 0%, #bac8e0 100%);
+    --shadow-light: rgba(255, 255, 255, 0.4);
+    --shadow-dark: rgba(0, 0, 0, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    /* Gradiente de fondo similar a la imagen */
+    color: white;
+}
+
+
+/* ------------------- CONTENEDOR PRINCIPAL ------------------- */
+
+.background-container {
+    padding: 20px;
+}
+
+.auth-card {
+    width: 350px;
+    padding: 40px 30px;
+    border-radius: 20px;
+    background: var(--card-background);
+    backdrop-filter: blur(10px);
+    /* Efecto de desenfoque */
+    box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
+    /* Sombra para el efecto flotante */
+    text-align: center;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* ------------------- CABECERA Y AVATAR ------------------- */
+
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.avatar-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    border: 5px solid var(--card-background);
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Icono de usuario dentro del círculo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    line-height: 1;
+}
+
+.avatar-icon::after {
+    content: "👤";
+    /* Icono de usuario simple */
+    color: white;
+}
+
+
+/* ------------------- FORMULARIO Y ENTRADAS ------------------- */
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: var(--secondary-color);
+    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 0 10px;
+    height: 50px;
+}
+
+.input-group .icon {
+    margin-right: 10px;
+    color: white;
+}
+
+input {
+    flex-grow: 1;
+    border: none;
+    background: none;
+    color: white;
+    padding: 10px 0;
+    outline: none;
+    font-size: 1em;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* ------------------- ACCIONES Y BOTONES ------------------- */
+
+.actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+.actions-row a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.actions-row a:hover {
+    text-decoration: underline;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1em;
+    cursor: pointer;
+    background: var(--button-background);
+    color: var(--secondary-color);
+    transition: background 0.3s, transform 0.1s;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* ------------------- PIE DE PÁGINA Y MENSAJES ------------------- */
+
+.switch-link {
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: var(--secondary-color);
+}
+
+.switch-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.message-text {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: red;
+    /* Para mensajes de error */
+}
+
+
+/* Estilos específicos para registro */
+
+#register-form .actions-row {
+    margin-bottom: 20px;
+}
