@@ -190,3 +190,15 @@ input::placeholder {
 #register-form .actions-row {
     margin-bottom: 20px;
 }
+
+.contenedor-imagenes {
+    /* 1. Convierte el contenedor en un Flex Container */
+    display: flex;
+    /* 2. Opcional: Centra las imágenes horizontalmente */
+    justify-content: center;
+    /* 3. Opcional: Evita que se salten de línea si no caben */
+    flex-wrap: nowrap;
+    width: auto;
+    height: auto;
+    margin-bottom: 20px;
+}

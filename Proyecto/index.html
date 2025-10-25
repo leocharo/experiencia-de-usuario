@@ -5,76 +5,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Manos Hablarán - Acceso</title>
+    <!-- Aquí iría la referencia a tu archivo CSS -->
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
 
+    <!-- Contenedor principal para centrar la tarjeta -->
     <div class="background-container">
 
-        <div class="auth-card" id="login-view">
-            <h2>INICIO DE SESIÓN</h2>
-            <div class="avatar-icon"></div>
+        <div class="space-y-2 mb-8 w-full max-w-4xl">
+            <div class="flex justify-center gap-2">
+                <img class="h-10 w-auto" src="Letras/m_1.png" alt="M">
+                <img class="h-10 w-auto" src="Letras/i.png" alt="I">
+                <img class="h-10 w-auto" src="Letras/s.png" alt="S">
+                <img class="h-10 w-auto" src="Letras/m_1.png" alt="M">
+                <img class="h-10 w-auto" src="Letras/a_1.png" alt="A">
+                <img class="h-10 w-auto" src="Letras/n_1.png" alt="N">
+                <img class="h-10 w-auto" src="Letras/o_1.png" alt="O">
+                <img class="h-10 w-auto" src="Letras/s.png" alt="S">
+            </div>
+            <div class="flex justify-center gap-2">
+                <img class="h-10 w-auto" src="Letras/h.png" alt="H">
+                <img class="h-10 w-auto" src="Letras/a_1.png" alt="A">
+                <img class="h-10 w-auto" src="Letras/b.png" alt="B">
+                <img class="h-10 w-auto" src="Letras/l.png" alt="L">
+                <img class="h-10 w-auto" src="Letras/a_1.png" alt="A">
+                <img class="h-10 w-auto" src="Letras/r.png" alt="R">
+                <img class="h-10 w-auto" src="Letras/a_1.png" alt="A">
+                <img class="h-10 w-auto" src="Letras/n_1.png" alt="N">
+            </div>
+        </div>
+        <!-- Vista de Login (Mostrar por defecto) -->
+        <center>
+            <div class="auth-card" id="login-view">
+                <h2>INICIO DE SESIÓN</h2>
+                <!-- Icono del avatar se manejará con CSS -->
+                <div class="avatar-icon"></div>
 
-            <form id="login-form">
-                <div class="input-group">
-                    <span class="icon">👤</span>
-                    <input type="email" id="login-email" placeholder="Correo Electrónico" required>
-                </div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <span class="icon">👤</span>
+                        <!-- CAMBIO CLAVE: Cambiado a type="text" para permitir Username -->
+                        <input type="text" id="login-email" placeholder="Correo Electrónico o Usuario" required>
+                    </div>
 
-                <div class="input-group">
-                    <span class="icon">🔒</span>
-                    <input type="password" id="login-password" placeholder="Contraseña" required>
-                </div>
+                    <div class="input-group">
+                        <span class="icon">🔒</span>
+                        <input type="password" id="login-password" placeholder="Contraseña" required>
+                    </div>
 
-                <div class="actions-row">
-                    <label>
+                    <div class="actions-row">
+                        <label>
                         <input type="checkbox"> Recordarme
                     </label>
-                    <a href="#">¿Olvidaste la Contraseña?</a>
-                </div>
+                        <a href="#">¿Olvidaste la Contraseña?</a>
+                    </div>
 
-                <button type="submit" class="auth-button">INICIAR SESIÓN</button>
-            </form>
+                    <button type="submit" class="auth-button">INICIAR SESIÓN</button>
+                </form>
 
-            <p class="switch-link">
-                ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
-            </p>
-            <p id="login-message" class="message-text"></p>
-        </div>
+                <p class="switch-link">
+                    ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
+                </p>
+                <!-- Aquí aparecerán los mensajes de éxito o error (Usuario/Contraseña incorrectos) -->
+                <p id="login-message" class="message-text"></p>
+            </div>
 
 
-        <div class="auth-card hidden" id="register-view">
-            <h2>REGISTRO</h2>
-            <div class="avatar-icon"></div>
+            <!-- Vista de Registro (Oculta por defecto) -->
+            <div class="auth-card hidden" id="register-view">
+                <h2>REGISTRO</h2>
+                <div class="avatar-icon"></div>
 
-            <form id="register-form">
-                <div class="input-group">
-                    <span class="icon">👤</span>
-                    <input type="text" id="register-username" placeholder="Nombre de Usuario" required>
-                </div>
 
-                <div class="input-group">
-                    <span class="icon">✉️</span>
-                    <input type="email" id="register-email" placeholder="Correo Electrónico" required>
-                </div>
+                <form id="register-form">
+                    <div class="input-group">
+                        <span class="icon">👤</span>
+                        <input type="text" id="register-username" placeholder="Nombre de Usuario" required>
+                    </div>
 
-                <div class="input-group">
-                    <span class="icon">🔒</span>
-                    <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" required>
-                </div>
+                    <div class="input-group">
+                        <span class="icon">✉️</span>
+                        <input type="email" id="register-email" placeholder="Correo Electrónico" required>
+                    </div>
 
-                <button type="submit" class="auth-button">REGISTRARSE</button>
-            </form>
+                    <div class="input-group">
+                        <span class="icon">🔒</span>
+                        <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" required>
+                    </div>
 
-            <p class="switch-link">
-                ¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a>
-            </p>
-            <p id="register-message" class="message-text"></p>
-        </div>
+                    <button type="submit" class="auth-button">REGISTRARSE</button>
+                </form>
+
+                <p class="switch-link">
+                    ¿Ya tienes cuenta? <a href="pagina_inicio.html" id="show-login">Iniciar Sesión</a>
+                </p>
+                <p id="register-message" class="message-text"></p>
+            </div>
 
     </div>
-
+    </center>
+    <!-- Se mantiene el enlace al app.js actualizado con la lógica de búsqueda por username -->
     <script type="module" src="app.js"></script>
 </body>
 
