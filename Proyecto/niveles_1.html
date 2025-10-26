@@ -1,14 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nivel 1 - El Abecedario | Mis Manos Hablarán</title>
+        <link
+        href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+        rel="stylesheet"
+        />
+        <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet"
+        />
+        <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(180deg, #dbeafe 0%, #ecfdf5 100%);
+            min-height: 100vh;
+        }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+        #leccion img,
+        #quiz img {
+            max-width: 240px;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
 
-<body>
+        .fade {
+            animation: fadeIn 0.5s ease-in-out;
+        }
 
-</body>
+        @keyframes fadeIn {
+            from {
+            opacity: 0;
+            transform: translateY(10px);
+            }
+            to {
+            opacity: 1;
+            transform: translateY(0);
+            }
+        }
+        </style>
+    </head>
 
-</html>
+    <body class="text-gray-800 flex flex-col items-center p-6">
+        <!-- Encabezado -->
+        <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-blue-600 mb-2">
+            Nivel 1: Aprende el Abecedario en Lengua de Señas🤟
+        </h1>
+        <p class="text-lg text-gray-600">
+            Aprende las señas de las letras A a Z 
+        </p>
+        </header>
+
+        <!-- Contenedor principal -->
+        <main
+        class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center border border-blue-100"
+        >
+        <!-- SECCIÓN DE LECCIÓN -->
+        <div id="leccion" class="fade">
+            <h2 class="text-2xl font-semibold text-blue-700 mb-4">
+            Comencemos con la letra A
+            </h2>
+            <img
+            src="Letras/Letra A .png"
+            alt="Letra A en lengua de señas"
+            class="mb-4"
+            />
+            <p class="text-gray-700 mb-6">
+            Para hacer la letra <strong>A</strong>, cierra el puño dejando el
+            pulgar a un lado. Es el primer paso para aprender el abecedario.
+            </p>
+            <button
+            id="btnSiguiente"
+            class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition duration-200"
+            >
+            Siguiente →
+            </button>
+        </div>
+        <!-- SECCIÓN DEL QUIZ -->
+        <div id="quiz" style="display: none;" class="fade">
+        <h2 class="text-2xl font-semibold text-blue-700 mb-4">Quiz del Abecedario</h2>
+        <p class="text-gray-700 mb-4">Selecciona la letra correcta para la imagen mostrada:</p>
+        <img id="quiz-img" class="mb-4" />
+        <div id="quiz-opciones" class="grid grid-cols-4 gap-4"></div>
+        </div>
+
+        <!-- BOTÓN PARA CONTINUAR -->
+        <button
+            id="btnContinuar"
+            class="bg-green-500 text-white font-semibold px-5 py-3 mt-6 rounded-xl hover:bg-green-600 transition duration-200 w-full"
+            style="display: none;"
+        >
+            Continuar al siguiente nivel →
+        </button>
+        </main>
+
+        <!-- PIE DE PÁGINA -->
+        <footer class="mt-10 text-sm text-gray-500">
+        <p>© 2025 Mis Manos Hablarán | Proyecto Educativo Inclusivo</p>
+        </footer>
+
+        <!-- Script principal -->
+        <script type="module" src="nivel1.js"></script>
+    </body>
+    </html>

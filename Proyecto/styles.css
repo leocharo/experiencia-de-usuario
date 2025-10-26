@@ -202,3 +202,116 @@ input::placeholder {
     height: auto;
     margin-bottom: 20px;
 }
+/* ------------------- ESTILOS PARA NIVEL 1 ------------------- */
+
+.nivel-container {
+    width: 90%;
+    max-width: 900px;
+    background: var(--card-background);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
+    text-align: center;
+    margin: 40px auto;
+}
+
+.nivel-header h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#usuarioNombre {
+    font-size: 1.1em;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Lección */
+.leccion h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.leccion p {
+    margin-bottom: 20px;
+    color: white;
+}
+
+/* Galería del abecedario */
+.galeria-abecedario {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    margin-bottom: 30px;
+}
+
+.galeria-abecedario div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.galeria-abecedario div img {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+.galeria-abecedario div:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Botones */
+#btnIniciarQuiz,
+#btnSiguiente,
+#btnVolverDashboard,
+#opciones button {
+    padding: 12px 25px;
+    margin: 10px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    background: var(--button-background);
+    color: var(--secondary-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#btnIniciarQuiz:hover,
+#btnSiguiente:hover,
+#btnVolverDashboard:hover,
+#opciones button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Quiz */
+.quiz #opciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Resultado */
+.resultado h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.resultado p {
+    margin-bottom: 20px;
+    color: white;
+}
