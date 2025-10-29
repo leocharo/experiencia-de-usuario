@@ -1,16 +1,14 @@
-/* Variables de Color (Puedes ajustarlas a tu paleta del logo) */
-
 :root {
-    --primary-color: #3b5998;
+    --primary-color: #7e9ddf;
     /* Azul oscuro (para texto principal) */
     --secondary-color: #2c3e50;
     /* Azul muy oscuro (para inputs) */
-    --card-background: rgba(255, 255, 255, 0.2);
+    --card-background: rgba(233, 198, 198, 0.2);
     /* Fondo de la tarjeta transparente */
     --border-color: rgba(255, 255, 255, 0.4);
     --button-background: linear-gradient(135deg, #6a85b6 0%, #bac8e0 100%);
     --shadow-light: rgba(255, 255, 255, 0.4);
-    --shadow-dark: rgba(0, 0, 0, 0.4);
+    --shadow-dark: rgba(235, 215, 215, 0.4);
 }
 
 * {
@@ -19,15 +17,40 @@
     padding: 0;
 }
 
+html,
+body {
+    height: 100%;
+    /* CLAVE: Asegura que el cuerpo ocupe la altura completa */
+    margin: 0;
+    overflow: hidden;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
+    /* Mantiene la tarjeta centrada horizontalmente (como en tu imagen) */
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-    /* Gradiente de fondo similar a la imagen */
     color: white;
+    /* Aseguramos que el texto principal (letras) sea blanco para contrastar con el fondo oscuro */
+    /* INICIO DE LAS PROPIEDADES DEL FONDO ANIMADO */
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    /* FIN DE LAS PROPIEDADES DEL FONDO ANIMADO */
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 
@@ -35,17 +58,78 @@ body {
 
 .background-container {
     padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    /* Limita el ancho del contenedor principal para que los logos no se separen demasiado */
+    display: flex;
+    justify-content: center;
+    /* Centra el wrapper que contiene el formulario y los logos */
+    align-items: center;
+    height: 100vh;
+}
+
+
+/* AÑADIDO: Asegura que el wrapper intermedio se centre y ocupe el 100% de la altura */
+
+.right-align-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-content-wrapper {
+    /* Esta es la clave para la disposición horizontal: logo | form | logo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 50px;
+    /* Espacio entre los logos y el formulario */
+}
+
+.side-logo {
+    max-width: 500px;
+    /* Tamaño máximo para los logos laterales */
+    height: auto;
+    object-fit: contain;
+    /* Ajustes para la visibilidad en el fondo */
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+    /* Pequeña sombra para que resalte */
+}
+
+
+/* Opcional: Ocultar los logos en pantallas muy pequeñas si no hay espacio */
+
+@media (max-width: 768px) {
+    .side-logo {
+        display: none;
+    }
+    .main-content-wrapper {
+        gap: 0;
+        /* Eliminar el gap cuando los logos no están visibles */
+    }
+}
+
+
+/* Elimina el espacio que ocupaban las letras individuales si no lo necesitas */
+
+.space-y-2 {
+    display: none;
+    /* Oculta completamente el div que contenía las letras */
 }
 
 .auth-card {
     width: 350px;
     padding: 40px 30px;
     border-radius: 20px;
+    /* ACLARAMOS EL FONDO DE LA TARJETA */
+    --card-background: rgba(248, 243, 243, 0.5);
+    /* Aumentamos la opacidad y claridad */
     background: var(--card-background);
     backdrop-filter: blur(10px);
-    /* Efecto de desenfoque */
     box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
-    /* Sombra para el efecto flotante */
     text-align: center;
     position: relative;
     border: 1px solid var(--border-color);
@@ -86,7 +170,7 @@ h2 {
 .avatar-icon::after {
     content: "👤";
     /* Icono de usuario simple */
-    color: white;
+    color: rgb(131, 193, 235);
 }
 
 
@@ -110,7 +194,7 @@ h2 {
 input {
     flex-grow: 1;
     border: none;
-    background: none;
+    background: transparent;
     color: white;
     padding: 10px 0;
     outline: none;
@@ -154,7 +238,7 @@ input::placeholder {
     color: var(--secondary-color);
     transition: background 0.3s, transform 0.1s;
     margin-top: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(209, 193, 193, 0.2);
 }
 
 .auth-button:hover {
@@ -202,6 +286,8 @@ input::placeholder {
     height: auto;
     margin-bottom: 20px;
 }
+
+
 /* ------------------- ESTILOS PARA NIVEL 1 ------------------- */
 
 .nivel-container {
@@ -229,7 +315,9 @@ input::placeholder {
     margin-bottom: 20px;
 }
 
+
 /* Lección */
+
 .leccion h2 {
     color: var(--primary-color);
     margin-bottom: 15px;
@@ -240,7 +328,9 @@ input::placeholder {
     color: white;
 }
 
+
 /* Galería del abecedario */
+
 .galeria-abecedario {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -270,7 +360,9 @@ input::placeholder {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
+
 /* Botones */
+
 #btnIniciarQuiz,
 #btnSiguiente,
 #btnVolverDashboard,
@@ -295,7 +387,9 @@ input::placeholder {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
+
 /* Quiz */
+
 .quiz #opciones {
     display: flex;
     flex-wrap: wrap;
@@ -304,7 +398,9 @@ input::placeholder {
     margin-top: 20px;
 }
 
+
 /* Resultado */
+
 .resultado h2 {
     color: var(--primary-color);
     margin-bottom: 15px;
@@ -314,4 +410,8 @@ input::placeholder {
 .resultado p {
     margin-bottom: 20px;
     color: white;
+}
+
+canvas {
+    display: block;
 }
