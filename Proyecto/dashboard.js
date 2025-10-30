@@ -3,14 +3,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-import {
-    getStorage,
-    ref,
-    uploadBytes,
-    getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
 
-// 🚨 2. TUS CREDENCIALES DE FIREBASE (¡REEMPLAZA ESTOS VALORES!) 🚨
+// --- 2. CREDENCIALES DE FIREBASE ---
 const firebaseConfig = {
     apiKey: "AIzaSyC7zx9CreT58V1AWTq7pMoS_ps65mXf-9Y",
     authDomain: "mis-manos-hablaran-44e17.firebaseapp.com",
@@ -42,12 +37,18 @@ const showProfileButton = document.getElementById('show-profile-button');
 const closeProfileModal = document.getElementById('close-profile-modal');
 const logoutButtonSidebar = document.getElementById('logout-button-sidebar');
 
+// Elementos progreso niveles
+const progressLettersBar = document.getElementById('progress-letters-bar');
+const progressLettersPercentage = document.getElementById('progress-letters-percentage');
+const progressLettersCount = document.getElementById('progress-letters-count');
+const progressWordsBar = document.getElementById('progress-words-bar');
+const progressWordsPercentage = document.getElementById('progress-words-percentage');
+const progressWordsCount = document.getElementById('progress-words-count');
+
 let currentUserId = null;
 const TOTAL_LETTERS = 26; // Total de letras para el abecedario
 
-
-// --- 4. MANEJO DE VISTAS (MODAL) ---
-
+// --- 4. MANEJO DE MODAL ---
 if (showProfileButton) {
     showProfileButton.addEventListener('click', () => {
         profileModal.classList.remove('hidden');
@@ -69,9 +70,7 @@ if (profileModal) {
     });
 }
 
-
-// --- 5. VERIFICAR AUTENTICACIÓN Y CARGAR DATOS ---
-
+// --- 5. VERIFICAR AUTENTICACIÓN ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUserId = user.uid;
@@ -79,7 +78,7 @@ onAuthStateChanged(auth, (user) => {
     } else {
         // Redirigir si no hay sesión activa
         console.log('No hay usuario autenticado. Redirigiendo.');
-        // window.location.href = 'index.html'; 
+        // window.location.href = 'index.html';
     }
 });
 
@@ -100,20 +99,19 @@ async function loadUserData(userId) {
             // Mostrar nombre de usuario
             if (userIdDisplay) userIdDisplay.textContent = data.username || 'Usuario';
 
-            // Cargar foto de perfil
+            // Foto de perfil
             if (profileImage) {
-                if (data.photoURL) {
-                    profileImage.src = data.photoURL;
-                } else {
-                    profileImage.src = "https://placehold.co/120x120/d1d5db/4b5563?text=👤"; // Imagen por defecto
-                }
+                profileImage.src = data.photoURL || "https://placehold.co/120x120/d1d5db/4b5563?text=👤";
             }
 
-            // Calcular y mostrar el progreso
-            calculateAndDisplayProgress(data.progreso_letras || {});
+            // Progreso por niveles completos
+            const lettersCompleted = data.nivel1_completado ? 26 : 0; // Nivel 1 completo = 26 letras
+            const wordsCompleted = data.nivel2_completado ? 22 : 0;   // Nivel 2 completo = 22 palabras
 
-            // Bloquear/Desbloquear niveles (ejemplo: Nivel 2 se desbloquea al 100%)
-            if (calculateProgressCount(data.progreso_letras) === TOTAL_LETTERS) {
+            displayProgressLevels(lettersCompleted, wordsCompleted);
+
+            // Desbloquear Nivel 2 si Nivel 1 completo
+            if (lettersCompleted === 26) {
                 unlockLevel(2);
             }
 
@@ -123,29 +121,26 @@ async function loadUserData(userId) {
     } catch (error) {
         console.error("Error al cargar datos del usuario:", error);
     } finally {
-        if (loadingMessage) {
-            loadingMessage.classList.add('hidden');
-        }
+        if (loadingMessage) loadingMessage.classList.add('hidden');
     }
 }
 
+// --- 7. FUNCION DISPLAY PROGRESO ---
+function displayProgressLevels(lettersCompleted, wordsCompleted) {
+    // Letras
+    const lettersPercentage = Math.round((lettersCompleted / 26) * 100);
+    if(progressLettersPercentage) progressLettersPercentage.textContent = `${lettersPercentage}%`;
+    if(progressLettersBar) progressLettersBar.style.width = `${lettersPercentage}%`;
+    if(progressLettersCount) progressLettersCount.textContent = `[${lettersCompleted}/26 Letras completadas]`;
 
-// --- 7. GESTIÓN Y CÁLCULO DE PROGRESO ---
-
-function calculateProgressCount(progreso) {
-    // Cuenta cuántas letras tienen valor 'true'
-    return Object.values(progreso).filter(isComplete => isComplete === true).length;
+    // Palabras
+    const wordsPercentage = Math.round((wordsCompleted / 22) * 100);
+    if(progressWordsPercentage) progressWordsPercentage.textContent = `${wordsPercentage}%`;
+    if(progressWordsBar) progressWordsBar.style.width = `${wordsPercentage}%`;
+    if(progressWordsCount) progressWordsCount.textContent = `[${wordsCompleted}/22 Palabras completadas]`;
 }
 
-function calculateAndDisplayProgress(progreso) {
-    const completedCount = calculateProgressCount(progreso);
-    const percentage = Math.round((completedCount / TOTAL_LETTERS) * 100);
-
-    if (progressPercentage) progressPercentage.textContent = `${percentage}%`;
-    if (progressBarFill) progressBarFill.style.width = `${percentage}%`;
-    if (progressCount) progressCount.textContent = `[${completedCount}/${TOTAL_LETTERS} Letras completadas]`;
-}
-
+// --- 8. DESBLOQUEO DE NIVELES ---
 function unlockLevel(levelNumber) {
     const levelCard = document.getElementById(`level-${levelNumber}`);
     if (levelCard) {
@@ -157,21 +152,22 @@ function unlockLevel(levelNumber) {
         button.textContent = '¡Empezar ahora!';
         const lockIcon = levelCard.querySelector('i');
         if (lockIcon) lockIcon.classList.add('hidden');
+
+        // Redirección al hacer clic
+        button.onclick = () => {
+            if (levelNumber === 2) {
+                window.location.href = 'niveles_2.html';
+            }
+        };
     }
 }
 
 
-// --- 8. SUBIDA Y GESTIÓN DE LA FOTO DE PERFIL (Storage) ---
-
+// --- 9. SUBIR FOTO DE PERFIL ---
 if (photoUploadInput) {
     photoUploadInput.addEventListener('change', async(e) => {
         const file = e.target.files[0];
-        if (!file) return;
-
-        if (!currentUserId) {
-            if (photoStatus) photoStatus.textContent = 'Error: No hay usuario activo.';
-            return;
-        }
+        if (!file || !currentUserId) return;
 
         if (photoStatus) {
             photoStatus.textContent = 'Subiendo foto...';
@@ -192,9 +188,7 @@ if (photoUploadInput) {
 
             // 4. Actualizar Firestore con la URL (para persistencia)
             const profileRef = doc(db, "perfiles", currentUserId);
-            await updateDoc(profileRef, {
-                photoURL: downloadURL
-            });
+            await updateDoc(profileRef, { photoURL: downloadURL });
 
             // 5. Actualizar UI
             if (profileImage) profileImage.src = downloadURL;
@@ -213,9 +207,7 @@ if (photoUploadInput) {
     });
 }
 
-
-// --- 9. FUNCIÓN DE LOGOUT ---
-
+// --- 10. LOGOUT ---
 if (logoutButtonSidebar) {
     logoutButtonSidebar.addEventListener('click', async() => {
         try {
@@ -229,10 +221,7 @@ if (logoutButtonSidebar) {
     });
 }
 
-
-// --- 10. EVENTOS DE NIVELES ---
-
-// Redirigir al hacer clic en el Nivel 1
+// --- 11. EVENTOS DE NIVELES ---
 document.getElementById('level-1').addEventListener('click', () => {
     // Aquí puedes redirigir a la lección real del abecedario
     alert('¡Excelente! Preparando la lección del Abecedario...');
@@ -240,4 +229,3 @@ document.getElementById('level-1').addEventListener('click', () => {
 
 });
 
-// Los niveles bloqueados no necesitan eventos, ya que tienen 'pointer-events-none'
