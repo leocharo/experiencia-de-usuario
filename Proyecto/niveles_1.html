@@ -1,24 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Nivel 1 - El Abecedario | Mis Manos Hablarán</title>
-        <link
-        href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-        rel="stylesheet"
-        />
-        <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-        rel="stylesheet"
-        />
-        <style>
-        body {
-            font-family: "Poppins", sans-serif;
-            background: linear-gradient(180deg, #dbeafe 0%, #ecfdf5 100%);
-            min-height: 100vh;
-        }
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nivel 1 - El Abecedario | Mis Manos Hablarán</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto Slab', serif;
+            overflow-x: hidden;
+        }
+        
+        .bg {
+            animation: slide 3s ease-in-out infinite alternate;
+            background-image: linear-gradient(-60deg, #6c3 50%, #09f 50%);
+            bottom: 0;
+            left: -50%;
+            opacity: .5;
+            position: fixed;
+            right: -50%;
+            top: 0;
+            z-index: -1;
+        }
+        
+        .bg2 {
+            animation-direction: alternate-reverse;
+            animation-duration: 4s;
+        }
+        
+        .bg3 {
+            animation-duration: 5s;
+        }
+        
+        @keyframes slide {
+            0% {
+                transform: translateX(-25%);
+            }
+            100% {
+                transform: translateX(25%);
+            }
+        }
+        
         #leccion img,
         #quiz img {
             max-width: 240px;
@@ -27,84 +54,117 @@
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
-
-        .fade {
-            animation: fadeIn 0.5s ease-in-out;
+        
+        .circular-progress {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0), conic-gradient(var(--progress-color) calc(var(--progress-value) * 1%), #ccc 0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
-
-        @keyframes fadeIn {
-            from {
-            opacity: 0;
-            transform: translateY(10px);
-            }
-            to {
-            opacity: 1;
-            transform: translateY(0);
-            }
+        
+        .circular-progress span {
+            z-index: 2;
         }
-        </style>
-    </head>
+        /* Agregamos separación entre el cuadro principal y el aside */
+        
+        .contenido-principal {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 6rem;
+            /* <--- controla la separación */
+            width: 100%;
+            padding: 2rem;
+        }
+        
+        #imagenLateral {
+            max-width: 100%;
+            /* Asegura que la imagen no se desborde */
+            height: auto;
+            margin-top: 2rem;
+            /* Espacio con el índice */
+            border-radius: 10px;
+            /* Bordes redondeados */
+            opacity: 0.8;
+            /* Un poco transparente para no distraer */
+        }
+    </style>
+</head>
 
-    <body class="text-gray-800 flex flex-col items-center p-6">
-        <!-- Encabezado -->
-        <header class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-blue-600 mb-2">
-            Nivel 1: Aprende el Abecedario en Lengua de Señas🤟
-        </h1>
-        <p class="text-lg text-gray-600">
-            Aprende las señas de las letras A a Z 
-        </p>
-        </header>
+<body class="text-gray-800 flex flex-col min-h-screen">
+    <a href="pagina_inicio.html" class="fixed top-4 left-4 z-350 bg-transparent-500 text-white text-sm Pacifico px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-500">
+    🏠 Inicio
+</a>
+    </div>
+    <!-- Fondos animados -->
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
 
-        <!-- Contenedor principal -->
-        <main
-        class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center border border-blue-100"
-        >
-        <!-- SECCIÓN DE LECCIÓN -->
-        <div id="leccion" class="fade">
-            <h2 class="text-2xl font-semibold text-blue-700 mb-4">
-            Comencemos con la letra A
-            </h2>
-            <img
-            src="Letras/Letra A .png"
-            alt="Letra A en lengua de señas"
-            class="mb-4"
-            />
-            <p class="text-gray-700 mb-6">
-            Para hacer la letra <strong>A</strong>, cierra el puño dejando el
-            pulgar a un lado. Es el primer paso para aprender el abecedario.
-            </p>
-            <button
-            id="btnSiguiente"
-            class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition duration-200"
-            >
+    <!-- Encabezado -->
+    <header class="text-center mb-8 mt-6">
+        <h1 class="text-4xl font-bold text-white-600 mb-2">Nivel 1: Aprende el Abecedario en Lengua de Señas 🤟</h1>
+        <p class="text-lg text-gray-600">Aprende las señas de las letras A a Z</p>
+    </header>
+
+    <!-- Contenedor principal (main + aside) -->
+    <div class="contenido-principal">
+        <img id="imagenLateral" src="Letras/logo_sin_fondo.png" alt="Imagen decorativa de lengua de señas" />
+        <!-- Cuadro principal centrado -->
+        <main class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center border border-blue-100">
+            <div id="leccion">
+                <h2 class="text-2xl font-semibold text-white-700 mb-4">Letra A</h2>
+                <img src="Letras/Letra A.png" alt="Letra A en lengua de señas" class="mb-4" />
+                <p class="text-black-700 mb-8">
+                    Para hacer la letra <strong>A</strong>, con la mano cerrada, se muestran las uñas y se estira el dedo pulgar hacia un lado. La palma mira al frente.
+                </p>
+
+                <div class="flex justify-between items-center w-full max-w-xs mx-auto">
+                    <button id="btnAnterior" class="bg-gray-400 text-white px-4 py-3 rounded-xl hover:bg-gray-500 transition duration-200 opacity-50 cursor-not-allowed" disabled>
+            ← Anterior
+          </button>
+                    <button id="btnSiguiente" class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition duration-200">
             Siguiente →
-            </button>
-        </div>
-        <!-- SECCIÓN DEL QUIZ -->
-        <div id="quiz" style="display: none;" class="fade">
-        <h2 class="text-2xl font-semibold text-blue-700 mb-4">Quiz del Abecedario</h2>
-        <p class="text-gray-700 mb-4">Selecciona la letra correcta para la imagen mostrada:</p>
-        <img id="quiz-img" class="mb-4" />
-        <div id="quiz-opciones" class="grid grid-cols-4 gap-4"></div>
-        </div>
+          </button>
+                </div>
+            </div>
 
-        <!-- BOTÓN PARA CONTINUAR -->
-        <button
-            id="btnContinuar"
-            class="bg-green-500 text-white font-semibold px-5 py-3 mt-6 rounded-xl hover:bg-green-600 transition duration-200 w-full"
-            style="display: none;"
-        >
-            Continuar al siguiente nivel →
-        </button>
+            <div id="quiz" style="display: none;" class="fade">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4">Quiz del Abecedario</h2>
+                <p class="text-gray-700 mb-4">Selecciona la letra correcta para la imagen mostrada:</p>
+                <img id="quiz-img" class="mb-4" />
+                <div id="quiz-opciones" class="grid grid-cols-4 gap-4"></div>
+            </div>
+
+            <div id="resultado" class="mt-4 text-center font-semibold"></div>
+
+            <button id="btnContinuar" class="bg-green-500 text-white font-semibold px-5 py-3 mt-6 rounded-xl hover:bg-green-600 transition duration-200 w-full" style="display: none;">
+        Continuar al siguiente nivel →
+      </button>
         </main>
 
-        <!-- PIE DE PÁGINA -->
-        <footer class="mt-10 text-sm text-gray-500">
-        <p>© 2025 Mis Manos Hablarán | Proyecto Educativo Inclusivo</p>
-        </footer>
+        <!-- Aside con la barra circular de progreso -->
+        <aside class="hidden lg:flex flex-col items-center pt-10 text-center">
+            <h3 class="text-xl font-bold text-white mb-4">Progreso</h3>
+            <div id="progressContainer">
+                <div id="progressCircle" class="circular-progress" style="--progress-value: 0; --progress-color: rgb(239, 57, 57);">
+                    <span id="progressText" class="text-xl font-bold text-gray-700">A</span>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-white">Letra actual / Quiz</p>
+        </aside>
+    </div>
 
-        <!-- Script principal -->
-        <script type="module" src="nivel1.js"></script>
-    </body>
-    </html>
+    <!-- Pie de página -->
+    <footer class="mt-10 text-sm text-gray-500 text-center">
+        <p>© 2025 Mis Manos Hablarán | Proyecto Educativo Inclusivo</p>
+    </footer>
+
+    <script type="module" src="nivel1.js"></script>
+</body>
+
+</html>
