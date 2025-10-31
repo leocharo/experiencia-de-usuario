@@ -64,6 +64,11 @@ const selectProfileImageModal = document.getElementById('select-profile-image-mo
 const closeSelectImageModalButton = document.getElementById('close-select-image-modal');
 const profileImageOptions = document.getElementById('profile-image-options');
 
+// ✅ Elementos para el Modal de Información
+const infoModal = document.getElementById('info-modal');
+const showInfoButton = document.getElementById('show-info-button');
+const closeInfoModalButton = document.getElementById('close-info-modal');
+
 
 // Elementos progreso niveles (Barras)
 const progressLettersBar = document.getElementById('progress-letters-bar');
@@ -130,6 +135,25 @@ if (selectProfileImageModal) {
     });
 }
 
+// ✅ Lógica de apertura/cierre del modal de Información
+if (showInfoButton) {
+    showInfoButton.addEventListener('click', () => {
+        infoModal.classList.remove('hidden');
+    });
+}
+if (closeInfoModalButton) {
+    closeInfoModalButton.addEventListener('click', () => {
+        infoModal.classList.add('hidden');
+    });
+}
+if (infoModal) {
+    infoModal.addEventListener('click', (e) => {
+        if (e.target.id === 'info-modal') {
+            infoModal.classList.add('hidden');
+        }
+    });
+}
+
 // --- 5. VERIFICAR AUTENTICACIÓN ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -141,7 +165,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// --- 6. CARGAR PERFIL Y PROGRESO (CON INICIALIZACIÓN PEREZOSA Y BLOQUEO DIC.) ---
+// --- 6. CARGAR PERFIL Y PROGRESO (CON INICIALIZACIÓN PEREZOSA Y BIENVENIDA) ---
 async function loadUserData(userId) {
     if (loadingMessage) {
         loadingMessage.textContent = 'Cargando tu perfil y progreso...';
@@ -156,7 +180,7 @@ async function loadUserData(userId) {
             let updateNeeded = false;
             let updateObject = {};
 
-            // INICIALIZACIÓN PEREZOSA: Asegurar campos para Nivel 3 y 4
+            // INICIALIZACIÓN PEREZOSA: Nivel 3, Nivel 4 y photoURL
             if (data.nivel3_completado === undefined) {
                 updateObject.nivel3_completado = false;
                 updateObject.progreso_dias_completados = 0;
@@ -167,12 +191,18 @@ async function loadUserData(userId) {
                 updateObject.progreso_meses_completados = 0;
                 updateNeeded = true;
             }
-
-            // INICIALIZACIÓN PEREZOSA: Asegurar que photoURL no sea 'null' o undefined
             if (data.photoURL === undefined || data.photoURL === null) {
                 updateObject.photoURL = "https://placehold.co/120x120/d1d5db/4b5563?text=👤";
                 updateNeeded = true;
             }
+
+            // ✅ LÓGICA DE BIENVENIDA: Mostrar modal si es la primera vez
+            if (data.hasSeenWelcomeModal === undefined || data.hasSeenWelcomeModal === false) {
+                infoModal.classList.remove('hidden');
+                updateObject.hasSeenWelcomeModal = true;
+                updateNeeded = true;
+            }
+            // -------------------------------------------------------------
 
 
             if (updateNeeded) {
@@ -201,7 +231,7 @@ async function loadUserData(userId) {
             if (wordsCompleted === TOTAL_WORDS_LEVEL_2) unlockLevel(3);
             if (nivel3_completado) unlockLevel(4);
 
-            // ✅ LÓGICA DE BLOQUEO DEL DICCIONARIO
+            // LÓGICA DE BLOQUEO DEL DICCIONARIO
             const isLevel1Complete = data.nivel1_completado === true;
             const isLevel2Complete = data.nivel2_completado === true;
             const isLevel3Complete = data.nivel3_completado === true;
@@ -274,10 +304,6 @@ function unlockLevel(levelNumber) {
 }
 
 // --- 9. LÓGICA DE SELECCIÓN DE IMAGEN DE PERFIL ---
-
-/**
- * Función para generar y cargar las opciones de imagen en el modal.
- */
 function loadProfileImageOptions() {
     if (!profileImageOptions) return;
     profileImageOptions.innerHTML = '';
@@ -294,9 +320,6 @@ function loadProfileImageOptions() {
     });
 }
 
-/**
- * Función para guardar la ruta de la imagen seleccionada en Firestore.
- */
 async function selectProfileImage(imagePath) {
     if (!currentUserId) {
         console.error("No hay usuario autenticado.");
@@ -309,12 +332,10 @@ async function selectProfileImage(imagePath) {
             photoURL: imagePath
         });
 
-        // Actualizar la imagen mostrada en el perfil principal
         if (profileImage) profileImage.src = imagePath;
 
         alert('Foto de perfil actualizada con éxito!');
 
-        // Cerrar el modal de selección y volver al de perfil
         selectProfileImageModal.classList.add('hidden');
         profileModal.classList.remove('hidden');
 
@@ -338,12 +359,12 @@ if (logoutButtonSidebar) {
 
 // --- 11. EVENTOS DE NIVELES ---
 document.getElementById('level-1').addEventListener('click', () => {
-    alert('¡Excelente! Para comenzarestamos preparando la lección numero 1...');
+    alert('¡Excelente! Preparando la lección del Abecedario...');
     window.location.href = 'niveles_1.html';
 });
 document.getElementById('level-2').addEventListener('click', () => {
     alert('¡Excelente! Preparando la lección numero 2...');
-    window.location.href = 'niveles_1.html';
+    window.location.href = 'niveles_2.html';
 });
 document.getElementById('level-3').addEventListener('click', () => {
     alert('¡Excelente! Preparando la lección numero 3...');

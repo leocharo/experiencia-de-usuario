@@ -9,6 +9,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/phosphor-icons"></script>
     <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'semiSlab', sans-serif;
+            overflow-x: hidden;
+        }
         /* Estilos CSS adicionales si son necesarios, aunque Tailwind debería manejarlo */
         
         .level-card {
@@ -75,7 +82,7 @@
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
 
             <h3 id="modal-title" class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">[Título del Nivel]</h3>
-
+            <h3 id="modal-subtitle" class="text-xl font-semibold text-gray-600 mb-4"> Para poder agrandar las imagenes o videos dale clic a la imagen </h3>
             <div id="modal-content" class="space-y-6">
                 <p class="text-gray-500">Cargando contenido...</p>
             </div>

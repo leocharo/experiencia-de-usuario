@@ -139,28 +139,42 @@ dictionaryModal.addEventListener('click', (e) => {
 
 
 // 4. FUNCIÓN PRINCIPAL PARA MOSTRAR EL CONTENIDO
+// diccionario.js
+
+// 4. FUNCIÓN PRINCIPAL PARA MOSTRAR EL CONTENIDO
 function showLevelContent(levelNumber) {
     const levelData = diccionarioData[levelNumber];
 
-    // ... (Manejo de Título del Modal - Sin Cambios) ...
+    if (!levelData) {
+        modalTitle.textContent = "Error de Carga";
+        modalContent.innerHTML = "<p class='text-red-500'>Datos del nivel no encontrados.</p>";
+        dictionaryModal.classList.remove('hidden');
+        return;
+    }
+
+    // ✅ CORRECCIÓN TÍTULO: Sobrescribir el título y aplicar la clase inmediatamente
+    modalTitle.textContent = levelData.title;
+    // Asegúrate de que levelData.color sea una clase de Tailwind válida (ej: 'text-blue-700')
+    modalTitle.className = `text-3xl font-bold mb-6 border-b pb-2 ${levelData.color}`;
 
     let contentHTML = '';
 
     levelData.items.forEach(item => {
         const itemTitle = item.nombre;
-        // 🛑 Lógica para determinar la fuente del recurso (imagen o video)
         const itemSource = item.imagen || item.video;
 
+        if (!itemSource) return; // Salta si no hay imagen ni video
+
         // Determinar qué etiqueta usar (video si termina en .mp4, img si no)
-        const isVideo = itemSource && itemSource.toLowerCase().endsWith('.mp4');
+        const isVideo = itemSource.toLowerCase().endsWith('.mp4');
 
         const mediaTag = isVideo ?
-            // Si es un video, usamos la etiqueta <video> con controles y propiedades de miniatura
-            `<video src="${itemSource}" muted loop class="w-16 h-16 object-cover rounded-md border border-gray-200"></video>` :
-            // Si es una imagen, usamos <img>
+            // Si es video, usamos la etiqueta <video> (sin controles para que parezca miniatura)
+            `<video src="${itemSource}" muted autoplay loop playsinline class="w-16 h-16 object-cover rounded-md border border-gray-200"></video>` :
+            // Si es imagen, usamos <img>
             `<img src="${itemSource}" alt="${itemTitle}" class="w-16 h-16 object-cover rounded-md border border-gray-200">`;
 
-        // 🛑 El atributo data-img-src SIEMPRE debe ser el origen del archivo para el modal de ampliación
+        // Atributos de clic para el modal de ampliación (funciona tanto para video como imagen)
         const clickAttributes = `
             data-img-src="${itemSource}"
             data-img-title="${itemTitle}"
@@ -182,6 +196,7 @@ function showLevelContent(levelNumber) {
         `;
     });
 
+    // 🛑 CORRECCIÓN FINAL: Inyectar el HTML generado y mostrar el modal
     modalContent.innerHTML = contentHTML;
     dictionaryModal.classList.remove('hidden');
 }
@@ -217,12 +232,10 @@ levelCards.forEach(card => {
 
 // 🛑 CORRECCIÓN: Escuchar clics en las imágenes (Para la ampliación)
 document.addEventListener('click', (e) => {
-    // Verifica si el elemento clicado tiene la clase 'image-clickable'
-    if (e.target.classList.contains('image-clickable')) {
-        const imgSrc = e.target.getAttribute('data-img-src');
-        const imgTitle = e.target.getAttribute('data-img-title');
-
-        // Llamar a la función para mostrar la imagen grande
+    if (e.target.closest('.image-clickable')) { // Usar closest para asegurar que capturamos el div padre
+        const clickableDiv = e.target.closest('.image-clickable');
+        const imgSrc = clickableDiv.getAttribute('data-img-src');
+        const imgTitle = clickableDiv.getAttribute('data-img-title');
         showImageModal(imgSrc, imgTitle);
     }
 });

@@ -7,12 +7,46 @@
     <title>Mis Manos Hablarán - Dashboard</title>
     <link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script src="https://unpkg.com/phosphor-icons"></script>
-    <style href="style_inicio.css"></style>
+    <style>
+        .fixed button:not([title]) {
+            position: relative;
+        }
+        
+        .custom-tooltip {
+            /* Estilo por defecto (oculto) */
+            visibility: hidden;
+            opacity: 0;
+            /* Apariencia */
+            background-color: #374151;
+            /* Gris oscuro */
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            /* Posicionamiento */
+            position: absolute;
+            z-index: 10;
+            top: 50%;
+            left: 100%;
+            transform: translate(15px, -50%);
+            /* Desplazar hacia la derecha y centrar */
+            /* Transición suave */
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        /* Regla para mostrar el tooltip al pasar el cursor (hover) */
+        
+        .fixed button:hover .custom-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
 </head>
 
-<body class="min-h-screen flex bg-gray-50">
+<body class="min-h-screen flex bg-gray-50 font-semibold">
 
 
     <div class="fixed top-0 left-0 w-20 h-screen bg-white shadow-xl flex flex-col justify-between items-center py-6 z-20">
@@ -22,37 +56,41 @@
                 <i class="ph-hand-waving-fill"></i>
             </div>
 
-            <button id="show-dictionary-button" class="p-3 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg transition duration-300 transform hover:scale-110" title="Diccionario de Señas">
-                <i class="ph-book-open-text-fill text-2xl"></i> 📚 
-            </button>
+            <button id="show-dictionary-button" class="p-3 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
+            <i class="ph-book-open-text-fill text-2xl"></i> 📚 
+            <span class="custom-tooltip">Diccionario de Señas</span>
+        </button>
 
-            <button id="show-profile-button" class="p-3 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition duration-300 transform hover:scale-110" title="Mi Perfil">
-                <i class="ph-user-circle-gear-fill text-2xl"></i> 
-            </button>
+            <button id="show-profile-button" class="p-3 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
+            <i class="ph-user-circle-gear-fill text-2xl"></i> 
+            <span class="custom-tooltip">Mi Perfil</span>
+        </button>
+            <button id="show-info-button" class="p-3 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
+            <i class="ph-info-fill text-2xl"></i> 
+            <span class="custom-tooltip">Información y Reglas</span>
+        </button>
         </div>
 
         <div class="pb-4">
-            <button id="logout-button-sidebar" class="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition duration-300 transform hover:scale-110" title="Salir">
-                <i class="ph-sign-out-fill text-2xl"></i>
-            </button>
+            <button id="logout-button-sidebar" class="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
+            <i class="ph-sign-out-fill text-2xl"></i>
+            <span class="custom-tooltip">Cerrar Sesión</span>
+        </button>
         </div>
     </div>
 
 
     <main class="flex-grow ml-20 p-8">
 
-        <p class="text-black-600 text-xl mb-3">Selecciona un nivel para comenzar</p>
-        <p class="text-black-600 text-xl mb-3"> tu aprendizaje de Lenguaje de Señas.</p>
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Niveles de Aprendizaje</h2>
+        <p class="text-black-2000 text-3xl mb-3">Selecciona un nivel para comenzar tu aprendizaje de Lenguaje de Señas.</p>
+        <h2 class="text-3x1 font-semibold text-gray-400 mb-6">Niveles de Aprendizaje</h2>
 
         <div id="levels-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
             <div id="level-1" class="level-card bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 cursor-pointer border-t-4 border-blue-500">
                 <h3 class="text-2xl font-semibold text-blue-700 mb-2">Nivel 1: El Abecedario 🧠</h3>
                 <p class="text-gray-600 mb-4">Aprende las 26 letras básicas del alfabeto. ¡Fundamental!</p>
                 <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full w-full">Comenzar</button>
             </div>
-
 
             <div id="level-2" class="level-card bg-white p-6 rounded-xl shadow-lg transition duration-300 border-t-4 border-gray-400 opacity-60 pointer-events-none">
                 <h3 class="text-2xl font-semibold text-gray-700 mb-2 flex items-center">
@@ -62,6 +100,7 @@
                 <p class="text-gray-600 mb-4">Aprende señas para saludos, familia y comida.</p>
                 <button class="bg-gray-400 text-white font-bold py-2 px-4 rounded-full w-full">Bloqueado</button>
             </div>
+
             <div id="level-3" class="level-card bg-white p-6 rounded-xl shadow-lg transition duration-300 border-t-4 border-gray-400 opacity-60 pointer-events-none">
                 <h3 class="text-2xl font-semibold text-gray-700 mb-2 flex items-center">
                     Nivel 3: Calendario y Tiempos 📅
@@ -73,10 +112,10 @@
 
             <div id="level-4" class="level-card bg-white p-6 rounded-xl shadow-lg transition duration-300 border-t-4 border-gray-400 opacity-60 pointer-events-none">
                 <h3 class="text-2xl font-semibold text-gray-700 mb-2 flex items-center">
-                    Nivel 4: Los Meses y Estaciones 🗓️
+                    Nivel 4: Los Meses del Año 🗓️
                     <i class="ph-lock-fill text-xl ml-2 text-red-500"></i>
                 </h3>
-                <p class="text-gray-600 mb-4">Aprende señas para fechas, estaciones y frases de tiempo.</p>
+                <p class="text-gray-600 mb-4">Aprende señas para aprender los meses del año</p>
                 <button class="bg-gray-400 text-white font-bold py-2 px-4 rounded-full w-full">Bloqueado</button>
             </div>
 
@@ -92,8 +131,9 @@
 
     <div id="profile-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 hidden">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
-            <h3 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Mi Perfil y Progreso</h3>
-
+            <center>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-8">Mi Perfil y Progreso</h3>
+            </center>
             <div class="flex flex-col items-center">
                 <div class="relative mb-6">
                     <img id="profile-picture" src="https://placehold.co/120x120/d1d5db/4b5563?text=👤" alt="Foto de Perfil" class="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-md">
@@ -102,70 +142,57 @@
                     </button>
                 </div>
 
-                <div class="mb-4">
-                    <p class="text-sm text-gray-500 items-center">Nombre de Usuario:</p>
-                    <p id="profile-username" class="text-2xl font-extrabold text-gray-900">[Cargando...]</p>
+                <div class="mb-4 text-center">
+                    <p class="text-sm text-gray-500">Nombre de Usuario:</p>
+                    <p id="profile-username" class="text-2xl font-semibold text-gray-900">[Cargando...]</p>
                 </div>
 
                 <div class="w-full mt-4">
                     <p class="text-md font-semibold text-gray-700 mb-2 text-center">
                         Progreso del Abecedario (<span id="progress-letters-percentage">0%</span>)
                     </p>
-
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div id="progress-letters-bar" class="bg-blue-500 h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
                     </div>
-
                     <p id="progress-letters-count" class="text-sm text-gray-500 mt-2 text-center">
                         [0/26 Letras completadas]
                     </p>
-
                     <p class="text-md font-semibold text-gray-700 mt-4 mb-2 text-center ">
                         Progreso de Primeras Palabras (<span id="progress-words-percentage">0%</span>)
                     </p>
-
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div id="progress-words-bar" class="bg-yellow-500 h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
                     </div>
-
                     <p id="progress-words-count" class="text-sm text-gray-500 mt-2 text-center">
                         [0/22 Palabras completadas]
                     </p>
                     <p class="text-md font-semibold text-gray-700 mt-4 mb-2 text-center ">
                         Progreso de Dias de la Semana (<span id="progress-days-percentage-text">0%</span>)
                     </p>
-
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div id="progress-days-bar" class="bg-purple-500 h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
                     </div>
-
                     <p id="progress-days-count" class="text-sm text-gray-500 mt-2 text-center">
                         [0/10 Palabras completadas]
                     </p>
-
                     <p class="text-md font-semibold text-gray-700 mt-4 mb-2 text-center ">
                         Progreso de Meses y Estaciones (<span id="progress-months-percentage-text">0%</span>)
                     </p>
-
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div id="progress-months-bar" class="bg-indigo-500 h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
                     </div>
-
                     <p id="progress-months-count" class="text-sm text-gray-500 mt-2 text-center">
                         [0/16 Temas completados]
                     </p>
-
                 </div>
-
-
                 <p id="photo-status" class="text-sm mt-4"></p>
             </div>
-
             <button id="close-profile-modal" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition duration-300">
                 <i class="ph-x-circle-fill text-3xl"></i>
             </button>
         </div>
     </div>
+
 
     <div id="select-profile-image-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-[60] hidden">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl relative max-h-[90vh] overflow-y-auto">
@@ -175,6 +202,55 @@
             </div>
 
             <button id="close-select-image-modal" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition duration-300">
+                <i class="ph-x-circle-fill text-3xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="info-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-xl relative max-h-[90vh] overflow-y-auto">
+            <h3 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">👋 Bienvenido: Reglas y Niveles</h3>
+
+            <div class="space-y-6 text-gray-700">
+                <p class="text-lg font-semibold text-indigo-600">
+                    ¡Gracias por unirte! Aquí tienes un resumen de lo que aprenderás en la Lengua de Señas Mexicana (LSM).
+                </p>
+
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="text-xl font-bold text-blue-700 mb-1">Nivel 1: El Abecedario 🧠</h4>
+                        <p>Aprende el dactilológico completo (26 letras). Fundamental para deletrear nombres y conceptos nuevos.</p>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-yellow-700 mb-1">Nivel 2: Primeras Palabras 💬</h4>
+                        <p>Dominarás vocabulario clave: saludos, emociones, familia y alimentos básicos.</p>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                        <h4 class="text-xl font-bold text-purple-700 mb-1">Nivel 3: Calendario y Tiempos 📅</h4>
+                        <p>Aprenderás a comunicarte sobre la semana, días específicos y referencias de tiempo (hoy, mañana, etc.).</p>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
+                        <h4 class="text-xl font-bold text-indigo-700 mb-1">Nivel 4: Los Meses del Año 🗓️</h4>
+                        <p>Vocabulario sobre los doce meses y las cuatro estaciones para citas y planificación.</p>
+                    </div>
+                </div>
+
+                <p class="text-sm font-semibold text-gray-500 pt-2">
+                    *Toda la información de las señas está basada en el contexto de la Lengua de Señas Mexicana (LSM).
+                </p>
+
+                <p class="text-center mt-4">
+                    ¿Deseas descargar el **Diccionario de LSM completo**?
+                    <a href="https://educacionespecial.sep.gob.mx/storage/recursos/2023/05/xzrfl019nV-4Diccionario_lengua_%20Senas.pdf" download="Diccionario_LSM_SEP_Completo.pdf" target="_blank" class="font-bold text-indigo-600 hover:text-indigo-800 underline transition duration-200 cursor-pointer block mt-1">
+        Haz clic aquí para visitar la página y descargarlo.
+    </a>
+                </p>
+            </div>
+
+            <button id="close-info-modal" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition duration-300">
                 <i class="ph-x-circle-fill text-3xl"></i>
             </button>
         </div>
