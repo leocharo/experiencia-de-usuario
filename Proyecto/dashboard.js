@@ -338,7 +338,11 @@ if (logoutButtonSidebar) {
 
 // --- 11. EVENTOS DE NIVELES ---
 document.getElementById('level-1').addEventListener('click', () => {
-    alert('¡Excelente! Preparando la lección del Abecedario...');
+    alert('¡Excelente! Para comenzarestamos preparando la lección numero 1...');
+    window.location.href = 'niveles_1.html';
+});
+document.getElementById('level-2').addEventListener('click', () => {
+    alert('¡Excelente! Preparando la lección numero 2...');
     window.location.href = 'niveles_1.html';
 });
 document.getElementById('level-3').addEventListener('click', () => {
