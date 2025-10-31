@@ -1,13 +1,220 @@
-// //{ palabra: "Enero", descripcion: "Letra 'E', moviéndola en círculo.", imagen: "ruta_a_imagen/Enero.png", categoria: "Meses" },
-//     { palabra: "Febrero", descripcion: "Letra 'F', moviéndola en círculo.", imagen: "ruta_a_imagen/Febrero.png", categoria: "Meses" },
-//     { palabra: "Marzo", descripcion: "Letra 'M', moviéndola de arriba a abajo.", imagen: "ruta_a_imagen/Marzo.png", categoria: "Meses" },
-//     { palabra: "Abril", descripcion: "Letra 'A', moviéndola de arriba a abajo.", imagen: "ruta_a_imagen/Abril.png", categoria: "Meses" },
-//     { palabra: "Mayo", descripcion: "Letra 'M', golpeando la frente ligeramente.", imagen: "ruta_a_imagen/Mayo.png", categoria: "Meses" },
-//     { palabra: "Junio", descripcion: "Letra 'J', dibujando la forma de la letra en el aire.", imagen: "ruta_a_imagen/Junio.png", categoria: "Meses" },
-//     { palabra: "Julio", descripcion: "Letra 'J', con un ligero movimiento hacia arriba.", imagen: "ruta_a_imagen/Julio.png", categoria: "Meses" },
-//     { palabra: "Agosto", descripcion: "Letra 'A', golpeando la frente ligeramente.", imagen: "ruta_a_imagen/Agosto.png", categoria: "Meses" },
-//     { palabra: "Septiembre", descripcion: "Letra 'S', moviéndola en círculo.", imagen: "ruta_a_imagen/Septiembre.png", categoria: "Meses" },
-//     { palabra: "Octubre", descripcion: "Letra 'O', moviéndola en círculo.", imagen: "ruta_a_imagen/Octubre.png", categoria: "Meses" },
-//     { palabra: "Noviembre", descripcion: "Letra 'N', moviéndola en círculo.", imagen: "ruta_a_imagen/Noviembre.png", categoria: "Meses" },
-//     { palabra: "Diciembre", descripcion: "Letra 'D', moviéndola en círculo.", imagen: "ruta_a_imagen/Diciembre.png", categoria: "Meses" },
+// nivel4.js (Basado en nivel1.js, adaptado para los Meses)
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+// Configuración Firebase (IDÉNTICA)
+const firebaseConfig = {
+    apiKey: "AIzaSyC7zx9CreT58V1AWTq7pMoS_ps65mXf-9Y",
+    authDomain: "mis-manos-hablaran-44e17.firebaseapp.com",
+    projectId: "mis-manos-hablaran-44e17",
+    storageBucket: "mis-manos-hablaran-44e17.firebasestorage.app",
+    messagingSenderId: "637462888639",
+    appId: "1:637462888639:web:c4070137237c211dbd460a",
+    measurementId: "G-5E2QC1Z09F"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let userId = null;
+onAuthStateChanged(auth, user => {
+    if (user) userId = user.uid;
+    else window.location.href = "index.html";
+});
+
+// 🔄 CAMBIO: Lista de Meses
+const meses = [
+    { nombre: "Enero", descripcion: "Se hace una letra e, y se rota la muñeca a los lados." },
+    { nombre: "Febrero", descripcion: "Se hace una letra f, y se rota la muñeca a los lados." },
+    { nombre: "Marzo", descripcion: "Se hace una letra m, y se mueve en círculo alrededor de la oreja." },
+    { nombre: "Abril", descripcion: "Se hace una letra a, y se mueve en círculo alrededor de la oreja." },
+    { nombre: "Mayo", descripcion: "Se hace una letra m, y se rota la muñeca a los lados." },
+    { nombre: "Junio", descripcion: "Se hace una letra i, y se rota la muñeca a los lados." },
+    { nombre: "Julio", descripcion: "Se hace una letra i con el pulgar y el índice estirados, y se rota la muñeca a los lados." },
+    { nombre: "Agosto", descripcion: "Se hace una letra a, y se rota la muñeca a los lados." },
+    { nombre: "Septiembre", descripcion: "Se hace una letra s, y se rota la muñeca a los lados." },
+    { nombre: "Octubre", descripcion: "Se hace una letra o, y se rota la muñeca a los lados." },
+    { nombre: "Noviembre", descripcion: "Se hace una letra u, y se rota la muñeca a los lados." },
+    { nombre: "Diciembre", descripcion: "Se hace una letra d, y se rota la muñeca a los lados." }
+];
+
+let index = 0;
+// NUEVAS VARIABLES para la lógica de Múltiples Quizzes
+let quizzesCompletados = 0;
+const TOTAL_QUIZZES = 3; // 🔄 CAMBIO: Reducimos los quizzes para este nivel
+const TOTAL_MESES = meses.length; // 12 Meses
+
+const leccionDiv = document.getElementById("leccion");
+const btnSiguiente = document.getElementById("btnSiguiente");
+const quizDiv = document.getElementById("quiz");
+const quizImg = document.getElementById("quiz-img");
+const quizOpciones = document.getElementById("quiz-opciones");
+const resultadoDiv = document.getElementById("resultado");
+const btnContinuar = document.getElementById("btnContinuar");
+const btnAnterior = document.getElementById("btnAnterior");
+const progressCircle = document.getElementById("progressCircle");
+const progressText = document.getElementById("progressText");
+
+function mostrarMes() {
+    const mesObj = meses[index];
+    leccionDiv.querySelector("h2").textContent = mesObj.nombre;
+    // ⚠️ IMPORTANTE: Asegúrate de que las imágenes estén en la carpeta 'Meses' 
+    // y nombradas como 'Enero.png', 'Febrero.png', etc.
+    leccionDiv.querySelector("img").src = `Meses/${mesObj.nombre}.png`;
+    leccionDiv.querySelector("p").innerHTML = mesObj.descripcion;
+
+    // LÓGICA DE ACTUALIZACIÓN DEL PROGRESO CIRCULAR
+    const porcentaje = Math.round(((index + 1) / TOTAL_MESES) * 100);
+    let color = '#4a90e2'; // Color azul fijo para Meses
+
+    // Aplica los cambios al CSS
+    progressCircle.style.setProperty('--progress-value', porcentaje);
+    progressCircle.style.setProperty('--progress-color', color);
+
+    // Muestra el progreso actual en el centro del círculo
+    progressText.textContent = `${index + 1}/${TOTAL_MESES}`;
+
+    actualizarBotones();
+}
+
+function actualizarBotones() {
+    // Deshabilitar/Habilitar botón ANTERIOR
+    if (index === 0) {
+        btnAnterior.disabled = true;
+        btnAnterior.classList.add("opacity-50", "cursor-not-allowed");
+    } else {
+        btnAnterior.disabled = false;
+        btnAnterior.classList.remove("opacity-50", "cursor-not-allowed");
+    }
+
+    // Deshabilitar/Habilitar botón SIGUIENTE (solo si es el último mes)
+    if (index === meses.length - 1) {
+        btnSiguiente.textContent = "Hacer Quiz →"; // Cambia el texto
+    } else {
+        btnSiguiente.textContent = "Siguiente →"; // Vuelve al texto normal
+    }
+}
+
+// Event Listener para el botón Regresar
+btnAnterior.addEventListener("click", () => {
+    if (index > 0) {
+        index--;
+        mostrarMes();
+    }
+});
+
+btnSiguiente.addEventListener("click", () => {
+    if (index < meses.length - 1) {
+        index++;
+        mostrarMes();
+    } else {
+        // Al llegar al último mes, proceder al Quiz
+        leccionDiv.style.display = "none";
+        quizDiv.style.display = "block";
+        iniciarQuiz();
+    }
+});
+
+// Inicia mini quiz
+function iniciarQuiz() {
+    const quizProgress = Math.round((quizzesCompletados / TOTAL_QUIZZES) * 100);
+
+    // Muestra el círculo de nuevo y actualiza el texto/color
+    progressCircle.style.setProperty('--progress-value', quizProgress);
+    progressCircle.style.setProperty('--progress-color', 'purple'); // Color fijo para el Quiz
+    progressText.textContent = `${quizzesCompletados + 1}/${TOTAL_QUIZZES}`;
+
+    resultadoDiv.textContent = "";
+
+    const mesCorrecto = meses[Math.floor(Math.random() * meses.length)];
+    // ⚠️ IMPORTANTE: Asegúrate de que la ruta de la imagen sea correcta
+    quizImg.src = `Meses/${mesCorrecto.nombre}.png`;
+    quizOpciones.innerHTML = "";
+
+    const opciones = [mesCorrecto.nombre];
+    while (opciones.length < 4) {
+        const mesRandom = meses[Math.floor(Math.random() * meses.length)].nombre;
+        if (!opciones.includes(mesRandom)) opciones.push(mesRandom);
+    }
+
+    opciones.sort(() => 0.5 - Math.random());
+
+    opciones.forEach(op => {
+        const btn = document.createElement("button");
+        btn.textContent = op;
+        btn.className = "bg-blue-500 text-white rounded-xl px-4 py-2 hover:bg-blue-600 transition duration-200";
+        btn.onclick = () => verificarRespuesta(op === mesCorrecto.nombre);
+        quizOpciones.appendChild(btn);
+    });
+}
+
+// Verifica respuesta del quiz (LÓGICA MODIFICADA)
+async function verificarRespuesta(correcto) {
+    if (correcto) {
+        quizzesCompletados++; // Incrementa el contador de quizzes
+
+        if (quizzesCompletados < TOTAL_QUIZZES) {
+            // Si quedan quizzes por hacer, pasa al siguiente
+            resultadoDiv.textContent = `¡Correcto! Quiz ${quizzesCompletados}/${TOTAL_QUIZZES} completado ✅`;
+            resultadoDiv.style.color = "#22c55e"; // color verde
+
+            // Pausa breve y reinicia el quiz con una nueva pregunta
+            setTimeout(() => iniciarQuiz(), 1500);
+
+        } else {
+            // SI TODOS LOS QUIZZES ESTÁN COMPLETADOS
+
+            quizDiv.style.display = "none";
+            btnContinuar.style.display = "block";
+
+            // Mostrar mensaje de nivel completado
+            const mensaje = document.createElement("div");
+            mensaje.textContent = "🎉 Nivel 4 completado ✅";
+            Object.assign(mensaje.style, {
+                position: "fixed",
+                top: "40%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "#22c55e",
+                color: "#fff",
+                fontSize: "2rem",
+                padding: "1.5rem 2rem",
+                borderRadius: "1rem",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
+                zIndex: "9999",
+                textAlign: "center"
+            });
+            document.body.appendChild(mensaje);
+
+            // Guardar progreso en Firestore 
+            if (userId) {
+                try {
+                    const docRef = doc(db, "perfiles", userId);
+                    // 🔄 CAMBIO: Actualizar nivel4_completado
+                    await updateDoc(docRef, { nivel4_completado: true });
+                } catch (error) {
+                    console.error("Error guardando progreso:", error);
+                }
+            }
+
+            // Redirigir después de 2 segundos
+            setTimeout(() => window.location.href = "pagina_inicio.html", 2000);
+        }
+    } else {
+        // Respuesta incorrecta
+        resultadoDiv.textContent = "Intenta de nuevo ❌";
+        resultadoDiv.style.color = "red";
+    }
+}
+
+// Event listener para el botón "Continuar al siguiente nivel"
+btnContinuar.addEventListener("click", () => {
+    window.location.href = "pagina_inicio.html";
+});
+
+
+// Mostrar el primer mes al cargar
+mostrarMes();

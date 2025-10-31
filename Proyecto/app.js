@@ -122,9 +122,11 @@ async function handleSignUp(email, password, username) {
             nivel1_completado: false,
             nivel2_completado: false,
             nivel3_completado: false,
+            nivel4_completado: false,
             progreso_letras: {},
             progreso_palabras: {},
             progreso_dias_completados: 0,
+            progreso_meses_completados: 0,
             created_at: new Date()
         });
 

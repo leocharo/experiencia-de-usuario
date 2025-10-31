@@ -26,9 +26,6 @@ const storage = getStorage(app);
 const userIdDisplay = document.getElementById('profile-username');
 const profileImage = document.getElementById('profile-picture');
 const photoUploadInput = document.getElementById('photo-upload');
-const progressBarFill = document.getElementById('progress-bar-fill');
-const progressPercentage = document.getElementById('progress-percentage');
-const progressCount = document.getElementById('progress-count');
 const loadingMessage = document.getElementById('loading-message');
 const photoStatus = document.getElementById('photo-status');
 
@@ -44,14 +41,24 @@ const progressLettersCount = document.getElementById('progress-letters-count');
 const progressWordsBar = document.getElementById('progress-words-bar');
 const progressWordsPercentage = document.getElementById('progress-words-percentage');
 const progressWordsCount = document.getElementById('progress-words-count');
-//progreso dias y semana
-const progressDaysBar = document.getElementById('progress-days-bar'); // Ahora este ID existe
-const progressDaysPercentageText = document.getElementById('progress-days-percentage-text'); // Nuevo ID
+
+// progreso dias y semana (Nivel 3)
+const progressDaysBar = document.getElementById('progress-days-bar');
+const progressDaysPercentageText = document.getElementById('progress-days-percentage-text');
 const progressDaysCount = document.getElementById('progress-days-count');
+
+// progreso meses y estaciones (Nivel 4)
+const progressMonthsBar = document.getElementById('progress-months-bar');
+const progressMonthsPercentageText = document.getElementById('progress-months-percentage-text');
+const progressMonthsCount = document.getElementById('progress-months-count');
+const showDictionaryButton = document.getElementById('show-dictionary-button');
+let areAllLevelsComplete = false;
 let currentUserId = null;
-const TOTAL_LETTERS = 26; // Total de letras para el abecedario
-const TOTAL_WORDS_LEVEL_2 = 22; // Total de palabras para nivel 2
-const TOTAL_DAYS = 10; // Total de palabras para nivel 3
+const TOTAL_LETTERS = 26;
+const TOTAL_WORDS_LEVEL_2 = 22;
+const TOTAL_DAYS = 10;
+const TOTAL_MONTHS = 16; // 12 meses + 4 estaciones (Ajustar si es necesario)
+
 // --- 4. MANEJO DE MODAL ---
 if (showProfileButton) {
     showProfileButton.addEventListener('click', () => {
@@ -86,7 +93,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// --- 6. CARGAR PERFIL Y PROGRESO ---
+// --- 6. CARGAR PERFIL Y PROGRESO (CON INICIALIZACIÓN PEREZOSA PARA NIVELES 3 Y 4) ---
 
 async function loadUserData(userId) {
     if (loadingMessage) {
@@ -98,31 +105,63 @@ async function loadUserData(userId) {
         const profileSnap = await getDoc(profileRef);
 
         if (profileSnap.exists()) {
-            const data = profileSnap.data();
+            let data = profileSnap.data();
+            let updateNeeded = false;
+            let updateObject = {};
+
+            // ➡️ INICIALIZACIÓN PEREZOSA (Nivel 3)
+            if (data.nivel3_completado === undefined) {
+                updateObject.nivel3_completado = false;
+                updateObject.progreso_dias_completados = 0;
+                updateNeeded = true;
+            }
+            // ➡️ INICIALIZACIÓN PEREZOSA (Nivel 4)
+            if (data.nivel4_completado === undefined) {
+                updateObject.nivel4_completado = false;
+                updateObject.progreso_meses_completados = 0;
+                updateNeeded = true;
+            }
+
+            // Si es un usuario antiguo y le faltan campos, actualizamos Firestore
+            if (updateNeeded) {
+                await updateDoc(profileRef, updateObject);
+                // Reemplazamos los datos leídos con los datos actualizados para esta sesión
+                data = {...data, ...updateObject };
+            }
 
             // Mostrar nombre de usuario
             if (userIdDisplay) userIdDisplay.textContent = data.username || 'Usuario';
-
-            // Foto de perfil
             if (profileImage) {
                 profileImage.src = data.photoURL || "https://placehold.co/120x120/d1d5db/4b5563?text=👤";
             }
 
-            // Progreso por niveles completos
-            const lettersCompleted = data.nivel1_completado ? 26 : 0; // Nivel 1 completo = 26 letras
-            const wordsCompleted = data.nivel2_completado ? 22 : 0; // Nivel 2 completo = 22 palabras
-            const daysCompleted = data.nivel3_completado ? 10 : 0; // Nivel 3 completo = 10 palabras
+            // Progreso por niveles completos (Lectura final de datos)
+            const lettersCompleted = data.nivel1_completado ? TOTAL_LETTERS : 0;
+            const wordsCompleted = data.nivel2_completado ? TOTAL_WORDS_LEVEL_2 : 0;
 
-            displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted);
+            // Nivel 3 (Días)
+            const nivel3_completado = data.nivel3_completado === true;
+            const daysCompleted = nivel3_completado ? TOTAL_DAYS : (data.progreso_dias_completados || 0);
 
-            // Desbloquear Nivel 2 si Nivel 1 completo
-            if (lettersCompleted === 26) {
+            // Nivel 4 (Meses)
+            const nivel4_completado = data.nivel4_completado === true;
+            const monthsCompleted = nivel4_completado ? TOTAL_MONTHS : (data.progreso_meses_completados || 0);
+
+
+            // LLAMADA A LA FUNCIÓN DE DISPLAY CON TODOS LOS DATOS
+            displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted, monthsCompleted);
+
+            // Desbloqueo de niveles
+            if (lettersCompleted === TOTAL_LETTERS) {
                 unlockLevel(2);
             }
-            if (wordsCompleted === 22) {
+            if (wordsCompleted === TOTAL_WORDS_LEVEL_2) {
                 unlockLevel(3);
             }
-
+            // ➡️ Desbloquear Nivel 4 si Nivel 3 está completo
+            if (nivel3_completado) {
+                unlockLevel(4);
+            }
 
 
         } else {
@@ -133,34 +172,48 @@ async function loadUserData(userId) {
     } finally {
         if (loadingMessage) loadingMessage.classList.add('hidden');
     }
+    const isLevel1Complete = data.nivel1_completado === true;
+    const isLevel2Complete = data.nivel2_completado === true;
+    const isLevel3Complete = data.nivel3_completado === true;
+    const isLevel4Complete = data.nivel4_completado === true; // Asegúrate de leer este campo
+
+    // ➡️ Lógica para determinar si el acceso al diccionario está permitido
+    if (isLevel1Complete && isLevel2Complete && isLevel3Complete && isLevel4Complete) {
+        areAllLevelsComplete = true;
+    } else {
+        areAllLevelsComplete = false;
+    }
 }
 
-// --- 7. FUNCION DISPLAY PROGRESO ---
-function displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted) {
-    // Letras
-    const lettersPercentage = Math.round((lettersCompleted / 26) * 100);
+// --- 7. FUNCION DISPLAY PROGRESO (SE AÑADE NIVEL 4) ---
+function displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted, monthsCompleted) {
+    // Letras (Nivel 1)
+    const lettersPercentage = Math.round((lettersCompleted / TOTAL_LETTERS) * 100);
     if (progressLettersPercentage) progressLettersPercentage.textContent = `${lettersPercentage}%`;
     if (progressLettersBar) progressLettersBar.style.width = `${lettersPercentage}%`;
-    if (progressLettersCount) progressLettersCount.textContent = `[${lettersCompleted}/26 Letras completadas]`;
+    if (progressLettersCount) progressLettersCount.textContent = `[${lettersCompleted}/${TOTAL_LETTERS} Letras completadas]`;
 
-    // Palabras
-    const wordsPercentage = Math.round((wordsCompleted / 22) * 100);
+    // Palabras (Nivel 2)
+    const wordsPercentage = Math.round((wordsCompleted / TOTAL_WORDS_LEVEL_2) * 100);
     if (progressWordsPercentage) progressWordsPercentage.textContent = `${wordsPercentage}%`;
     if (progressWordsBar) progressWordsBar.style.width = `${wordsPercentage}%`;
-    if (progressWordsCount) progressWordsCount.textContent = `[${wordsCompleted}/22 Palabras completadas]`;
-    //Dias,saludos
-    const daysPercentage = Math.round((daysCompleted / 10) * 100); // TOTAL_DAYS es 10
+    if (progressWordsCount) progressWordsCount.textContent = `[${wordsCompleted}/${TOTAL_WORDS_LEVEL_2} Palabras completadas]`;
 
-    // **USAR EL NUEVO ELEMENTO DOM**
+    // Dias, saludos (Nivel 3)
+    const daysPercentage = Math.round((daysCompleted / TOTAL_DAYS) * 100);
     if (progressDaysPercentageText) progressDaysPercentageText.textContent = `${daysPercentage}%`;
-
-    // **USAR EL ELEMENTO DOM CORRECTO**
     if (progressDaysBar) progressDaysBar.style.width = `${daysPercentage}%`;
+    if (progressDaysCount) progressDaysCount.textContent = `[${daysCompleted}/${TOTAL_DAYS} Palabras completadas]`;
 
-    if (progressDaysCount) progressDaysCount.textContent = `[${daysCompleted}/10 Palabras completadas]`;
+    // ➡️ Meses y Estaciones (Nivel 4)
+    const monthsPercentage = Math.round((monthsCompleted / TOTAL_MONTHS) * 100);
+
+    if (progressMonthsPercentageText) progressMonthsPercentageText.textContent = `${monthsPercentage}%`;
+    if (progressMonthsBar) progressMonthsBar.style.width = `${monthsPercentage}%`;
+    if (progressMonthsCount) progressMonthsCount.textContent = `[${monthsCompleted}/${TOTAL_MONTHS} Temas completados]`;
 }
 
-// --- 8. DESBLOQUEO DE NIVELES ---
+// --- 8. DESBLOQUEO DE NIVELES (SE AÑADE NIVELES 4) ---
 function unlockLevel(levelNumber) {
     const levelCard = document.getElementById(`level-${levelNumber}`);
     if (levelCard) {
@@ -179,13 +232,15 @@ function unlockLevel(levelNumber) {
                 window.location.href = 'niveles_2.html';
             } else if (levelNumber === 3) {
                 window.location.href = 'niveles_3.html';
+            } else if (levelNumber === 4) {
+                window.location.href = 'niveles_4.html';
             }
         }
     }
 }
 
 
-// --- 9. SUBIR FOTO DE PERFIL ---
+// --- 9. SUBIR FOTO DE PERFIL (SIN CAMBIOS) ---
 if (photoUploadInput) {
     photoUploadInput.addEventListener('change', async(e) => {
         const file = e.target.files[0];
@@ -198,21 +253,13 @@ if (photoUploadInput) {
 
 
         try {
-            // 1. Crear referencia: user-photos/ [UID] / profile.jpg
-            // Las reglas de Storage están configuradas para usar el UID como la carpeta de seguridad
             const storageRef = ref(storage, `${currentUserId}/profile.jpg`);
-
-            // 2. Subir el archivo
             const snapshot = await uploadBytes(storageRef, file);
-
-            // 3. Obtener la URL pública
             const downloadURL = await getDownloadURL(snapshot.ref);
 
-            // 4. Actualizar Firestore con la URL (para persistencia)
             const profileRef = doc(db, "perfiles", currentUserId);
             await updateDoc(profileRef, { photoURL: downloadURL });
 
-            // 5. Actualizar UI
             if (profileImage) profileImage.src = downloadURL;
             if (photoStatus) {
                 photoStatus.textContent = 'Foto actualizada con éxito.';
@@ -229,12 +276,11 @@ if (photoUploadInput) {
     });
 }
 
-// --- 10. LOGOUT ---
+// --- 10. LOGOUT (SIN CAMBIOS) ---
 if (logoutButtonSidebar) {
     logoutButtonSidebar.addEventListener('click', async() => {
         try {
             await signOut(auth);
-            // Redirigir al login después de cerrar sesión
             window.location.href = 'index.html';
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
@@ -243,15 +289,27 @@ if (logoutButtonSidebar) {
     });
 }
 
-// --- 11. EVENTOS DE NIVELES ---
+// --- 11. EVENTOS DE NIVELES (SE AÑADE REDIRECCIÓN DE NIVEL 4) ---
 document.getElementById('level-1').addEventListener('click', () => {
-    // Aquí puedes redirigir a la lección real del abecedario
     alert('¡Excelente! Preparando la lección del Abecedario...');
     window.location.href = 'niveles_1.html';
 });
 document.getElementById('level-3').addEventListener('click', () => {
-    // Aquí puedes redirigir a la lección real del abecedario
     alert('¡Excelente! Preparando la lección numero 3...');
     window.location.href = 'niveles_3.html';
-
 });
+document.getElementById('level-4').addEventListener('click', () => {
+    alert('¡Excelente! Preparando la lección numero 4...');
+    window.location.href = 'niveles_4.html';
+});
+if (showDictionaryButton) {
+    showDictionaryButton.addEventListener('click', () => {
+        if (areAllLevelsComplete) {
+            // ✅ Acceso permitido
+            window.location.href = 'diccionario.html';
+        } else {
+            // 🛑 Acceso Bloqueado
+            alert('¡Acceso Bloqueado! Debes completar todos los niveles (Nivel 1 al 4) para acceder al Diccionario de Señas completo.');
+        }
+    });
+}

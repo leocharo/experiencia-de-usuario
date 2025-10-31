@@ -141,7 +141,8 @@ btnSiguiente.addEventListener("click", async() => {
     if (userId) {
         const docRef = doc(db, "perfiles", userId);
         updateDoc(docRef, {
-                [`progreso_palabras.${lecciones[index].palabra}`]: true })
+                [`progreso_palabras.${lecciones[index].palabra}`]: true
+            })
             .catch(error => console.error("Error al guardar progreso:", error));
     }
 
