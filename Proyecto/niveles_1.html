@@ -8,12 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <style>
+        /* ESTILOS DEL CUERPO Y FONDO */
+        
         html,
         body {
             height: 100%;
             margin: 0;
             font-family: 'Roboto Slab', serif;
             overflow-x: hidden;
+            /* Se mantiene el color general #cccccc en el CSS, aunque Tailwind lo sobrescribe,
+               dejamos la intención aquí. Usaremos 'text-white' en el HTML. */
         }
         
         .bg {
@@ -45,6 +49,7 @@
                 transform: translateX(25%);
             }
         }
+        /* ESTILOS DE ELEMENTOS ESPECÍFICOS */
         
         #leccion img,
         #quiz img {
@@ -54,10 +59,11 @@
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
+        /* ESTILO PARA LA BARRA CIRCULAR DE PROGRESO */
         
         .circular-progress {
-            width: 400px;
-            height: 400px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             background: radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0), conic-gradient(var(--progress-color) calc(var(--progress-value) * 1%), #ccc 0);
             display: flex;
@@ -69,67 +75,65 @@
         .circular-progress span {
             z-index: 2;
         }
-        /* Agregamos separación entre el cuadro principal y el aside */
+        /* ESTRUCTURA PRINCIPAL FLEX */
         
         .contenido-principal {
             display: flex;
             justify-content: center;
+            /* Centra horizontalmente el bloque de contenido */
             align-items: flex-start;
+            /* Mantiene la alineación superior para mejor distribución */
             gap: 6rem;
-            /* <--- controla la separación */
             width: 100%;
-            padding: 2rem;
+            padding: 4rem;
+            flex-grow: 1;
+            /* Permite que ocupe el espacio restante */
         }
         
         #imagenLateral {
-            max-width: 100%;
-            /* Asegura que la imagen no se desborde */
+            max-width: 300px;
             height: auto;
             margin-top: 2rem;
-            /* Espacio con el índice */
             border-radius: 10px;
-            /* Bordes redondeados */
             opacity: 0.8;
-            /* Un poco transparente para no distraer */
         }
     </style>
 </head>
 
-<body class="text-gray-800 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
     <a href="pagina_inicio.html" class="fixed top-4 left-4 z-350 bg-transparent-500 text-white text-sm Pacifico px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-500">
-    🏠 Inicio
-</a>
+        🏠 INICIO
+    </a>
     </div>
-    <!-- Fondos animados -->
+
     <div class="bg"></div>
     <div class="bg bg2"></div>
     <div class="bg bg3"></div>
 
-    <!-- Encabezado -->
     <header class="text-center mb-8 mt-6">
-        <h1 class="text-4xl font-bold text-white-600 mb-2">Nivel 1: Aprende el Abecedario en Lengua de Señas 🤟</h1>
-        <p class="text-lg text-gray-600">Aprende las señas de las letras A a Z</p>
+        <h1 class="text-4xl font-bold text-white mb-2">Nivel 1: Aprende el Abecedario en Lengua de Señas 🤟</h1>
+        <p class="text-lg text-white">Aprende las señas de las letras A a Z</p>
     </header>
 
-    <!-- Contenedor principal (main + aside) -->
     <div class="contenido-principal">
         <img id="imagenLateral" src="Letras/logo_sin_fondo.png" alt="Imagen decorativa de lengua de señas" />
-        <!-- Cuadro principal centrado -->
+
         <main class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center border border-blue-100">
             <div id="leccion">
-                <h2 class="text-2xl font-semibold text-white-700 mb-4">Letra A</h2>
-                <img src="Letras/Letra A.png" alt="Letra A en lengua de señas" class="mb-4" />
-                <p class="text-black-700 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Letra A</h2>
+                <img src="Letras/Letra A.png" alt="Letra A en lengua de señas" width="220" height="auto" controls class="mb-6 rounded-xl shadow-lg" />
+
+                <p class="text-gray-700 mb-8 mt-6">
                     Para hacer la letra <strong>A</strong>, con la mano cerrada, se muestran las uñas y se estira el dedo pulgar hacia un lado. La palma mira al frente.
                 </p>
 
                 <div class="flex justify-between items-center w-full max-w-xs mx-auto">
                     <button id="btnAnterior" class="bg-gray-400 text-white px-4 py-3 rounded-xl hover:bg-gray-500 transition duration-200 opacity-50 cursor-not-allowed" disabled>
-            ← Anterior
-          </button>
+                        ← Anterior
+                    </button>
                     <button id="btnSiguiente" class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition duration-200">
-            Siguiente →
-          </button>
+                        Siguiente →
+                    </button>
                 </div>
             </div>
 
@@ -143,11 +147,10 @@
             <div id="resultado" class="mt-4 text-center font-semibold"></div>
 
             <button id="btnContinuar" class="bg-green-500 text-white font-semibold px-5 py-3 mt-6 rounded-xl hover:bg-green-600 transition duration-200 w-full" style="display: none;">
-        Continuar al siguiente nivel →
-      </button>
+                Continuar al siguiente nivel →
+            </button>
         </main>
 
-        <!-- Aside con la barra circular de progreso -->
         <aside class="hidden lg:flex flex-col items-center pt-10 text-center">
             <h3 class="text-xl font-bold text-white mb-4">Progreso</h3>
             <div id="progressContainer">
@@ -159,8 +162,7 @@
         </aside>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="mt-10 text-sm text-gray-500 text-center">
+    <footer class="mt-10 text-sm text-white text-center">
         <p>© 2025 Mis Manos Hablarán | Proyecto Educativo Inclusivo</p>
     </footer>
 

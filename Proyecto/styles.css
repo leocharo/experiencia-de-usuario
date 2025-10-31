@@ -125,7 +125,7 @@ body {
     padding: 40px 30px;
     border-radius: 20px;
     /* ACLARAMOS EL FONDO DE LA TARJETA */
-    --card-background: rgba(248, 243, 243, 0.5);
+    --card-background: rgba(84, 123, 155, 0.5);
     /* Aumentamos la opacidad y claridad */
     background: var(--card-background);
     backdrop-filter: blur(10px);
@@ -143,8 +143,8 @@ body {
 /* ------------------- CABECERA Y AVATAR ------------------- */
 
 h2 {
-    color: var(--primary-color);
-    margin-bottom: 30px;
+    color: black;
+    margin-bottom: 20px;
     font-size: 1.5em;
     font-weight: bold;
 }
@@ -170,7 +170,7 @@ h2 {
 .avatar-icon::after {
     content: "👤";
     /* Icono de usuario simple */
-    color: rgb(131, 193, 235);
+    color: rgb(22, 28, 32);
 }
 
 

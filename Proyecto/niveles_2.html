@@ -14,7 +14,7 @@
         body {
             height: 100%;
             margin: 0;
-            font-family: "Poppins", sans-serif;
+            font-family: "Robot Slab", sans-serif;
             overflow-x: hidden;
         }
         
@@ -60,9 +60,9 @@
         /* ESTILO PARA LA BARRA CIRCULAR DE PROGRESO */
         
         .circular-progress {
-            width: 400px;
+            width: 200px;
             /* Reducido para nivel 2 */
-            height: 400px;
+            height: 200px;
             /* Reducido para nivel 2 */
             border-radius: 50%;
             background: radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0), conic-gradient(var(--progress-color) calc(var(--progress-value) * 1%), #ccc 0);
@@ -73,7 +73,7 @@
         }
         
         .circular-progress span {
-            z-index: 2;
+            z-index: 5;
         }
         /* ESTRUCTURA PRINCIPAL FLEX PARA LOGO, CONTENIDO Y PROGRESO */
         
@@ -89,10 +89,9 @@
         }
         
         #imagenLateral {
-            max-width: 100%;
+            max-width: 300px;
             height: auto;
-            margin-top: 2rem;
-            border-radius: 10px;
+            border-radius: 6px;
             opacity: 0.8;
         }
         /* Estilo para la animación de transición de contenido */
@@ -115,8 +114,8 @@
 </head>
 
 <body class="text-gray-800 flex flex-col min-h-screen">
-    <a href="pagina_inicio.html" class="text-2xl fixed top-4 left-4 z-350  bg-transparent-500 text-black text-sm Pacifico px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-500">
-        🏠 Inicio
+    <a href="pagina_inicio.html" class="fixed top-4 left-4 z-350 bg-transparent-500 text-white text-sm Pacifico px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-500">
+        🏠 INICIO
     </a>
 
     <div class="bg"></div>
@@ -137,9 +136,11 @@
 
         <main class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center border border-yellow-100">
             <div id="leccion" class="fade">
-                <h2 class="text-2xl font-semibold text-yellow-700 mb-4"></h2>
-                <video id="videoLeccion" width="220" height="auto" controls class="mb-4 rounded-xl shadow-lg"></video>
-                <p class="text-gray-700 mb-6"></p>
+                <h2 class="text-2xl font-semibold text-yellow-700 mb-10"></h2>
+
+                <video id="videoLeccion" width="220" height="auto" controls class="mb-6 rounded-xl shadow-lg"></video>
+
+                <p class="text-gray-700 mb-10 mt-6"></p>
 
                 <button id="btnRegresar" class="bg-gray-400 text-white px-6 py-3 rounded-xl hover:bg-gray-500 transition duration-200 mr-2" style="display: none;">
                     ← Regresar
