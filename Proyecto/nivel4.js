@@ -1,0 +1,13 @@
+// //{ palabra: "Enero", descripcion: "Letra 'E', moviéndola en círculo.", imagen: "ruta_a_imagen/Enero.png", categoria: "Meses" },
+//     { palabra: "Febrero", descripcion: "Letra 'F', moviéndola en círculo.", imagen: "ruta_a_imagen/Febrero.png", categoria: "Meses" },
+//     { palabra: "Marzo", descripcion: "Letra 'M', moviéndola de arriba a abajo.", imagen: "ruta_a_imagen/Marzo.png", categoria: "Meses" },
+//     { palabra: "Abril", descripcion: "Letra 'A', moviéndola de arriba a abajo.", imagen: "ruta_a_imagen/Abril.png", categoria: "Meses" },
+//     { palabra: "Mayo", descripcion: "Letra 'M', golpeando la frente ligeramente.", imagen: "ruta_a_imagen/Mayo.png", categoria: "Meses" },
+//     { palabra: "Junio", descripcion: "Letra 'J', dibujando la forma de la letra en el aire.", imagen: "ruta_a_imagen/Junio.png", categoria: "Meses" },
+//     { palabra: "Julio", descripcion: "Letra 'J', con un ligero movimiento hacia arriba.", imagen: "ruta_a_imagen/Julio.png", categoria: "Meses" },
+//     { palabra: "Agosto", descripcion: "Letra 'A', golpeando la frente ligeramente.", imagen: "ruta_a_imagen/Agosto.png", categoria: "Meses" },
+//     { palabra: "Septiembre", descripcion: "Letra 'S', moviéndola en círculo.", imagen: "ruta_a_imagen/Septiembre.png", categoria: "Meses" },
+//     { palabra: "Octubre", descripcion: "Letra 'O', moviéndola en círculo.", imagen: "ruta_a_imagen/Octubre.png", categoria: "Meses" },
+//     { palabra: "Noviembre", descripcion: "Letra 'N', moviéndola en círculo.", imagen: "ruta_a_imagen/Noviembre.png", categoria: "Meses" },
+//     { palabra: "Diciembre", descripcion: "Letra 'D', moviéndola en círculo.", imagen: "ruta_a_imagen/Diciembre.png", categoria: "Meses" },
+

@@ -28,33 +28,21 @@ onAuthStateChanged(auth, user => {
 // NOTA: Reemplaza "ruta_a_imagen/" con tu carpeta real de imágenes.
 const lecciones = [
     // Días de la Semana (7)
-    { palabra: "Lunes", descripcion: "Letra 'L' de la mano dominante, moviéndola en círculo frente al cuerpo.", imagen: "ruta_a_imagen/Lunes.png", categoria: "Días" },
-    { palabra: "Martes", descripcion: "Letra 'M' de la mano dominante, moviéndola en círculo.", imagen: "ruta_a_imagen/Martes.png", categoria: "Días" },
-    { palabra: "Miércoles", descripcion: "Letra 'I' de la mano dominante, moviéndola en círculo.", imagen: "ruta_a_imagen/Miercoles.png", categoria: "Días" },
-    { palabra: "Jueves", descripcion: "Letra 'J' con la mano dominante, haciendo la forma de la letra en el aire.", imagen: "ruta_a_imagen/Jueves.png", categoria: "Días" },
-    { palabra: "Viernes", descripcion: "Letra 'V' de la mano dominante, moviéndola en círculo.", imagen: "ruta_a_imagen/Viernes.png", categoria: "Días" },
-    { palabra: "Sábado", descripcion: "Letra 'S' de la mano dominante, moviéndola en círculo.", imagen: "ruta_a_imagen/Sabado.png", categoria: "Días" },
-    { palabra: "Domingo", descripcion: "Ambas manos abiertas, tocando el pecho y luego abriéndose hacia adelante.", imagen: "ruta_a_imagen/Domingo.png", categoria: "Días" },
+    { palabra: "Lunes", descripcion: "Se hace una letra l, y se mueve en círculo", imagen: "Semana/Lunes.png", categoria: "Días" },
+    { palabra: "Martes", descripcion: "Se hace una letra l con el dedo medio estirado, y se mueve en círculo.", imagen: "Semana/Martes.png", categoria: "Días" },
+    { palabra: "Miércoles", descripcion: "Se hace una letra l con los dedos medio, anular y meñique estirados, y se mueve en círculo.", imagen: "Semana/Miercoles.png", categoria: "Días" },
+    { palabra: "Jueves", descripcion: "Se hace una letra j, y se mueve en círculo.", imagen: "Semana/Jueves.png", categoria: "Días" },
+    { palabra: "Viernes", descripcion: "Letra 'V' de la mano dominante, moviéndola en círculo.", imagen: "Semana/Viernes.png", categoria: "Días" },
+    { palabra: "Sábado", descripcion: "Letra 'S' de la mano dominante, moviéndola en círculo.", imagen: "Semana/Sabado.png", categoria: "Días" },
+    { palabra: "Domingo", descripcion: "Se hace una letra d, y se mueve en círculo.", imagen: "Semana/Domingo.png", categoria: "Días" },
 
     // Tiempos (Hoy, Ayer, Mañana) (3)
-    { palabra: "Hoy", descripcion: "Ambas manos en 'Y', golpeando ligeramente la barbilla.", imagen: "ruta_a_imagen/Hoy.png", categoria: "Tiempos" },
-    { palabra: "Ayer", descripcion: "Letra 'A', moviéndola sobre el hombro hacia atrás.", imagen: "ruta_a_imagen/Ayer.png", categoria: "Tiempos" },
-    { palabra: "Mañana", descripcion: "Mano en 'A' o 'M', moviéndola en círculo en el aire delante del cuerpo.", imagen: "ruta_a_imagen/Manana.png", categoria: "Tiempos" },
+    { palabra: "Hoy", descripcion: "Se hace una letra a, y se hace un movimiento en medio círculo hacia un lado.", imagen: "Semana/HOY.png", categoria: "Tiempos" },
+    { palabra: "Ayer", descripcion: "Se coloca una letra a a un lado de la boca y se recorre hasta alcanzar la oreja. ", imagen: "Semana/AYER.png", categoria: "Tiempos" },
+    { palabra: "Mañana", descripcion: "Se coloca una letra l al lado de la frente, y se mueve al frente sin separarla.", imagen: "Semana/MAÑANA.png", categoria: "Tiempos" },
 
-    // Meses (12)
-    { palabra: "Enero", descripcion: "Letra 'E', moviéndola en círculo.", imagen: "ruta_a_imagen/Enero.png", categoria: "Meses" },
-    { palabra: "Febrero", descripcion: "Letra 'F', moviéndola en círculo.", imagen: "ruta_a_imagen/Febrero.png", categoria: "Meses" },
-    { palabra: "Marzo", descripcion: "Letra 'M', moviéndola de arriba a abajo.", imagen: "ruta_a_imagen/Marzo.png", categoria: "Meses" },
-    { palabra: "Abril", descripcion: "Letra 'A', moviéndola de arriba a abajo.", imagen: "ruta_a_imagen/Abril.png", categoria: "Meses" },
-    { palabra: "Mayo", descripcion: "Letra 'M', golpeando la frente ligeramente.", imagen: "ruta_a_imagen/Mayo.png", categoria: "Meses" },
-    { palabra: "Junio", descripcion: "Letra 'J', dibujando la forma de la letra en el aire.", imagen: "ruta_a_imagen/Junio.png", categoria: "Meses" },
-    { palabra: "Julio", descripcion: "Letra 'J', con un ligero movimiento hacia arriba.", imagen: "ruta_a_imagen/Julio.png", categoria: "Meses" },
-    { palabra: "Agosto", descripcion: "Letra 'A', golpeando la frente ligeramente.", imagen: "ruta_a_imagen/Agosto.png", categoria: "Meses" },
-    { palabra: "Septiembre", descripcion: "Letra 'S', moviéndola en círculo.", imagen: "ruta_a_imagen/Septiembre.png", categoria: "Meses" },
-    { palabra: "Octubre", descripcion: "Letra 'O', moviéndola en círculo.", imagen: "ruta_a_imagen/Octubre.png", categoria: "Meses" },
-    { palabra: "Noviembre", descripcion: "Letra 'N', moviéndola en círculo.", imagen: "ruta_a_imagen/Noviembre.png", categoria: "Meses" },
-    { palabra: "Diciembre", descripcion: "Letra 'D', moviéndola en círculo.", imagen: "ruta_a_imagen/Diciembre.png", categoria: "Meses" },
-];
+    
+    ];
 
 let index = 0;
 // Lógica de 4 Quizzes

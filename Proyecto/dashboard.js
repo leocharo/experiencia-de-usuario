@@ -44,10 +44,13 @@ const progressLettersCount = document.getElementById('progress-letters-count');
 const progressWordsBar = document.getElementById('progress-words-bar');
 const progressWordsPercentage = document.getElementById('progress-words-percentage');
 const progressWordsCount = document.getElementById('progress-words-count');
-
+//progreso dias y semana
+const progressDaysBar = document.getElementById('progress-days-bar');
+const progressDaysPercentage = document.getElementById('progress-days-percentage');
+const progressDaysCount = document.getElementById('progress-days-count');
 let currentUserId = null;
 const TOTAL_LETTERS = 26; // Total de letras para el abecedario
-
+const TOTAL_DAYS = 10;   // Total de palabras para nivel 3
 // --- 4. MANEJO DE MODAL ---
 if (showProfileButton) {
     showProfileButton.addEventListener('click', () => {
@@ -107,6 +110,7 @@ async function loadUserData(userId) {
             // Progreso por niveles completos
             const lettersCompleted = data.nivel1_completado ? 26 : 0; // Nivel 1 completo = 26 letras
             const wordsCompleted = data.nivel2_completado ? 22 : 0;   // Nivel 2 completo = 22 palabras
+            const daysCompleted = data.nivel3_completado ? 10 : 0;      // Nivel 3 completo = 10 palabras
 
             displayProgressLevels(lettersCompleted, wordsCompleted);
 
@@ -114,6 +118,11 @@ async function loadUserData(userId) {
             if (lettersCompleted === 26) {
                 unlockLevel(2);
             }
+            if (wordsCompleted === 22) {
+                unlockLevel(3);
+            }
+            
+            
 
         } else {
             console.error("No se encontró el perfil del usuario en Firestore.");
@@ -126,7 +135,7 @@ async function loadUserData(userId) {
 }
 
 // --- 7. FUNCION DISPLAY PROGRESO ---
-function displayProgressLevels(lettersCompleted, wordsCompleted) {
+function displayProgressLevels(lettersCompleted, wordsCompleted,daysCompleted) {
     // Letras
     const lettersPercentage = Math.round((lettersCompleted / 26) * 100);
     if(progressLettersPercentage) progressLettersPercentage.textContent = `${lettersPercentage}%`;
@@ -138,6 +147,11 @@ function displayProgressLevels(lettersCompleted, wordsCompleted) {
     if(progressWordsPercentage) progressWordsPercentage.textContent = `${wordsPercentage}%`;
     if(progressWordsBar) progressWordsBar.style.width = `${wordsPercentage}%`;
     if(progressWordsCount) progressWordsCount.textContent = `[${wordsCompleted}/22 Palabras completadas]`;
+    //Dias,saludos
+    const progressDaysPercentage = Math.round((daysCompleted / 10) * 100);
+    if(progressDaysPercentage) progressDaysPercentage.textContent = `${DaysPercentage}%`;
+    if(progressDaysBar) progressDaysBar.style.width = `${DaysPercentage}%`;
+    if(progressDaysCount) progressDaysCount.textContent = `[${daysCompleted}/10 Palabras completadas]`;
 }
 
 // --- 8. DESBLOQUEO DE NIVELES ---
@@ -158,7 +172,10 @@ function unlockLevel(levelNumber) {
             if (levelNumber === 2) {
                 window.location.href = 'niveles_2.html';
             }
-        };
+            else if (levelNumber === 3) {
+                window.location.href = 'niveles_3.html';
+            }
+        }
     }
 }
 
