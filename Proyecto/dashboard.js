@@ -149,7 +149,7 @@ function displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted) 
     if (progressWordsBar) progressWordsBar.style.width = `${wordsPercentage}%`;
     if (progressWordsCount) progressWordsCount.textContent = `[${wordsCompleted}/22 Palabras completadas]`;
     //Dias,saludos
-    const daysPercentage = Math.round((daysCompleted / TOTAL_DAYS) * 100); // TOTAL_DAYS es 10
+    const daysPercentage = Math.round((daysCompleted / 10) * 100); // TOTAL_DAYS es 10
 
     // **USAR EL NUEVO ELEMENTO DOM**
     if (progressDaysPercentageText) progressDaysPercentageText.textContent = `${daysPercentage}%`;
@@ -157,7 +157,7 @@ function displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted) 
     // **USAR EL ELEMENTO DOM CORRECTO**
     if (progressDaysBar) progressDaysBar.style.width = `${daysPercentage}%`;
 
-    if (progressDaysCount) progressDaysCount.textContent = `[${daysCompleted}/${TOTAL_DAYS} Palabras completadas]`;
+    if (progressDaysCount) progressDaysCount.textContent = `[${daysCompleted}/10 Palabras completadas]`;
 }
 
 // --- 8. DESBLOQUEO DE NIVELES ---

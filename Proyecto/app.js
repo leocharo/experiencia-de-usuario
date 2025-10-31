@@ -119,7 +119,12 @@ async function handleSignUp(email, password, username) {
             username: username,
             email: user.email,
             nivel_actual: 1,
+            nivel1_completado: false,
+            nivel2_completado: false,
+            nivel3_completado: false,
             progreso_letras: {},
+            progreso_palabras: {},
+            progreso_dias_completados: 0,
             created_at: new Date()
         });
 
