@@ -158,10 +158,26 @@ async function loadUserData(userId) {
             if (wordsCompleted === TOTAL_WORDS_LEVEL_2) {
                 unlockLevel(3);
             }
-            // ➡️ Desbloquear Nivel 4 si Nivel 3 está completo
+            // Desbloquear Nivel 4 si Nivel 3 está completo
             if (nivel3_completado) {
                 unlockLevel(4);
             }
+
+            // ******************************************************************
+            // ✅ CÓDIGO CORREGIDO PARA EL DICCIONARIO (MOVIDO AL LUGAR CORRECTO)
+            // ******************************************************************
+            const isLevel1Complete = data.nivel1_completado === true;
+            const isLevel2Complete = data.nivel2_completado === true;
+            const isLevel3Complete = data.nivel3_completado === true;
+            const isLevel4Complete = data.nivel4_completado === true;
+
+            // ➡️ Establecer la variable global para el bloqueo del Diccionario
+            if (isLevel1Complete && isLevel2Complete && isLevel3Complete && isLevel4Complete) {
+                areAllLevelsComplete = true;
+            } else {
+                areAllLevelsComplete = false;
+            }
+            // ******************************************************************
 
 
         } else {
@@ -172,17 +188,7 @@ async function loadUserData(userId) {
     } finally {
         if (loadingMessage) loadingMessage.classList.add('hidden');
     }
-    const isLevel1Complete = data.nivel1_completado === true;
-    const isLevel2Complete = data.nivel2_completado === true;
-    const isLevel3Complete = data.nivel3_completado === true;
-    const isLevel4Complete = data.nivel4_completado === true; // Asegúrate de leer este campo
-
-    // ➡️ Lógica para determinar si el acceso al diccionario está permitido
-    if (isLevel1Complete && isLevel2Complete && isLevel3Complete && isLevel4Complete) {
-        areAllLevelsComplete = true;
-    } else {
-        areAllLevelsComplete = false;
-    }
+    // 🛑 SE ELIMINA EL CÓDIGO DUPLICADO QUE ESTABA AQUÍ AFUERA 
 }
 
 // --- 7. FUNCION DISPLAY PROGRESO (SE AÑADE NIVEL 4) ---

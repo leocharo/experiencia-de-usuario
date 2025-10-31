@@ -42,9 +42,33 @@ const diccionarioData = {
         title: "Nivel 2: Primeras Palabras 💬",
         color: "text-yellow-700",
         items: [
+            // Saludos (7)
             { nombre: "Hola", descripcion: "Levanta la mano abierta a la altura de tu frente.", video: "videos/Hola.mp4" },
-            { nombre: "Gracias", descripcion: "La punta de los dedos toca la barbilla y se mueve al frente.", video: "videos/Gracias.mp4" },
-            // ... [AGREGA AQUÍ TODAS LAS PALABRAS DEL NIVEL 2] ...
+            { nombre: "Adiós", descripcion: "Mano abierta desde el frente hacia afuera, como despedida.", video: "videos/Adios.mp4" },
+            { nombre: "Buenos días", descripcion: "Mano desde el mentón hacia adelante y luego gesto de sol saliendo.", video: "videos/BuenosDias.mp4" },
+            { nombre: "Buenas tardes", descripcion: "Mano desde el mentón hacia adelante y luego gesto del sol bajando.", video: "videos/BuenasTardes.mp4" },
+            { nombre: "Buenas noches", descripcion: "Haz 'buenas' y luego gesto de noche: una mano horizonte y otra curva sobre ella.", video: "videos/BuenasNoches.mp4" },
+            { nombre: "¿Cómo estás?", descripcion: "Ambas manos con dedos curvados hacia abajo y girarlas frente al pecho.", video: "videos/ComoEstas.mp4" },
+            { nombre: "Gracias", descripcion: "Toca los labios y aleja la mano hacia adelante.", video: "videos/Gracias.mp4" },
+
+            // Familia (8)
+            { nombre: "Familia", descripcion: "Forma F con una mano y pasa el otro brazo recto de arriba hacia abajo.", video: "videos/Familia.mp4" },
+            { nombre: "Madre", descripcion: "Mano abierta sobre la barbilla, toca ligeramente una o dos veces.", video: "videos/Madre.mp4" },
+            { nombre: "Padre", descripcion: "Forma P y toca la barbilla con pequeños toques.", video: "videos/Padre.mp4" },
+            { nombre: "Hermano", descripcion: "Frota los dedos índice entre sí.", video: "videos/Hermano.mp4" },
+            { nombre: "Hermana", descripcion: "Frota los dedos índice horizontalmente y toca la mejilla.", video: "videos/Hermana.mp4" },
+            { nombre: "Abuelo", descripcion: "Forma A, coloca cerca de la frente y mueve ligeramente hacia adelante o arriba.", video: "videos/Abuelo.mp4" },
+            { nombre: "Abuela", descripcion: "Forma A, coloca cerca de la mejilla y mueve ligeramente hacia adelante o arriba.", video: "videos/Abuela.mp4" },
+            { nombre: "Tío", descripcion: "Mano en T chocando entre sí.", video: "videos/Tio.mp4" },
+
+            // Comida (7)
+            { nombre: "Agua", descripcion: "Extiende el índice y haz un movimiento vertical de arriba a abajo.", video: "videos/Agua.mp4" },
+            { nombre: "Tortilla", descripcion: "Extiende ambas manos abiertas frente al cuerpo, palmas hacia abajo.", video: "videos/Tortilla.mp4" },
+            { nombre: "Leche", descripcion: "Gesto de ordeñar con ambas manos.", video: "videos/Leche.mp4" },
+            { nombre: "Cereal", descripcion: "Extiende la mano dominante en forma de C.", video: "videos/Cerial.mp4" },
+            { nombre: "Manzana", descripcion: "Extiende la mano abierta sobre la mejilla y frota ligeramente.", video: "videos/Manzana.mp4" },
+            { nombre: "Plátano", descripcion: "Simula pelar un plátano con la mano dominante.", video: "videos/Platano.mp4" },
+            { nombre: "Jugo de Naranja", descripcion: "Simula beber con una mano y frota la otra sobre la mejilla.", video: "videos/JugoNaranja.mp4" },
         ]
     },
     // 🛑 Nivel 3: Días y Tiempos
@@ -52,9 +76,21 @@ const diccionarioData = {
         title: "Nivel 3: Calendario y Tiempos 📅",
         color: "text-purple-700",
         items: [
-            { nombre: "Hoy", descripcion: "Señala hacia abajo con ambas manos abiertas y planas.", imagen: "Tiempos/Hoy.png" },
-            { nombre: "Lunes", descripcion: "Forma la letra 'L' y gira la mano en círculo.", imagen: "Tiempos/Lunes.png" },
-            // ... [AGREGA AQUÍ TODAS LAS SEÑAS DEL NIVEL 3] ...
+            // Días de la Semana (7)
+            { nombre: "Lunes", descripcion: "Se hace una letra l, y se mueve en círculo", imagen: "Semana/Lunes.png", categoria: "Días" },
+            { nombre: "Martes", descripcion: "Se hace una letra l con el dedo medio estirado, y se mueve en círculo.", imagen: "Semana/Martes.png", categoria: "Días" },
+            { nombre: "Miércoles", descripcion: "Se hace una letra l con los dedos medio, anular y meñique estirados, y se mueve en círculo.", imagen: "Semana/Miercoles.png", categoria: "Días" },
+            { nombre: "Jueves", descripcion: "Se hace una letra j, y se mueve en círculo.", imagen: "Semana/Jueves.png", categoria: "Días" },
+            { nombre: "Viernes", descripcion: "Letra 'V' de la mano dominante, moviéndola en círculo.", imagen: "Semana/Viernes.png", categoria: "Días" },
+            { nombre: "Sábado", descripcion: "Letra 'S' de la mano dominante, moviéndola en círculo.", imagen: "Semana/Sabado.png", categoria: "Días" },
+            { nombre: "Domingo", descripcion: "Se hace una letra d, y se mueve en círculo.", imagen: "Semana/Domingo.png", categoria: "Días" },
+
+            // Tiempos (Hoy, Ayer, Mañana) (3)
+            { nombre: "Hoy", descripcion: "Se hace una letra a, y se hace un movimiento en medio círculo hacia un lado.", imagen: "Semana/HOY.png", categoria: "Tiempos" },
+            { nombre: "Ayer", descripcion: "Se coloca una letra a a un lado de la boca y se recorre hasta alcanzar la oreja. ", imagen: "Semana/AYER.png", categoria: "Tiempos" },
+            { nombre: "Mañana", descripcion: "Se coloca una letra l al lado de la frente, y se mueve al frente sin separarla.", imagen: "Semana/MAÑANA.png", categoria: "Tiempos" },
+
+
         ]
     },
     // 🛑 Nivel 4: Meses y Estaciones
@@ -62,9 +98,18 @@ const diccionarioData = {
         title: "Nivel 4: Meses y Estaciones 🗓️",
         color: "text-indigo-700",
         items: [
-            { nombre: "Enero", descripcion: "Letra 'E' seguida de la letra 'R' con un movimiento circular.", imagen: "Meses/Enero.png" },
-            { nombre: "Verano", descripcion: "Se desliza el dedo índice desde la frente hasta la barbilla.", imagen: "Estaciones/Verano.png" },
-            // ... [AGREGA AQUÍ TODAS LAS SEÑAS DEL NIVEL 4] ...
+            { nombre: "Enero", descripcion: "Se hace una letra e, y se rota la muñeca a los lados.", imagen: "Meses/Enero.PNG" },
+            { nombre: "Febrero", descripcion: "Se hace una letra f, y se rota la muñeca a los lados.", imagen: "Meses/Febrero.png" },
+            { nombre: "Marzo", descripcion: "Se hace una letra m, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Marzo.png" },
+            { nombre: "Abril", descripcion: "Se hace una letra a, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Abril.png" },
+            { nombre: "Mayo", descripcion: "Se hace una letra m, y se rota la muñeca a los lados.", imagen: "Meses/Mayo.png" },
+            { nombre: "Junio", descripcion: "Se hace una letra i, y se rota la muñeca a los lados.", imagen: "Meses/Junio.png" },
+            { nombre: "Julio", descripcion: "Se hace una letra i con el pulgar y el índice estirados, y se rota la muñeca a los lados.", imagen: "Meses/Julio.png" },
+            { nombre: "Agosto", descripcion: "Se hace una letra a, y se rota la muñeca a los lados.", imagen: "Meses/Agosto.png" },
+            { nombre: "Septiembre", descripcion: "Se hace una letra s, y se rota la muñeca a los lados.", imagen: "Meses/Septiembre.png" },
+            { nombre: "Octubre", descripcion: "Se hace una letra o, y se rota la muñeca a los lados.", imagen: "Meses/Octubre.png" },
+            { nombre: "Noviembre", descripcion: "Se hace una letra u, y se rota la muñeca a los lados.", imagen: "Meses/Noviembre.png" },
+            { nombre: "Diciembre", descripcion: "Se hace una letra d, y se rota la muñeca a los lados.", imagen: "Meses/Diciembre.png" }
         ]
     }
     // ... Puedes añadir Nivel 5 aquí ...
@@ -97,29 +142,37 @@ dictionaryModal.addEventListener('click', (e) => {
 function showLevelContent(levelNumber) {
     const levelData = diccionarioData[levelNumber];
 
-    if (!levelData) {
-        // ... (Manejo de error) ...
-        return;
-    }
-
-    modalTitle.textContent = levelData.title;
-    modalTitle.className = `text-3xl font-bold mb-6 border-b pb-2 ${levelData.color}`;
+    // ... (Manejo de Título del Modal - Sin Cambios) ...
 
     let contentHTML = '';
 
     levelData.items.forEach(item => {
-        // 🛑 CORRECCIÓN: Definimos itemTitle para la consistencia (aunque 'nombre' es consistente)
         const itemTitle = item.nombre;
-        const imageSource = item.imagen || item.video; // Obtener la ruta del recurso
+        // 🛑 Lógica para determinar la fuente del recurso (imagen o video)
+        const itemSource = item.imagen || item.video;
+
+        // Determinar qué etiqueta usar (video si termina en .mp4, img si no)
+        const isVideo = itemSource && itemSource.toLowerCase().endsWith('.mp4');
+
+        const mediaTag = isVideo ?
+            // Si es un video, usamos la etiqueta <video> con controles y propiedades de miniatura
+            `<video src="${itemSource}" muted loop class="w-16 h-16 object-cover rounded-md border border-gray-200"></video>` :
+            // Si es una imagen, usamos <img>
+            `<img src="${itemSource}" alt="${itemTitle}" class="w-16 h-16 object-cover rounded-md border border-gray-200">`;
+
+        // 🛑 El atributo data-img-src SIEMPRE debe ser el origen del archivo para el modal de ampliación
+        const clickAttributes = `
+            data-img-src="${itemSource}"
+            data-img-title="${itemTitle}"
+            class="image-clickable cursor-pointer"
+        `;
 
         contentHTML += `
             <div class="flex items-start p-4 bg-gray-50 rounded-lg shadow-sm">
                 <div class="mr-4 flex-shrink-0">
-                    <img src="${imageSource}" 
-                         alt="${itemTitle}" 
-                         data-img-src="${imageSource}"
-                         data-img-title="${itemTitle}"
-                         class="w-16 h-16 object-cover rounded-md border border-gray-200 cursor-pointer image-clickable">
+                    <div ${clickAttributes}> 
+                        ${mediaTag}
+                    </div>
                 </div>
                 <div>
                     <h5 class="text-xl font-semibold text-gray-900">${itemTitle}</h5>
@@ -129,17 +182,8 @@ function showLevelContent(levelNumber) {
         `;
     });
 
-    // 🛑 CORRECCIÓN: Inyectar el HTML generado por el bucle
     modalContent.innerHTML = contentHTML;
     dictionaryModal.classList.remove('hidden');
-
-    // 🛑 Código extra movido: Asegurar que el Título Desconocido no rompa la imagen grande
-    if (levelNumber === 1) {
-        // Si es el nivel 1, la imagen será la fuente de la letra
-        modalContent.querySelectorAll('.image-clickable').forEach(img => {
-            img.setAttribute('data-img-title', img.alt);
-        });
-    }
 }
 
 // 5. FUNCIÓN PARA MOSTRAR IMAGEN GRANDE (Modal de Ampliación)
