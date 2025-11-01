@@ -71,7 +71,7 @@ function mostrarMes() {
     const porcentaje = Math.round(((index + 1) / TOTAL_MESES) * 100);
     let color = '#4a90e2'; // Color azul fijo para Meses
 
-    // Aplica los cambios al CSS
+
     progressCircle.style.setProperty('--progress-value', porcentaje);
     progressCircle.style.setProperty('--progress-color', color);
 
