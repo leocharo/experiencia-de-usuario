@@ -24,27 +24,27 @@ onAuthStateChanged(auth, user => {
     else window.location.href = "index.html";
 });
 
-// 🔄 CAMBIO: Lista de Meses
+// 🎯 CAMBIO: Lista de Meses con ruta de imagen explícita
 const meses = [
-    { nombre: "Enero", descripcion: "Se hace una letra e, y se rota la muñeca a los lados." },
-    { nombre: "Febrero", descripcion: "Se hace una letra f, y se rota la muñeca a los lados." },
-    { nombre: "Marzo", descripcion: "Se hace una letra m, y se mueve en círculo alrededor de la oreja." },
-    { nombre: "Abril", descripcion: "Se hace una letra a, y se mueve en círculo alrededor de la oreja." },
-    { nombre: "Mayo", descripcion: "Se hace una letra m, y se rota la muñeca a los lados." },
-    { nombre: "Junio", descripcion: "Se hace una letra i, y se rota la muñeca a los lados." },
-    { nombre: "Julio", descripcion: "Se hace una letra i con el pulgar y el índice estirados, y se rota la muñeca a los lados." },
-    { nombre: "Agosto", descripcion: "Se hace una letra a, y se rota la muñeca a los lados." },
-    { nombre: "Septiembre", descripcion: "Se hace una letra s, y se rota la muñeca a los lados." },
-    { nombre: "Octubre", descripcion: "Se hace una letra o, y se rota la muñeca a los lados." },
-    { nombre: "Noviembre", descripcion: "Se hace una letra u, y se rota la muñeca a los lados." },
-    { nombre: "Diciembre", descripcion: "Se hace una letra d, y se rota la muñeca a los lados." }
+    { nombre: "Enero", descripcion: "Se hace una letra e, y se rota la muñeca a los lados.", imagen: "Meses/Enero.PNG" },
+    { nombre: "Febrero", descripcion: "Se hace una letra f, y se rota la muñeca a los lados.", imagen: "Meses/Febrero.PNG" },
+    { nombre: "Marzo", descripcion: "Se hace una letra m, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Marzo.PNG" },
+    { nombre: "Abril", descripcion: "Se hace una letra a, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Abril.PNG" },
+    { nombre: "Mayo", descripcion: "Se hace una letra m, y se rota la muñeca a los lados.", imagen: "Meses/Mayo.PNG" },
+    { nombre: "Junio", descripcion: "Se hace una letra i, y se rota la muñeca a los lados.", imagen: "Meses/Junio.PNG" },
+    { nombre: "Julio", descripcion: "Se hace una letra i con el pulgar y el índice estirados, y se rota la muñeca a los lados.", imagen: "Meses/Julio.PNG" },
+    { nombre: "Agosto", descripcion: "Se hace una letra a, y se rota la muñeca a los lados.", imagen: "Meses/Agosto.PNG" },
+    { nombre: "Septiembre", descripcion: "Se hace una letra s, y se rota la muñeca a los lados.", imagen: "Meses/Septiembre.PNG" },
+    { nombre: "Octubre", descripcion: "Se hace una letra o, y se rota la muñeca a los lados.", imagen: "Meses/Octubre.PNG" },
+    { nombre: "Noviembre", descripcion: "Se hace una letra u, y se rota la muñeca a los lados.", imagen: "Meses/Noviembre.PNG" },
+    { nombre: "Diciembre", descripcion: "Se hace una letra d, y se rota la muñeca a los lados.", imagen: "Meses/Diciembre.PNG" }
 ];
 
 let index = 0;
 // NUEVAS VARIABLES para la lógica de Múltiples Quizzes
 let quizzesCompletados = 0;
-const TOTAL_QUIZZES = 3; // 🔄 CAMBIO: Reducimos los quizzes para este nivel
-const TOTAL_MESES = meses.length; // 12 Meses
+const TOTAL_QUIZZES = 3;
+const TOTAL_MESES = meses.length;
 
 const leccionDiv = document.getElementById("leccion");
 const btnSiguiente = document.getElementById("btnSiguiente");
@@ -61,21 +61,17 @@ function mostrarMes() {
     const mesObj = meses[index];
     leccionDiv.querySelector("h2").textContent = mesObj.nombre;
 
-    // 🎯 CORRECCIÓN: Limpiar el nombre del mes para evitar errores de ruta
-    const nombreLimpio = mesObj.nombre.trim();
-    leccionDiv.querySelector("img").src = `Meses/${nombreLimpio}.png`;
+    // 🎯 CAMBIO: Usar la ruta 'imagen' directamente
+    leccionDiv.querySelector("img").src = mesObj.imagen;
 
     leccionDiv.querySelector("p").innerHTML = mesObj.descripcion;
 
     // LÓGICA DE ACTUALIZACIÓN DEL PROGRESO CIRCULAR
     const porcentaje = Math.round(((index + 1) / TOTAL_MESES) * 100);
-    let color = '#4a90e2'; // Color azul fijo para Meses
-
+    let color = '#4a90e2';
 
     progressCircle.style.setProperty('--progress-value', porcentaje);
     progressCircle.style.setProperty('--progress-color', color);
-
-    // Muestra el progreso actual en el centro del círculo
     progressText.textContent = `${index + 1}/${TOTAL_MESES}`;
 
     actualizarBotones();
@@ -131,9 +127,9 @@ function iniciarQuiz() {
     resultadoDiv.textContent = "";
 
     const mesCorrecto = meses[Math.floor(Math.random() * meses.length)];
-    // 🎯 CORRECCIÓN APLICADA: Limpiar el nombre del mes para el quiz.
-    const nombreLimpio = mesCorrecto.nombre.trim();
-    quizImg.src = `Meses/${nombreLimpio}.png`;
+
+    // 🎯 CAMBIO: Usar la ruta 'imagen' directamente
+    quizImg.src = mesCorrecto.imagen;
 
     quizOpciones.innerHTML = "";
 
@@ -213,6 +209,7 @@ async function verificarRespuesta(correcto) {
     }
 }
 
+// Event listener para el botón "Continuar al siguiente nivel"
 btnContinuar.addEventListener("click", () => {
     window.location.href = "pagina_inicio.html";
 });
