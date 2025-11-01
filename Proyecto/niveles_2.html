@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nivel 2 - Primeras Palabras | Mis Manos Hablarán</title>
     <link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <style>
-        /* ESTILOS DEL FONDO ANIMADO Y ESTRUCTURA DE NIVEL 1 */
+        /* ESTILOS DEL FONDO ANIMADO Y ESTRUCTURA */
         
         html,
         body {
             height: 100%;
             margin: 0;
-            font-family: "semiSlab", sans-serif;
+            font-family: 'Poppins', sans-serif;
+            /* Usamos Poppins */
             overflow-x: hidden;
         }
         
         .bg {
             animation: slide 3s ease-in-out infinite alternate;
             background-image: linear-gradient(-60deg, rgb(251, 255, 25) 50%, rgb(15, 12, 217) 50%);
-            /* Fondo verde/azul */
             bottom: 0;
             left: -50%;
             opacity: .5;
@@ -49,22 +49,15 @@
                 transform: translateX(25%);
             }
         }
-        
-        #leccion video,
-        #quiz video {
-            max-width: 240px;
-            height: auto;
-            margin: 0 auto;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-        /* ESTILO PARA LA BARRA CIRCULAR DE PROGRESO */
+        /* Ajustamos max-width de video para que sea responsivo sin CSS fijo */
+        /* Eliminamos max-width: 240px; del CSS para que Tailwind lo maneje mejor */
+        /* ESTILO PARA LA BARRA CIRCULAR DE PROGRESO (Mantenemos el tamaño fijo) */
         
         .circular-progress {
-            width: 200px;
-            /* Reducido para nivel 2 */
-            height: 200px;
-            /* Reducido para nivel 2 */
+            width: 150px;
+            /* Reducido a 150px para mejor encaje */
+            height: 150px;
+            /* Reducido a 150px para mejor encaje */
             border-radius: 50%;
             background: radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0), conic-gradient(var(--progress-color) calc(var(--progress-value) * 1%), #ccc 0);
             display: flex;
@@ -76,26 +69,7 @@
         .circular-progress span {
             z-index: 5;
         }
-        /* ESTRUCTURA PRINCIPAL FLEX PARA LOGO, CONTENIDO Y PROGRESO */
-        
-        .contenido-principal {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 6rem;
-            width: 100%;
-            padding: 2rem;
-            flex-grow: 1;
-            /* Para que ocupe el espacio restante */
-        }
-        
-        #imagenLateral {
-            max-width: 300px;
-            height: auto;
-            border-radius: 6px;
-            opacity: 0.8;
-        }
-        /* Estilo para la animación de transición de contenido */
+        /* Se elimina .contenido-principal CSS para usar clases de Tailwind */
         
         .fade {
             animation: fadeIn 0.5s ease-in-out;
@@ -115,7 +89,7 @@
 </head>
 
 <body class="text-gray-800 flex flex-col min-h-screen">
-    <a href="pagina_inicio.html" class="fixed top-4 left-4 z-350 bg-transparent-500 text-white text-sm Pacifico px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-500">
+    <a href="pagina_inicio.html" class="fixed top-4 left-4 z-50 bg-white bg-opacity-30 backdrop-blur-sm text-white text-base font-semibold px-4 py-2 rounded-lg shadow-lg hover:bg-opacity-50 transition duration-300">
         🏠 INICIO
     </a>
 
@@ -123,44 +97,49 @@
     <div class="bg bg2"></div>
     <div class="bg bg3"></div>
 
-    <header class="text-center mb-8 mt-6 z-10">
-        <h1 class="text-4xl font-bold text-white mb-2">
+    <header class="text-center mb-6 mt-16 md:mt-6 z-10 px-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
             Nivel 2: Aprende tus Primeras Palabras 🤟
         </h1>
-        <p class="text-lg text-white">
+        <p class="text-base md:text-lg text-white">
             Aprende señas de <strong>Saludos</strong>, <strong>Familia</strong> y <strong>Comida</strong>, y refuerza tu aprendizaje con un quiz.
         </p>
     </header>
 
-    <div class="contenido-principal z-10">
-        <img id="imagenLateral" src="Letras/logo_sin_fondo.png" alt="Imagen decorativa de lengua de señas" />
+    <div class="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-6 lg:gap-12 w-full p-4 md:p-8 flex-grow z-10">
 
-        <main class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center border border-yellow-100">
+        <img id="imagenLateral" src="Letras/logo_sin_fondo.png" alt="Imagen decorativa de lengua de señas" class="hidden lg:block max-w-xs h-auto mt-10 rounded-xl opacity-80" />
+
+        <main class="bg-white shadow-xl rounded-2xl p-6 md:p-8 w-full max-w-sm md:max-w-md text-center border border-yellow-100 flex-shrink-0">
+
             <div id="leccion" class="fade">
-                <h2 class="text-2xl font-semibold text-yellow-700 mb-10"></h2>
+                <h2 class="text-xl md:text-2xl font-semibold text-yellow-700 mb-6 md:mb-10"></h2>
 
-                <video id="videoLeccion" width="220" height="auto" controls class="mb-6 rounded-xl shadow-lg"></video>
+                <video id="videoLeccion" controls class="mx-auto mb-6 rounded-xl shadow-lg max-w-full w-[240px] h-auto"></video>
 
-                <p class="text-gray-700 mb-10 mt-6"></p>
+                <p class="text-gray-700 mb-8 md:mb-10 mt-6 text-sm md:text-base"></p>
 
-                <button id="btnRegresar" class="bg-gray-400 text-white px-6 py-3 rounded-xl hover:bg-gray-500 transition duration-200 mr-2" style="display: none;">
-                    ← Regresar
-                </button>
-                <button id="btnSiguiente" class="bg-yellow-500 text-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition duration-200">
-                    Siguiente →
-                </button>
+                <div class="flex justify-center space-x-4">
+                    <button id="btnRegresar" class="bg-gray-400 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-gray-500 transition duration-200 text-sm md:text-base" style="display: none;">
+                        ← Regresar
+                    </button>
+                    <button id="btnSiguiente" class="bg-yellow-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-yellow-600 transition duration-200 text-sm md:text-base">
+                        Siguiente →
+                    </button>
+                </div>
             </div>
 
-            <div id="quiz" style="display: none;"></div>
+            <div id="quiz" style="display: none;">
+            </div>
 
-            <div id="resultado" class="mt-6"></div>
+            <div id="resultado" class="mt-6 text-sm md:text-base"></div>
 
-            <button id="btnContinuar" class="bg-green-500 text-white font-semibold px-5 py-3 mt-6 rounded-xl hover:bg-green-600 transition duration-200 w-full" style="display: none;">
+            <button id="btnContinuar" class="bg-green-500 text-white font-semibold px-5 py-3 mt-6 rounded-xl hover:bg-green-600 transition duration-200 w-full text-base md:text-lg" style="display: none;">
                 Continuar al siguiente nivel →
             </button>
         </main>
 
-        <aside class="hidden lg:flex flex-col items-center pt-10 text-center">
+        <aside class="flex flex-col items-center pt-4 lg:pt-10 text-center">
             <h3 class="text-xl font-bold text-white mb-4">Progreso</h3>
             <div id="progressContainer">
                 <div id="progressCircle" class="circular-progress" style="--progress-value: 0; --progress-color: #f59e0b;">
@@ -171,7 +150,7 @@
         </aside>
     </div>
 
-    <footer class="mt-10 text-sm text-white text-center">
+    <footer class="mt-10 mb-4 text-sm text-white text-center">
         <p>© 2025 Mis Manos Hablarán | Proyecto Educativo Inclusivo</p>
     </footer>
 
