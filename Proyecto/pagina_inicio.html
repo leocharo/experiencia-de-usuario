@@ -9,6 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/phosphor-icons"></script>
     <style>
+        /* Estilos específicos para la barra lateral (Sidebar) */
+        
         .fixed button:not([title]) {
             position: relative;
         }
@@ -19,7 +21,6 @@
             opacity: 0;
             /* Apariencia */
             background-color: #374151;
-            /* Gris oscuro */
             color: #fff;
             text-align: center;
             border-radius: 6px;
@@ -43,49 +44,68 @@
             visibility: visible;
             opacity: 1;
         }
+        /* Estilos para el fondo con el logo */
+        
+        body {
+            background-color: #f7f7f7;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('Letras/logo.jpg');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 1150px;
+            opacity: 0.13;
+        }
     </style>
 </head>
 
-<body class="min-h-screen flex bg-gray-50 font-semibold">
-
-
-    <div class="fixed top-0 left-0 w-20 h-screen bg-white shadow-xl flex flex-col justify-between items-center py-6 z-20">
-
+<body class="min-h-screen flex flex-col md:flex-row bg-gray-50 font-semibold pb-16 md:pb-0">
+    <div id="sidebar" class="fixed top-0 left-0 w-20 h-screen bg-white shadow-xl flex-col justify-between items-center py-6 z-20 hidden md:flex">
         <div class="flex flex-col items-center space-y-8">
             <div class="text-3xl text-blue-700 font-bold p-2 rounded-xl bg-blue-100 shadow-inner">
                 <i class="ph-hand-waving-fill"></i>
             </div>
 
             <button id="show-dictionary-button" class="p-3 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
-            <i class="ph-book-open-text-fill text-2xl"></i> 📚 
-            <span class="custom-tooltip">Diccionario de Señas</span>
-        </button>
+                <i class="ph-book-open-text-fill text-2xl"></i> 📚
+                <span class="custom-tooltip">Diccionario de Señas</span>
+            </button>
 
             <button id="show-profile-button" class="p-3 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
-            <i class="ph-user-circle-gear-fill text-2xl"></i> 
-            <span class="custom-tooltip">Mi Perfil</span>
-        </button>
+                <i class="ph-user-circle-gear-fill text-2xl"></i>
+                <span class="custom-tooltip">Mi Perfil</span>
+            </button>
             <button id="show-info-button" class="p-3 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
-            <i class="ph-info-fill text-2xl"></i> 
-            <span class="custom-tooltip">Información y Reglas</span>
-        </button>
+                <i class="ph-info-fill text-2xl"></i>
+                <span class="custom-tooltip">Información y Reglas</span>
+            </button>
         </div>
 
         <div class="pb-4">
             <button id="logout-button-sidebar" class="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition duration-300 transform hover:scale-110 relative">
-            <i class="ph-sign-out-fill text-2xl"></i>
-            <span class="custom-tooltip">Cerrar Sesión</span>
-        </button>
+                <i class="ph-sign-out-fill text-2xl"></i>
+                <span class="custom-tooltip">Cerrar Sesión</span>
+            </button>
         </div>
     </div>
 
 
-    <main class="flex-grow ml-20 p-8">
+    <main class="flex-grow p-4 md:p-8 md:ml-20">
+        <p class="text-gray-800 text-2xl md:text-3xl mb-3">
+            Selecciona un nivel para comenzar tu aprendizaje de Lenguaje de Señas.
+        </p>
+        <h2 class="text-xl md:text-2xl font-semibold text-gray-400 mb-6">Niveles de Aprendizaje</h2>
 
-        <p class="text-black-2000 text-3xl mb-3">Selecciona un nivel para comenzar tu aprendizaje de Lenguaje de Señas.</p>
-        <h2 class="text-3x1 font-semibold text-gray-400 mb-6">Niveles de Aprendizaje</h2>
-
-        <div id="levels-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="levels-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             <div id="level-1" class="level-card bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 cursor-pointer border-t-4 border-blue-500">
                 <h3 class="text-2xl font-semibold text-blue-700 mb-2">Nivel 1: El Abecedario 🧠</h3>
                 <p class="text-gray-600 mb-4">Aprende las 26 letras básicas del alfabeto. ¡Fundamental!</p>
@@ -122,11 +142,32 @@
         </div>
 
 
-        </div>
-
         <p id="loading-message" class="text-center text-xl text-gray-500 mt-10">Cargando datos...</p>
 
     </main>
+
+
+    <div id="mobile-navbar" class="fixed bottom-0 left-0 w-full h-16 bg-white shadow-2xl flex justify-around items-center z-50 md:hidden border-t border-gray-200">
+        <button id="show-dictionary-button-mobile" class="flex flex-col items-center justify-center p-1 text-green-500 hover:text-green-600 transition duration-300">
+            <i class="ph-book-open-text-fill text-2xl"></i>
+            <span class="text-xs font-medium mt-0.5">Diccionario</span>
+        </button>
+
+        <button id="show-profile-button-mobile" class="flex flex-col items-center justify-center p-1 text-blue-500 hover:text-blue-600 transition duration-300">
+            <i class="ph-user-circle-gear-fill text-2xl"></i>
+            <span class="text-xs font-medium mt-0.5">Perfil</span>
+        </button>
+
+        <button id="show-info-button-mobile" class="flex flex-col items-center justify-center p-1 text-indigo-500 hover:text-indigo-600 transition duration-300">
+            <i class="ph-info-fill text-2xl"></i>
+            <span class="text-xs font-medium mt-0.5">Info</span>
+        </button>
+
+        <button id="logout-button-mobile" class="flex flex-col items-center justify-center p-1 text-red-500 hover:text-red-600 transition duration-300">
+            <i class="ph-sign-out-fill text-2xl"></i>
+            <span class="text-xs font-medium mt-0.5">Salir</span>
+        </button>
+    </div>
 
 
     <div id="profile-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 hidden">
@@ -219,7 +260,8 @@
                 <div class="space-y-4">
                     <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
                         <h4 class="text-xl font-bold text-blue-700 mb-1">Nivel 1: El Abecedario 🧠</h4>
-                        <p>Aprende el dactilológico completo (26 letras). Fundamental para deletrear nombres y conceptos nuevos.</p>
+                        <p>Aprende el dactilológico completo (26 letras). Fundamental para deletrear nombres y conceptos nuevos.
+                        </p>
                     </div>
 
                     <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
@@ -245,8 +287,8 @@
                 <p class="text-center mt-4">
                     ¿Deseas descargar el **Diccionario de LSM completo**?
                     <a href="https://educacionespecial.sep.gob.mx/storage/recursos/2023/05/xzrfl019nV-4Diccionario_lengua_%20Senas.pdf" download="Diccionario_LSM_SEP_Completo.pdf" target="_blank" class="font-bold text-indigo-600 hover:text-indigo-800 underline transition duration-200 cursor-pointer block mt-1">
-        Haz clic aquí para visitar la página y descargarlo.
-    </a>
+                        Haz clic aquí para visitar la página y descargarlo.
+                    </a>
                 </p>
             </div>
 
@@ -258,26 +300,5 @@
 
 
     <script type="module" src="dashboard.js"></script>
-    <style>
-        body {
-            background-color: #f7f7f7;
-            position: relative;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image: url('Letras/logo.jpg');
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: 1150px;
-            opacity: 0.13;
-        }
-    </style>
 
 </html>

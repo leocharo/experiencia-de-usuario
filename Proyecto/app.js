@@ -10,15 +10,14 @@ import {
     getFirestore,
     doc,
     setDoc,
-    collection, // Importar collection para consultas
-    query, // Importar query para consultas
-    where, // Importar where para consultas
-    getDocs // Importar getDocs para obtener resultados de la consulta
+    collection,
+    query,
+    where,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 
 // 🚨 2. TUS CREDENCIALES DE FIREBASE (¡MANTENER ESTAS CONSTANTES!) 🚨
-// DANI ESTAS SON LAS CREDENCIALES QUE HACEN QUE SE CONECTEN A LA BASE DE DATOS NO LAS CAMBIES PARA NADA 
 const firebaseConfig = {
     apiKey: "AIzaSyC7zx9CreT58V1AWTq7pMoS_ps65mXf-9Y",
     authDomain: "mis-manos-hablaran-44e17.firebaseapp.com",
@@ -108,7 +107,6 @@ async function resolveInputToEmail(input) {
  */
 async function handleSignUp(email, password, username) {
     try {
-        // ... (El código de Registro se mantiene igual) ...
         // 1. REGISTRO EN FIREBASE AUTHENTICATION
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
@@ -171,7 +169,6 @@ async function handleSignIn(input, password) {
         console.log('Inicio de sesión exitoso. UID:', user.uid);
 
         // 3. Redirección
-        // Línea 167 en app.js (en tu imagen, alrededor de esa línea)
         window.location.href = 'pagina_inicio.html';
 
         return { success: true, message: '¡Bienvenido! Redirigiendo...' };
@@ -182,7 +179,8 @@ async function handleSignIn(input, password) {
         // 4. Manejo de errores de credenciales (Username o Contraseña inválida)
         if (error.code === 'auth/invalid-credential' ||
             error.code === 'auth/user-not-found' ||
-            error.code === 'auth/wrong-password') {
+            error.code === 'auth/wrong-password' ||
+            error.code === 'auth/invalid-email') { // Agregamos invalid-email por si el input era un email mal formado
             message = 'Credenciales inválidas. Usuario o Contraseña incorrectos.';
         }
 

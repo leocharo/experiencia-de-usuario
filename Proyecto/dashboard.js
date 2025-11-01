@@ -47,7 +47,7 @@ const TOTAL_WORDS_LEVEL_2 = 22;
 const TOTAL_DAYS = 10;
 const TOTAL_MONTHS = 16;
 
-// --- 3. ELEMENTOS DEL DOM ---
+// --- 3. ELEMENTOS DEL DOM (ESCRITORIO) ---
 const userIdDisplay = document.getElementById('profile-username');
 const profileImage = document.getElementById('profile-picture');
 const loadingMessage = document.getElementById('loading-message');
@@ -57,6 +57,9 @@ const profileModal = document.getElementById('profile-modal');
 const showProfileButton = document.getElementById('show-profile-button');
 const closeProfileModal = document.getElementById('close-profile-modal');
 const logoutButtonSidebar = document.getElementById('logout-button-sidebar');
+const showDictionaryButton = document.getElementById('show-dictionary-button');
+const showInfoButton = document.getElementById('show-info-button');
+
 
 // ✅ Elementos para la selección de perfil
 const changeProfilePictureButton = document.getElementById('change-profile-picture-button');
@@ -66,7 +69,6 @@ const profileImageOptions = document.getElementById('profile-image-options');
 
 // ✅ Elementos para el Modal de Información
 const infoModal = document.getElementById('info-modal');
-const showInfoButton = document.getElementById('show-info-button');
 const closeInfoModalButton = document.getElementById('close-info-modal');
 
 
@@ -88,16 +90,23 @@ const progressMonthsBar = document.getElementById('progress-months-bar');
 const progressMonthsPercentageText = document.getElementById('progress-months-percentage-text');
 const progressMonthsCount = document.getElementById('progress-months-count');
 
-const showDictionaryButton = document.getElementById('show-dictionary-button');
+// --- 3B. ELEMENTOS DEL DOM MÓVIL (NUEVOS) 📱 ---
+const showProfileButtonMobile = document.getElementById('show-profile-button-mobile');
+const showInfoButtonMobile = document.getElementById('show-info-button-mobile');
+const showDictionaryButtonMobile = document.getElementById('show-dictionary-button-mobile');
+const logoutButtonMobile = document.getElementById('logout-button-mobile');
 
-// --- 4. MANEJO DE MODALES ---
 
-// Lógica de apertura/cierre del modal de Perfil
-if (showProfileButton) {
-    showProfileButton.addEventListener('click', () => {
-        profileModal.classList.remove('hidden');
-    });
-}
+// --- 4. MANEJO DE MODALES Y EVENT LISTENERS (AHORA INCLUYE MÓVIL) ---
+
+// ➡️ PERFIL (ESCRITORIO Y MÓVIL)
+[showProfileButton, showProfileButtonMobile].forEach(button => {
+    if (button) {
+        button.addEventListener('click', () => {
+            profileModal.classList.remove('hidden');
+        });
+    }
+});
 if (closeProfileModal) {
     closeProfileModal.addEventListener('click', () => {
         profileModal.classList.add('hidden');
@@ -111,7 +120,7 @@ if (profileModal) {
     });
 }
 
-// ✅ Lógica de apertura/cierre del modal de Selección de Imagen
+// ✅ Lógica de apertura/cierre del modal de Selección de Imagen (Sin cambios, es global)
 if (changeProfilePictureButton) {
     changeProfilePictureButton.addEventListener('click', () => {
         profileModal.classList.add('hidden');
@@ -135,12 +144,14 @@ if (selectProfileImageModal) {
     });
 }
 
-// ✅ Lógica de apertura/cierre del modal de Información
-if (showInfoButton) {
-    showInfoButton.addEventListener('click', () => {
-        infoModal.classList.remove('hidden');
-    });
-}
+// ➡️ INFORMACIÓN (ESCRITORIO Y MÓVIL)
+[showInfoButton, showInfoButtonMobile].forEach(button => {
+    if (button) {
+        button.addEventListener('click', () => {
+            infoModal.classList.remove('hidden');
+        });
+    }
+});
 if (closeInfoModalButton) {
     closeInfoModalButton.addEventListener('click', () => {
         infoModal.classList.add('hidden');
@@ -344,44 +355,60 @@ async function selectProfileImage(imagePath) {
     }
 }
 
-// --- 10. LOGOUT ---
-if (logoutButtonSidebar) {
-    logoutButtonSidebar.addEventListener('click', async() => {
-        try {
-            await signOut(auth);
-            window.location.href = 'index.html';
-        } catch (error) {
-            console.error("Error al cerrar sesión:", error);
-            alert("Hubo un error al cerrar sesión.");
-        }
-    });
-}
+// --- 10. LOGOUT (ESCRITORIO Y MÓVIL) 🚪 ---
+[logoutButtonSidebar, logoutButtonMobile].forEach(button => {
+    if (button) {
+        button.addEventListener('click', async() => {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error("Error al cerrar sesión:", error);
+                alert("Hubo un error al cerrar sesión.");
+            }
+        });
+    }
+});
 
-// --- 11. EVENTOS DE NIVELES ---
+// --- 11. EVENTOS DE NIVELES (Sin cambios) ---
 document.getElementById('level-1').addEventListener('click', () => {
     alert('¡Excelente! Preparando la lección del Abecedario...');
     window.location.href = 'niveles_1.html';
 });
+// Los niveles 2, 3 y 4 obtienen su lógica del desbloqueo
 document.getElementById('level-2').addEventListener('click', () => {
-    alert('¡Excelente! Preparando la lección numero 2...');
-    window.location.href = 'niveles_2.html';
+    // Si ya está desbloqueado, se asigna la función de 'unlockLevel'
+    if (!document.getElementById('level-2').classList.contains('pointer-events-none')) {
+        window.location.href = 'niveles_2.html';
+    } else {
+        alert('Nivel Bloqueado. Debes completar el Nivel 1 primero.');
+    }
 });
 document.getElementById('level-3').addEventListener('click', () => {
-    alert('¡Excelente! Preparando la lección numero 3...');
-    window.location.href = 'niveles_3.html';
+    if (!document.getElementById('level-3').classList.contains('pointer-events-none')) {
+        window.location.href = 'niveles_3.html';
+    } else {
+        alert('Nivel Bloqueado. Debes completar el Nivel 2 primero.');
+    }
 });
 document.getElementById('level-4').addEventListener('click', () => {
-    alert('¡Excelente! Preparando la lección numero 4...');
-    window.location.href = 'niveles_4.html';
+    if (!document.getElementById('level-4').classList.contains('pointer-events-none')) {
+        window.location.href = 'niveles_4.html';
+    } else {
+        alert('Nivel Bloqueado. Debes completar el Nivel 3 primero.');
+    }
 });
 
-// --- 12. EVENTO DEL DICCIONARIO ---
-if (showDictionaryButton) {
-    showDictionaryButton.addEventListener('click', () => {
-        if (areAllLevelsComplete) {
-            window.location.href = 'diccionario.html';
-        } else {
-            alert('¡Acceso Bloqueado! Debes completar todos los niveles (Nivel 1 al 4) para acceder al Diccionario de Señas completo.');
-        }
-    });
-}
+
+// --- 12. EVENTO DEL DICCIONARIO (ESCRITORIO Y MÓVIL) 📚 ---
+[showDictionaryButton, showDictionaryButtonMobile].forEach(button => {
+    if (button) {
+        button.addEventListener('click', () => {
+            if (areAllLevelsComplete) {
+                window.location.href = 'diccionario.html';
+            } else {
+                alert('¡Acceso Bloqueado! Debes completar todos los niveles (Nivel 1 al 4) para acceder al Diccionario de Señas completo.');
+            }
+        });
+    }
+});

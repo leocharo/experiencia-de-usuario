@@ -83,11 +83,11 @@ function mostrarLetra() {
     let color = '';
 
     if (index + 1 <= 10) { // Letras 1-10
-        color = 'red';
+        color = '#ef4444'; // Tailwind red-500
     } else if (index + 1 <= 19) { // Letras 11-19
-        color = 'orange'; // Usamos 'orange' en lugar de 'yellow' para mejor visibilidad
+        color = '#f97316'; // Tailwind orange-600
     } else { // Letras 20-27
-        color = 'green';
+        color = '#10b981'; // Tailwind emerald-500
     }
 
     // Aplica los cambios al CSS
@@ -97,8 +97,6 @@ function mostrarLetra() {
     // Muestra la letra actual en el centro del círculo
     progressText.textContent = letraObj.letra;
     progressCircle.style.display = 'flex';
-    // ... Lógica para marcar letra actual en el índice lateral (sin cambios) ...
-    // ...
 
     actualizarBotones();
 }
@@ -130,7 +128,14 @@ btnAnterior.addEventListener("click", () => {
     }
 });
 
+// 🎯 CORRECCIÓN DEL EVENT LISTENER DE SIGUIENTE
 btnSiguiente.addEventListener("click", () => {
+    // Evita que el botón funcione si ya estamos en el quiz
+    if (leccionDiv.style.display === "none") {
+        console.warn("Botón Siguiente ignorado. El quiz ya está activo.");
+        return;
+    }
+
     if (index < letras.length - 1) {
         index++;
         mostrarLetra();
@@ -138,6 +143,7 @@ btnSiguiente.addEventListener("click", () => {
         // Al llegar a la última letra, proceder al Quiz
         leccionDiv.style.display = "none";
         quizDiv.style.display = "block";
+        quizzesCompletados = 0; // REINICIAMOS EL CONTADOR DE QUIZZES
         iniciarQuiz();
     }
 });
@@ -146,18 +152,16 @@ btnSiguiente.addEventListener("click", () => {
 function iniciarQuiz() {
     const quizProgress = Math.round((quizzesCompletados / TOTAL_QUIZZES) * 100);
 
-    // Muestra el círculo de nuevo (si se ocultó) y actualiza el texto/color
+    // Muestra el círculo de nuevo y actualiza el progreso del Quiz
     progressCircle.style.display = 'flex';
     progressCircle.style.setProperty('--progress-value', quizProgress);
-    progressCircle.style.setProperty('--progress-color', 'blue'); // Color fijo para el Quiz
+    progressCircle.style.setProperty('--progress-color', '#3b82f6'); // Tailwind blue-500
     progressText.textContent = `${quizzesCompletados + 1}/${TOTAL_QUIZZES}`; // Ej: 1/4
 
-    // ... Resto del código de iniciarQuiz ...
-    // Limpia el mensaje de resultado anterior antes de la nueva pregunta
+    // Limpia el mensaje de resultado anterior
     resultadoDiv.textContent = "";
 
     const letraCorrecta = letras[Math.floor(Math.random() * letras.length)];
-    // Asegúrate de que la ruta de la imagen sea correcta
     quizImg.src = `Letras/Letra ${letraCorrecta.letra}.png`;
     quizOpciones.innerHTML = "";
 
@@ -178,8 +182,11 @@ function iniciarQuiz() {
     });
 }
 
-// Verifica respuesta del quiz (LÓGICA MODIFICADA)
+// 🎯 CORRECCIÓN DE LA LÓGICA DE VERIFICACIÓN Y FINALIZACIÓN DEL QUIZ
 async function verificarRespuesta(correcto) {
+    // Deshabilitar opciones temporalmente para evitar doble clic
+    quizOpciones.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
     if (correcto) {
         quizzesCompletados++; // Incrementa el contador de quizzes
 
@@ -189,16 +196,23 @@ async function verificarRespuesta(correcto) {
             resultadoDiv.style.color = "#22c55e"; // color verde
 
             // Pausa breve y reinicia el quiz con una nueva pregunta
-            setTimeout(() => iniciarQuiz(), 1500);
+            setTimeout(() => {
+                resultadoDiv.textContent = "";
+                iniciarQuiz();
+            }, 1500);
 
         } else {
-            // SI TODOS LOS QUIZZES ESTÁN COMPLETADOS (4 de 4)
+            // ⭐️ LÓGICA DE FINALIZACIÓN DEL NIVEL ⭐️
 
-            // Oculta el quiz y muestra el botón de continuar (asumiendo que está en el HTML)
+            // 1. Mensaje de resultado final
+            resultadoDiv.textContent = `🎉 ¡Felicidades! Nivel 1 Completado. 🎉`;
+            resultadoDiv.style.color = "#22c55e"; // color verde
+
+            // 2. Oculta el quiz y muestra el botón de continuar
             quizDiv.style.display = "none";
             btnContinuar.style.display = "block";
 
-            // Mostrar mensaje de nivel completado
+            // 3. Mostrar mensaje de nivel completado (el cuadro flotante)
             const mensaje = document.createElement("div");
             mensaje.textContent = "🎉 Nivel 1 completado ✅";
             Object.assign(mensaje.style, {
@@ -217,7 +231,7 @@ async function verificarRespuesta(correcto) {
             });
             document.body.appendChild(mensaje);
 
-            // Guardar progreso en Firestore (opcional)
+            // 4. Guardar progreso en Firestore
             if (userId) {
                 try {
                     const docRef = doc(db, "perfiles", userId);
@@ -227,13 +241,15 @@ async function verificarRespuesta(correcto) {
                 }
             }
 
-            // Redirigir después de 2 segundos
+            // 5. Redirigir después de 2 segundos
             setTimeout(() => window.location.href = "pagina_inicio.html", 2000);
         }
     } else {
         // Respuesta incorrecta
         resultadoDiv.textContent = "Intenta de nuevo ❌";
         resultadoDiv.style.color = "red";
+        // Reactivar opciones inmediatamente en caso de error para permitir reintento
+        quizOpciones.querySelectorAll('button').forEach(btn => btn.disabled = false);
     }
 }
 

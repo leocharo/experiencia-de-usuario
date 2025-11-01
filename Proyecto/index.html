@@ -6,81 +6,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Manos Hablarán - Acceso</title>
     <link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
-    <!-- Aquí iría la referencia a tu archivo CSS -->
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* CSS para elementos que NO son de Tailwind (puedes moverlos a styles.css) */
+        
+        .auth-card h2 {
+            font-size: 1.5rem;
+            /* Título de la tarjeta */
+            font-weight: 700;
+            color: #1e40af;
+            /* Blue-700 */
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .avatar-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #bfdbfe;
+            /* Blue-200 */
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            border: 4px solid #3b82f6;
+            /* Blue-500 */
+        }
+        
+        .avatar-icon-register {
+            width: 64px;
+            height: 64px;
+            font-size: 2.5rem;
+            background-color: #bfdbfe;
+            /* Blue-200 */
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid #3b82f6;
+            /* Blue-500 */
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            /* Gray-200 */
+            padding: 0.5rem 0;
+        }
+        
+        .input-group .icon {
+            margin-right: 10px;
+            font-size: 1.25rem;
+        }
+        
+        .input-group input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            padding: 0.5rem 0;
+            background: transparent;
+            color: #e5efff;
+            /* Gray-800 */
+        }
+        
+        .auth-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #3b82f6;
+            /* Blue-500 */
+            color: white;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            transition: background-color 0.3s;
+        }
+        
+        .auth-button:hover {
+            background-color: #2563eb;
+            /* Blue-600 */
+        }
+        
+        .actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #4b5563;
+            /* Gray-600 */
+        }
+        
+        .switch-link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+        
+        .switch-link a {
+            color: #1e40af;
+            /* Blue-700 */
+            font-weight: bold;
+        }
+        
+        .message-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+        /* Ocultamos los logos laterales en móvil y los mostramos en escritorio */
+        
+        .side-logo {
+            display: none;
+            max-width: 250px;
+            /* Tamaño máximo para escritorio */
+            height: auto;
+            opacity: 0.8;
+            align-self: center;
+        }
+        
+        @media (min-width: 1024px) {
+            /* lg screens */
+            .side-logo {
+                display: block;
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
 
-    <div class="background-container">
-        <div class="right-align-wrapper">
-            <div class="space-y-2 mb-10 w-full max-w-4xl">
+    <div class="w-full max-w-5xl flex justify-center items-center">
+        <div class="w-full flex flex-col lg:flex-row justify-center items-center lg:space-x-12">
 
-            </div>
-            <div class="main-content-wrapper">
-                <img src="Letras/logo_sin_fondo.png" alt="Mis Manos Hablarán Logo" class="side-logo left-logo">
+            <img src="Letras/logo_sin_fondo.png" alt="Mis Manos Hablarán Logo" class="side-logo left-logo hidden lg:block">
 
-                <div class="auth-card" id="login-view">
-                    <h2>INICIO DE SESIÓN</h2>
-                    <div class="avatar-icon"></div>
-                    <form id="login-form">
-                        <div class="input-group">
-                            <span class="icon">👤</span>
-                            <input type="text" id="login-email" placeholder="Correo Electrónico o Usuario" required>
-                        </div>
-                        <div class="input-group">
-                            <span class="icon">🔒</span>
-                            <input type="password" id="login-password" placeholder="Contraseña" required>
-                        </div>
-                        <div class="actions-row">
-                            <label>
-                                <input type="checkbox"> Recordarme
-                            </label>
-                        </div>
-                        <button type="submit" class="auth-button">INICIAR SESIÓN</button>
-                    </form>
-                    <p class="switch-link"><strong>
-                        ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
-                    </strong>
-                    </p>
-                    <p id="login-message" class="message-text"></p>
+            <div id="login-view" class="auth-card bg-white bg-opacity-90 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-sm">
+                <h2>INICIO DE SESIÓN</h2>
+                <div class="avatar-icon">
+
                 </div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <span class="icon">👤</span>
+                        <input type="text" id="login-email" placeholder="Correo Electrónico o Usuario" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="icon">🔒</span>
+                        <input type="password" id="login-password" placeholder="Contraseña" required>
+                    </div>
+                    <div class="actions-row">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox"> <span>Recordarme</span>
+                        </label>
 
-                <div class="auth-card hidden" id="register-view">
-                    <h2>REGISTRO</h2>
-                    <div class="avatar-icon"></div>
-                    <form id="register-form">
-                        <div class="input-group">
-                            <span class="icon">👤</span>
-                            <input type="text" id="register-username" placeholder="Nombre de Usuario" required>
-                        </div>
-                        <div class="input-group">
-                            <span class="icon">✉️</span>
-                            <input type="email" id="register-email" placeholder="Correo Electrónico" required>
-                        </div>
-                        <div class="input-group">
-                            <span class="icon">🔒</span>
-                            <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" required>
-                        </div>
-                        <button type="submit" class="auth-button">REGISTRARSE</button>
-                    </form>
-                    <p class="switch-link">
-                        ¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a>
-                    </p>
-                    <p id="register-message" class="message-text"></p>
-                </div>
-
-                <img src="Letras/logo_sin_fondo.png" alt="Mis Manos Hablarán Logo" class="side-logo right-logo">
+                    </div>
+                    <button type="submit" class="auth-button">INICIAR SESIÓN</button>
+                </form>
+                <p class="switch-link">
+                    ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
+                </p>
+                <p id="login-message" class="message-text"></p>
             </div>
+
+            <div id="register-view" class="auth-card bg-white bg-opacity-90 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-sm hidden">
+                <h2>REGISTRO</h2>
+                <div class="avatar-icon-register">
+                    <span class="text-blue-500">📝</span>
+                </div>
+                <form id="register-form">
+                    <div class="input-group">
+                        <span class="icon">✏️</span>
+                        <input type="text" id="register-username" placeholder="Nombre de Usuario" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="icon">✉️</span>
+                        <input type="email" id="register-email" placeholder="Correo Electrónico" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="icon">🔒</span>
+                        <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" required>
+                    </div>
+                    <button type="submit" class="auth-button">REGISTRARSE</button>
+                </form>
+                <p class="switch-link">
+                    ¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a>
+                </p>
+                <p id="register-message" class="message-text"></p>
+            </div>
+
+            <img src="Letras/logo_sin_fondo.png" alt="Mis Manos Hablarán Logo" class="side-logo right-logo hidden lg:block">
 
         </div>
-
     </div>
-    <!-- Se mantiene el enlace al app.js actualizado con la lógica de búsqueda por username -->
 
     <script type="module" src="app.js"></script>
-
     <script src="fondo.js"></script>
 </body>
 
