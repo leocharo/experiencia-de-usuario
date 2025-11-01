@@ -98,21 +98,18 @@ const diccionarioData = {
         title: "Nivel 4: Meses y Estaciones 🗓️",
         color: "text-indigo-700",
         items: [
-            // La imagen de Enero tiene extensión .PNG (Mayúscula)
             { nombre: "Enero", descripcion: "Se hace una letra e, y se rota la muñeca a los lados.", imagen: "Meses/Enero.PNG" },
-
-            // El resto de los meses (asumiendo que usan .png minúscula y la carpeta )
-            { nombre: "Febrero", descripcion: "Se hace una letra f, y se rota la muñeca a los lados.", imagen: "Meses/Febrero.png" },
-            { nombre: "Marzo", descripcion: "Se hace una letra m, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Marzo.png" },
-            { nombre: "Abril", descripcion: "Se hace una letra a, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Abril.png" },
-            { nombre: "Mayo", descripcion: "Se hace una letra m, y se rota la muñeca a los lados.", imagen: "Meses/Mayo.png" },
-            { nombre: "Junio", descripcion: "Se hace una letra i, y se rota la muñeca a los lados.", imagen: "Meses/Junio.png" },
-            { nombre: "Julio", descripcion: "Se hace una letra i con el pulgar y el índice estirados, y se rota la muñeca a los lados.", imagen: "Meses/Julio.png" },
-            { nombre: "Agosto", descripcion: "Se hace una letra a, y se rota la muñeca a los lados.", imagen: "Meses/Agosto.png" },
-            { nombre: "Septiembre", descripcion: "Se hace una letra s, y se rota la muñeca a los lados.", imagen: "Meses/Septiembre.png" },
-            { nombre: "Octubre", descripcion: "Se hace una letra o, y se rota la muñeca a los lados.", imagen: "Meses/Octubre.png" },
-            { nombre: "Noviembre", descripcion: "Se hace una letra u, y se rota la muñeca a los lados.", imagen: "Meses/Noviembre.png" },
-            { nombre: "Diciembre", descripcion: "Se hace una letra d, y se rota la muñeca a los lados.", imagen: "Meses/Diciembre.png" }
+            { nombre: "Febrero", descripcion: "Se hace una letra f, y se rota la muñeca a los lados.", imagen: "Meses/Febrero.PNG" },
+            { nombre: "Marzo", descripcion: "Se hace una letra m, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Marzo.PNG" },
+            { nombre: "Abril", descripcion: "Se hace una letra a, y se mueve en círculo alrededor de la oreja.", imagen: "Meses/Abril.PNG" },
+            { nombre: "Mayo", descripcion: "Se hace una letra m, y se rota la muñeca a los lados.", imagen: "Meses/Mayo.PNG" },
+            { nombre: "Junio", descripcion: "Se hace una letra i, y se rota la muñeca a los lados.", imagen: "Meses/Junio.PNG" },
+            { nombre: "Julio", descripcion: "Se hace una letra i con el pulgar y el índice estirados, y se rota la muñeca a los lados.", imagen: "Meses/Julio.PNG" },
+            { nombre: "Agosto", descripcion: "Se hace una letra a, y se rota la muñeca a los lados.", imagen: "Meses/Agosto.PNG" },
+            { nombre: "Septiembre", descripcion: "Se hace una letra s, y se rota la muñeca a los lados.", imagen: "Meses/Septiembre.PNG" },
+            { nombre: "Octubre", descripcion: "Se hace una letra o, y se rota la muñeca a los lados.", imagen: "Meses/Octubre.PNG" },
+            { nombre: "Noviembre", descripcion: "Se hace una letra u, y se rota la muñeca a los lados.", imagen: "Meses/Noviembre.PNG" },
+            { nombre: "Diciembre", descripcion: "Se hace una letra d, y se rota la muñeca a los lados.", imagen: "Meses/Diciembre.PNG" }
         ]
     }
     // ... Puedes añadir Nivel 5 aquí ...
