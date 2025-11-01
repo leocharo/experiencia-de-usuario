@@ -1,5 +1,4 @@
-// nivel4.js (Basado en nivel1.js, adaptado para los Meses)
-
+// nivel4.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
@@ -61,9 +60,11 @@ const progressText = document.getElementById("progressText");
 function mostrarMes() {
     const mesObj = meses[index];
     leccionDiv.querySelector("h2").textContent = mesObj.nombre;
-    // ⚠️ IMPORTANTE: Asegúrate de que las imágenes estén en la carpeta 'Meses' 
-    // y nombradas como 'Enero.png', 'Febrero.png', etc.
-    leccionDiv.querySelector("img").src = `Meses/${mesObj.nombre}.png`;
+
+    // 🎯 CORRECCIÓN: Limpiar el nombre del mes para evitar errores de ruta
+    const nombreLimpio = mesObj.nombre.trim();
+    leccionDiv.querySelector("img").src = `Meses/${nombreLimpio}.png`;
+
     leccionDiv.querySelector("p").innerHTML = mesObj.descripcion;
 
     // LÓGICA DE ACTUALIZACIÓN DEL PROGRESO CIRCULAR
@@ -130,8 +131,10 @@ function iniciarQuiz() {
     resultadoDiv.textContent = "";
 
     const mesCorrecto = meses[Math.floor(Math.random() * meses.length)];
-    // ⚠️ IMPORTANTE: Asegúrate de que la ruta de la imagen sea correcta
-    quizImg.src = `Meses/${mesCorrecto.nombre}.png`;
+    // 🎯 CORRECCIÓN APLICADA: Limpiar el nombre del mes para el quiz.
+    const nombreLimpio = mesCorrecto.nombre.trim();
+    quizImg.src = `Meses/${nombreLimpio}.png`;
+
     quizOpciones.innerHTML = "";
 
     const opciones = [mesCorrecto.nombre];
