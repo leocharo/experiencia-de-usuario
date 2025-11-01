@@ -213,7 +213,6 @@ async function verificarRespuesta(correcto) {
     }
 }
 
-// Event listener para el botón "Continuar al siguiente nivel"
 btnContinuar.addEventListener("click", () => {
     window.location.href = "pagina_inicio.html";
 });
