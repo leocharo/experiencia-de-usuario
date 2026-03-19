@@ -125,5 +125,14 @@ document.getElementById('confirm-delete-btn').addEventListener('click', async() 
         }
     }
 });
+//cerrar sesion
+document.getElementById('logout-btn')?.addEventListener('click', async() => {
+    if (confirm("¿Cerrar sesión de administrador?")) {
+        try {
+            await signOut(auth);
+            window.location.href = "index.html";
+        } catch (e) { console.error(e); }
+    }
+});
 
 loadAdminData();
