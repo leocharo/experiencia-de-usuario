@@ -334,7 +334,17 @@
             </div>
         </div>
     </div>
-
+    <div id="email-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="email-target-user" style="margin-bottom: 15px;">Enviar aviso</h3>
+            <p style="color: #64748b; margin-bottom: 20px;">Selecciona el tipo de recordatorio:</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-refresh" onclick="enviarAvisoPorTipo('inactividad')">📧 Aviso por Inactividad</button>
+                <button class="btn btn-view" onclick="enviarAvisoPorTipo('progreso')">📈 Motivación de Progreso</button>
+                <button class="btn btn-danger" style="background:#f1f5f9; color:#475569;" onclick="closeModals()">Cancelar</button>
+            </div>
+        </div>
+    </div>
     <div id="inactivity-modal">
         <div style="background:white; padding:35px; border-radius:20px; width:360px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
             <div style="font-size:52px; margin-bottom:10px;">⏳</div>
@@ -347,7 +357,7 @@
             </button>
         </div>
     </div>
-
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="module" src="admin.js"></script>
 </body>
 
