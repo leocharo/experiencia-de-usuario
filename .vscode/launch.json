@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Iniciar Chrome para localhost",
-            "url": "http://127.0.0.1:5501/Proyecto/index.html",
+            "url": "http://127.0.0.1:5501/Proyecto/introduccion_usuario.html",
             "webRoot": "${workspaceFolder}"
         }
     ]

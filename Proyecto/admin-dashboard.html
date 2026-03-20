@@ -273,8 +273,18 @@
             </div>
         </div>
     </div>
+      </div>
+
+    <!-- SEGURIDAD -->
+    <script>
+        const rol = localStorage.getItem("userRol");
+
+        if (!rol || rol !== "admin") {
+            alert("Acceso denegado 🚫");
+            window.location.href = "index.html";
+        }
+    </script>
 
     <script type="module" src="admin.js"></script>
 </body>
-
 </html>
