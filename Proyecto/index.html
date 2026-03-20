@@ -17,7 +17,7 @@
             margin-bottom: 1.5rem;
             text-align: center;
         }
-
+        
         .avatar-icon {
             width: 80px;
             height: 80px;
@@ -30,7 +30,7 @@
             font-size: 3rem;
             border: 4px solid #3b82f6;
         }
-
+        
         .avatar-icon-register {
             width: 64px;
             height: 64px;
@@ -43,7 +43,7 @@
             align-items: center;
             border: 4px solid #3b82f6;
         }
-
+        
         .input-group {
             display: flex;
             align-items: center;
@@ -51,12 +51,12 @@
             border-bottom: 2px solid #e5e7eb;
             padding: 0.5rem 0;
         }
-
+        
         .input-group .icon {
             margin-right: 10px;
             font-size: 1.25rem;
         }
-
+        
         .input-group input {
             flex-grow: 1;
             border: none;
@@ -65,7 +65,7 @@
             background: transparent;
             color: #111827;
         }
-
+        
         .auth-button {
             width: 100%;
             padding: 0.75rem;
@@ -76,29 +76,29 @@
             margin-top: 1.5rem;
             transition: background-color 0.3s;
         }
-
+        
         .auth-button:hover {
             background-color: #2563eb;
         }
-
+        
         .switch-link {
             text-align: center;
             margin-top: 1rem;
             font-size: 0.9rem;
             color: #4b5563;
         }
-
+        
         .switch-link a {
             color: #1e40af;
             font-weight: bold;
         }
-
+        
         .message-text {
             text-align: center;
             margin-top: 1rem;
             font-weight: 600;
         }
-
+        
         .side-logo {
             display: none;
             max-width: 250px;
@@ -106,16 +106,81 @@
             opacity: 0.8;
             align-self: center;
         }
-
+        
         @media (min-width: 1024px) {
             .side-logo {
                 display: block;
             }
         }
-
         /* 👁️ cursor */
+        
         .toggle-eye {
             cursor: pointer;
+        }
+        /* Modal overlay */
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-box {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-box h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .modal-box p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+        
+        .modal-cancel-btn {
+            width: 100%;
+            padding: 0.65rem;
+            background-color: #e5e7eb;
+            color: #374151;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            margin-top: 0.75rem;
+            transition: background-color 0.3s;
+        }
+        
+        .modal-cancel-btn:hover {
+            background-color: #d1d5db;
+        }
+        
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            color: #1e40af;
+            font-weight: 600;
+            margin-top: -0.25rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .forgot-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -144,6 +209,9 @@
                         <input type="password" id="login-password" placeholder="Contraseña" required>
                         <span class="icon toggle-eye" id="toggle-login-password">👁️</span>
                     </div>
+
+                    <!-- Botón olvidé mi contraseña -->
+                    <a class="forgot-link" id="open-forgot-modal">¿Olvidaste tu contraseña?</a>
 
                     <button type="submit" class="auth-button">INICIAR SESIÓN</button>
                 </form>
@@ -194,11 +262,24 @@
     </div>
 
     <!-- BOTÓN -->
-    <button 
-        onclick="window.location.href='introduccion_usuario.html'"
-        class="fixed right-5 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 transition z-50">
+    <button onclick="window.location.href='introduccion_usuario.html'" class="fixed right-5 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 transition z-50">
         QUIÉNES SOMOS
     </button>
+
+    <!-- MODAL: Olvidé mi contraseña -->
+    <div id="forgot-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>🔑 Recuperar Contraseña</h3>
+            <p>Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+            <div class="input-group">
+                <span class="icon">✉️</span>
+                <input type="email" id="forgot-email" placeholder="Tu correo registrado" required>
+            </div>
+            <p id="forgot-message" class="message-text" style="font-size:0.85rem;"></p>
+            <button id="send-reset-btn" class="auth-button" style="margin-top:1rem;">ENVIAR CORREO</button>
+            <button id="close-forgot-modal" class="modal-cancel-btn">Cancelar</button>
+        </div>
+    </div>
 
     <script type="module" src="app.js"></script>
     <script src="fondo.js"></script>
@@ -224,7 +305,23 @@
             registerPassword.type = type;
             toggleRegisterPassword.textContent = type === 'password' ? '👁️' : '🙈';
         });
+
+        // MODAL: Olvidé mi contraseña
+        const forgotModal = document.getElementById('forgot-modal');
+        document.getElementById('open-forgot-modal').addEventListener('click', () => {
+            document.getElementById('forgot-email').value = '';
+            document.getElementById('forgot-message').textContent = '';
+            forgotModal.classList.remove('hidden');
+        });
+        document.getElementById('close-forgot-modal').addEventListener('click', () => {
+            forgotModal.classList.add('hidden');
+        });
+        // Cerrar al hacer clic fuera del modal
+        forgotModal.addEventListener('click', (e) => {
+            if (e.target === forgotModal) forgotModal.classList.add('hidden');
+        });
     </script>
 
 </body>
+
 </html>

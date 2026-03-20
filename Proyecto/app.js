@@ -4,7 +4,8 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase
 import {
     getAuth,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {
     getFirestore,
@@ -101,19 +102,52 @@ async function handleSignIn(input, password) {
 
 async function handleSignUp(email, password, username) {
     try {
+        // 1. Crear el usuario en Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // 2. Guardar datos adicionales en Firestore
+        // Asegúrate de que la colección se llame "perfiles" como en tu login
         await setDoc(doc(db, "perfiles", user.uid), {
             username: username,
-            email: user.email,
+            email: email, // Usamos el email del input
             rol: "usuario",
             nivel_actual: 1,
             created_at: new Date()
         });
-        return { success: true, message: 'Registro exitoso.' };
+
+        return { success: true, message: '¡Registro exitoso! Ya puedes iniciar sesión.' };
+
     } catch (error) {
-        return { success: false, message: 'Error en el registro.' };
+        console.error("Error detallado:", error.code, error.message);
+
+        // Si el usuario se creó en Auth pero falló Firestore, el usuario ya existe
+        if (error.code === 'auth/email-already-in-use') {
+            return { success: false, message: 'Este correo ya está registrado.' };
+        }
+
+        if (error.code === 'auth/weak-password') {
+            return { success: false, message: 'La contraseña debe tener al menos 6 caracteres.' };
+        }
+
+        return { success: false, message: 'Error interno: ' + error.code };
+    }
+}
+
+// --- FUNCIÓN: OLVIDÉ MI CONTRASEÑA ---
+
+async function handlePasswordReset(email) {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        return { success: true, message: '✅ Correo enviado. Revisa tu bandeja de entrada, si no encuentras el correo, revisa tu correo de SPAM' };
+    } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+            return { success: false, message: 'No existe una cuenta con ese correo.' };
+        }
+        if (error.code === 'auth/invalid-email') {
+            return { success: false, message: 'El correo ingresado no es válido.' };
+        }
+        return { success: false, message: 'Error al enviar el correo. Intenta de nuevo.' };
     }
 }
 
@@ -141,6 +175,26 @@ document.getElementById('register-form').addEventListener('submit', async(e) => 
     const messageEl = document.getElementById('register-message');
 
     const result = await handleSignUp(email, password, username);
+    messageEl.textContent = result.message;
+    messageEl.style.color = result.success ? 'green' : 'red';
+});
+
+// --- EVENTO: ENVIAR CORREO DE RECUPERACIÓN ---
+
+document.getElementById('send-reset-btn').addEventListener('click', async() => {
+    const email = document.getElementById('forgot-email').value.trim();
+    const messageEl = document.getElementById('forgot-message');
+
+    if (!email) {
+        messageEl.textContent = 'Por favor ingresa tu correo.';
+        messageEl.style.color = 'red';
+        return;
+    }
+
+    messageEl.textContent = 'Enviando...';
+    messageEl.style.color = '#4b5563';
+
+    const result = await handlePasswordReset(email);
     messageEl.textContent = result.message;
     messageEl.style.color = result.success ? 'green' : 'red';
 });
