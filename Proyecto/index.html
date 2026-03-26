@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Manos Hablarán - Acceso</title>
+    <link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .auth-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .avatar-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #bfdbfe;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            border: 4px solid #3b82f6;
+        }
+
+        .avatar-icon-register {
+            width: 64px;
+            height: 64px;
+            font-size: 2.5rem;
+            background-color: #bfdbfe;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid #3b82f6;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 0.5rem 0;
+        }
+
+        .input-group .icon {
+            margin-right: 10px;
+            font-size: 1.25rem;
+        }
+
+        .input-group input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            padding: 0.5rem 0;
+            background: transparent;
+            color: #111827;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .auth-button:hover {
+            background-color: #2563eb;
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+
+        .switch-link a {
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        .message-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .side-logo {
+            display: none;
+            max-width: 250px;
+            height: auto;
+            opacity: 0.8;
+            align-self: center;
+        }
+
+        @media (min-width: 1024px) {
+            .side-logo {
+                display: block;
+            }
+        }
+
+        .toggle-eye {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<!-- 👇 IMPORTANTE: padding-top para que no tape el navbar -->
+<body class="min-h-screen flex flex-col bg-gray-100" style="padding-top:70px;">
+
+    <!-- 🔥 NAVBAR -->
+    <header class="fixed top-0 left-0 w-full text-white shadow-lg" 
+            style="background: linear-gradient(to right, #2563eb, #1e40af); z-index: 1030; height: 70px;">
+        <div class="w-full h-full flex items-center justify-between px-4 md:px-8">
+            <div class="flex items-center md:ms-24 gap-3">
+            <img src="Letras/logo.jpg" alt="Logo Mis Manos Hablarán" class="h-[45px] w-auto rounded-full border-2 border-white object-cover">
+            
+            <div class="flex items-center">
+                <a class="navbar-brand text-white fw-bold md:ms-24 text-xl md:text-2xl" href="introduccion_usuario.html" style="text-decoration: none;">
+                    Mis Manos Hablarán
+                </a>
+
+                <nav class="hidden md:flex ms-10">
+                    <ul class="flex space-x-6 list-none mb-0">
+
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </header>
+    <!-- 🔥 CONTENIDO -->
+    <main class="flex-grow flex items-center justify-center p-4">
+
+        <div class="w-full max-w-5xl flex justify-center items-center">
+            <div class="w-full flex flex-col lg:flex-row justify-center items-center lg:space-x-12">
+
+                <img src="Letras/logo_sin_fondo.png" class="side-logo hidden lg:block">
+
+                <!-- LOGIN -->
+                <div id="login-view" class="auth-card bg-white bg-opacity-90 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-sm">
+                    <h2>INICIO DE SESIÓN</h2>
+
+                    <div class="avatar-icon"></div>
+
+                    <form id="login-form">
+                        <div class="input-group">
+                            <span class="icon">👤</span>
+                            <input type="text" id="login-email" placeholder="Correo o Usuario" required>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="icon">🔒</span>
+                            <input type="password" id="login-password" placeholder="Contraseña" required>
+                            <span class="icon toggle-eye" id="toggle-login-password">👁️</span>
+                        </div>
+
+                        <button type="submit" class="auth-button">INICIAR SESIÓN</button>
+                    </form>
+
+                    <p class="switch-link">
+                        ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
+                    </p>
+
+                    <p id="login-message" class="message-text"></p>
+                </div>
+
+                <!-- REGISTRO -->
+                <div id="register-view" class="auth-card bg-white bg-opacity-90 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-sm hidden">
+                    <h2>REGISTRO</h2>
+
+                    <div class="avatar-icon-register">📝</div>
+
+                    <form id="register-form">
+                        <div class="input-group">
+                            <span class="icon">✏️</span>
+                            <input type="text" id="register-username" placeholder="Usuario" required>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="icon">✉️</span>
+                            <input type="email" id="register-email" placeholder="Correo" required>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="icon">🔒</span>
+                            <input type="password" id="register-password" placeholder="Contraseña" required>
+                            <span class="icon toggle-eye" id="toggle-register-password">👁️</span>
+                        </div>
+
+                        <button type="submit" class="auth-button">REGISTRARSE</button>
+                    </form>
+
+                    <p class="switch-link">
+                        ¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a>
+                    </p>
+
+                    <p id="register-message" class="message-text"></p>
+                </div>
+
+                <img src="Letras/logo_sin_fondo.png" class="side-logo hidden lg:block">
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 🔥 FOOTER -->
+    <footer class="text-white text-center py-4 mt-10 w-100" 
+        style="background: linear-gradient(to right, #2563eb, #1e40af); left: 0;">
+    <p class="mb-0">© 2026 Mis Manos Hablarán</p>
+</footer> 
+
+
+
+  
+
+    <!-- Scripts -->
+    <script type="module" src="app.js"></script>
+    <script src="fondo.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 👁️ SCRIPT -->
+    <script>
+        const loginPassword = document.getElementById('login-password');
+        const toggleLoginPassword = document.getElementById('toggle-login-password');
+
+        toggleLoginPassword.addEventListener('click', () => {
+            const type = loginPassword.type === 'password' ? 'text' : 'password';
+            loginPassword.type = type;
+            toggleLoginPassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        const registerPassword = document.getElementById('register-password');
+        const toggleRegisterPassword = document.getElementById('toggle-register-password');
+
+        toggleRegisterPassword.addEventListener('click', () => {
+            const type = registerPassword.type === 'password' ? 'text' : 'password';
+            registerPassword.type = type;
+            toggleRegisterPassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    </script>
+
+</body>
+</html>
