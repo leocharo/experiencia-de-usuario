@@ -73,7 +73,7 @@
 <body class="min-h-screen flex flex-col bg-gray-50 font-semibold pb-16 md:pb-0">
 
     <header class="fixed top-0 left-0 w-full text-white shadow-lg" 
-            style="background: linear-gradient(to right, #2563eb, #1e40af); height: 70px;">
+            style="background: linear-gradient(to right, yellow, #2563eb); height: 70px;">
         <div class="w-full h-full flex items-center justify-between px-4 md:px-8">
             <div class="flex items-center md:ms-24 gap-3">
             <img src="Letras/logo.jpg" alt="Logo Mis Manos Hablarán" class="h-[45px] w-auto rounded-full border-2 border-white object-cover">
@@ -157,10 +157,21 @@
         <p id="loading-message" class="text-center text-xl text-gray-500 mt-10">Cargando datos...</p>
     </main>
 
-    <footer class="w-full text-white text-center py-4"
-        style="background: linear-gradient(to right, #2563eb, #1e40af); clear: both; position: relative; z-index: 10;">
-        <p class="mb-0 fw-bold">© 2026 Mis Manos Hablarán</p>
-    </footer>
+   <footer class="text-white py-4 mt-10 w-full" 
+        style="background: linear-gradient(to right, #2563eb, yellow);">
+    <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
+        
+        <p class="mb-0 font-semibold" style="color: black;">
+            © 2026 Mis Manos Hablarán
+        </p>
+
+        <button onclick="window.location.href='introduccion_usuario.html'" 
+                class="bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition font-bold text-sm transform hover:scale-105 border-2 border-white">
+            QUIÉNES SOMOS
+        </button>
+
+    </div>
+</footer>
 
     <div id="mobile-navbar" class="fixed bottom-0 left-0 w-full h-16 bg-white shadow-2xl flex justify-around items-center z-50 md:hidden border-t border-gray-200">
         <button id="show-dictionary-button-mobile" class="flex flex-col items-center justify-center p-1 text-green-500 hover:text-green-600 transition duration-300">

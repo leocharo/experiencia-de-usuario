@@ -4,7 +4,10 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase
 import {
     getAuth,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    sendEmailVerification,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {
     getFirestore,
@@ -69,7 +72,6 @@ async function resolveInputToEmail(input) {
         return null;
     }
 }
-
 async function handleSignIn(input, password) {
     const email = await resolveInputToEmail(input);
     if (!email) return { success: false, message: 'Usuario no encontrado.' };
@@ -78,69 +80,222 @@ async function handleSignIn(input, password) {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // BUSCAR ROL EN FIRESTORE
+        // 🔥 OBTENER DATOS DEL USUARIO
         const userDoc = await getDoc(doc(db, "perfiles", user.uid));
 
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
+        if (!userDoc.exists()) {
+            window.location.href = 'pagina_inicio.html';
+            return { success: true };
+        }
 
-            if (userData.rol === "admin") {
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                window.location.href = 'pagina_inicio.html';
-            }
-            return { success: true, message: 'Redirigiendo...' };
+        const userData = userDoc.data();
+
+        // 🔥 SOLO VALIDAR CORREO SI ES USUARIO NORMAL
+        if (userData.rol === "usuario" && !user.emailVerified) {
+
+            await sendEmailVerification(user); // opcional (reenviar)
+            await signOut(auth);
+
+            return {
+                success: false,
+                message: "Debes verificar tu correo antes de iniciar sesión 📩"
+            };
+        }
+
+        // 🔥 REDIRECCIONES SEGÚN ROL
+        if (userData.rol === "admin") {
+            window.location.href = 'admin-dashboard.html';
+        } else if (userData.rol === "empleado") {
+            window.location.href = 'profesor-dashboard.html';
         } else {
             window.location.href = 'pagina_inicio.html';
-            return { success: true, message: 'Sesión iniciada.' };
         }
+
+        return { success: true };
+
     } catch (error) {
-        return { success: false, message: 'Credenciales incorrectas.' };
+        return { success: false, message: 'Correo o contraseña incorrectos.' };
     }
 }
-
 async function handleSignUp(email, password, username) {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // 🔥 Enviar correo de verificación
+        await sendEmailVerification(user);
+
+        // Guardar en Firestore
         await setDoc(doc(db, "perfiles", user.uid), {
             username: username,
-            email: user.email,
+            email: email,
             rol: "usuario",
             nivel_actual: 1,
             created_at: new Date()
         });
-        return { success: true, message: 'Registro exitoso.' };
+
+        return {
+            success: true,
+            message: "✅ Registro exitoso. Revisa tu correo para verificar tu cuenta (también en SPAM)."
+        };
+
     } catch (error) {
-        return { success: false, message: 'Error en el registro.' };
+        console.error(error);
+
+        if (error.code === 'auth/email-already-in-use') {
+            return { success: false, message: 'Este correo ya está registrado.' };
+        }
+
+        if (error.code === 'auth/weak-password') {
+            return { success: false, message: 'La contraseña es muy débil.' };
+        }
+
+        return { success: false, message: 'Error: ' + error.message };
     }
 }
 
 // --- EVENTOS DE FORMULARIO ---
+const loginForm = document.getElementById('login-form');
 
-document.getElementById('login-form').addEventListener('submit', async(e) => {
-    e.preventDefault();
-    const input = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const messageEl = document.getElementById('login-message');
+if (loginForm) {
+    loginForm.addEventListener('submit', async(e) => {
+        e.preventDefault();
+        const input = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const messageEl = document.getElementById('login-message');
 
-    messageEl.textContent = 'Verificando credenciales...';
-    const result = await handleSignIn(input, password);
-    if (!result.success) {
+        messageEl.textContent = 'Verificando credenciales...';
+        const result = await handleSignIn(input, password);
+
+        if (!result.success) {
+            messageEl.textContent = result.message;
+            messageEl.style.color = 'red';
+        }
+    });
+}
+
+const registerForm = document.getElementById('register-form');
+
+if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+
+        e.preventDefault(); // 🔥 ESTO ES CLAVE
+
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const username = document.getElementById('register-username').value;
+        const messageEl = document.getElementById('register-message');
+
+        // 🔐 VALIDACIÓN DE CONTRASEÑA
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+
+        if (!regex.test(password)) {
+            messageEl.textContent = "La contraseña debe tener mínimo 8 caracteres, incluir letra, número y símbolo.";
+            messageEl.style.color = "red";
+            return;
+        }
+
+        const result = await handleSignUp(email, password, username);
+
         messageEl.textContent = result.message;
-        messageEl.style.color = 'red';
-    }
+        messageEl.style.color = result.success ? 'green' : 'red';
+    });
+}
+document.addEventListener("DOMContentLoaded", () => {
+    const btnNiveles = document.getElementById('btn-niveles');
+    const btnLoginNav = document.getElementById('btn-login-nav');
+
+    onAuthStateChanged(auth, (user) => {
+        if (btnNiveles && btnLoginNav) {
+            if (user) {
+                btnNiveles.classList.remove('hidden');
+                btnLoginNav.classList.add('hidden');
+            } else {
+                btnNiveles.classList.add('hidden');
+                btnLoginNav.classList.remove('hidden');
+            }
+        }
+    });
 });
+const resendBtn = document.getElementById('resend-verification');
 
-document.getElementById('register-form').addEventListener('submit', async(e) => {
-    e.preventDefault();
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    const username = document.getElementById('register-username').value;
-    const messageEl = document.getElementById('register-message');
+if (resendBtn) {
+    resendBtn.addEventListener('click', async () => {
+        const user = auth.currentUser;
 
-    const result = await handleSignUp(email, password, username);
+        if (user) {
+            await sendEmailVerification(user);
+            alert("📩 Correo reenviado. Revisa tu bandeja.");
+        } else {
+            alert("Inicia sesión primero.");
+        }
+    });
+}
+
+// --- FUNCIÓN: OLVIDÉ MI CONTRASEÑA ---
+async function handlePasswordReset(email) {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        return { success: true, message: '✅ Correo enviado. Revisa tu bandeja de entrada, si no encuentras el correo, revisa tu correo de SPAM' };
+    } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+            return { success: false, message: 'No existe una cuenta con ese correo.' };
+        }
+        if (error.code === 'auth/invalid-email') {
+            return { success: false, message: 'El correo ingresado no es válido.' };
+        }
+        return { success: false, message: 'Error al enviar el correo. Intenta de nuevo.' };
+    }
+}
+document.getElementById('send-reset-btn').addEventListener('click', async() => {
+    const email = document.getElementById('forgot-email').value.trim();
+    const messageEl = document.getElementById('forgot-message');
+
+    if (!email) {
+        messageEl.textContent = 'Por favor ingresa tu correo.';
+        messageEl.style.color = 'red';
+        return;
+    }
+
+    messageEl.textContent = 'Enviando...';
+    messageEl.style.color = '#4b5563';
+
+    const result = await handlePasswordReset(email);
     messageEl.textContent = result.message;
     messageEl.style.color = result.success ? 'green' : 'red';
 });
+
+// async function crearAdminEspecifico() {
+//     const uid = "gCPMY0mwBSSXCOjnnAw8KRFDZIv1";
+    
+//     // Usamos "perfiles" porque es la colección que ya usas en handleSignIn y handleSignUp
+//     const userRef = doc(db, "perfiles", uid);
+
+//     try {
+//         await setDoc(userRef, {
+//             username: "AdminLeo", // Agregué username porque tu función handleSignIn lo busca
+//             email: "leochavezro17@gmail.com",
+//             hasSeenWelcomeModal: true,
+//             nivel3_completado: false,
+//             nivel4_completado: false,
+//             nivel_actual: 1,
+//             photoURL: "https://placehold.co/120x120/d1d5db/4b5563?text=👤",
+//             progreso_dias_completados: 0,
+//             progreso_meses_completados: 0,
+//             rol: "admin",
+//             created_at: new Date()
+//         });
+        
+//         console.log("✅ Documento de Admin creado con éxito en la colección 'perfiles'");
+//         alert("¡Admin creado con éxito!");
+//     } catch (error) {
+//         console.error("❌ Error al crear el documento:", error);
+//         alert("Error al crear admin: " + error.message);
+//     }
+// }
+
+// // Para ejecutarlo automáticamente una vez al cargar la página:
+// // crearAdminEspecifico(); 
+
+// // O mejor aún, pégalo en la consola del navegador cuando la página esté abierta.
+// window.crearAdminEspecifico = crearAdminEspecifico

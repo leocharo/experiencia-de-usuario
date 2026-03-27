@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,14 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
-        /* Desplazamiento suave */
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* MISMO FONDO QUE DASHBOARD */
+        
         body {
             background-color: #f7f7f7;
             position: relative;
         }
-
+        
         body::before {
             content: '';
             position: fixed;
@@ -34,187 +30,333 @@
             background-size: 1150px;
             opacity: 0.13;
         }
-
-        /* Evita que el Navbar fijo tape el título de la sección al navegar */
-        section {
-            scroll-margin-top: 90px;
+        /* Smooth scroll para los enlaces del menú */
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        /* ESTILOS ESPECÍFICOS DEL CARRUSEL */
+        
+        .carousel-item {
+            display: none;
+            /* Ocultar todas por defecto */
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        
+        .carousel-item.active {
+            display: block;
+            /* Mostrar solo la activa */
+            opacity: 1;
         }
     </style>
 </head>
 
-<body class="font-semibold">
+<body class="font-semibold" style="margin:0; padding:0;">
 
-<body class="min-h-screen flex flex-col bg-gray-100" style="padding-top:70px;">
-<header>
-    <nav class="fixed top-0 left-0 w-full flex items-center shadow-lg" 
-         style="background: linear-gradient(to right, #2563eb, #1e40af); height: 70px; z-index: 1030;">
-         
-        <div class="w-full flex items-center justify-between px-4 md:px-12">
-            
-            <div class="flex items-center gap-3">
-                <img src="Letras/logo.jpg" alt="Logo" class="h-[45px] w-[45px] rounded-full border-2 border-white object-cover">
-                <a class="text-white fw-bold text-lg md:text-xl no-underline" href="#">
-                    Mis Manos Hablarán
-                </a>
-            </div>
+    <nav class="p-4 shadow-xl flex justify-between items-center fixed top-0 left-0 w-full z-50" 
+     style="background: linear-gradient(to right, yellow, #2563eb);">
+    
+    <!-- LOGO -->
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+        <img src="Letras/logo_sin_fondo.png" alt="Logo" class="h-10 w-auto">
+        <span class="text-xl font-bold hidden sm:block" style="color: #1e40af;">
+            Mis Manos Hablarán
+        </span>
+    </div>
 
-            <ul class="hidden lg:flex flex-row gap-6 list-none mb-0 p-0">
-                <li><a class="text-white no-underline hover:text-blue-200 text-sm transition uppercase tracking-wider" href="#identidad">Identidad</a></li>
-                <li><a class="text-white no-underline hover:text-blue-200 text-sm transition uppercase tracking-wider" href="#problema">Problema</a></li>
-                <li><a class="text-white no-underline hover:text-blue-200 text-sm transition uppercase tracking-wider" href="#solucion">Solución</a></li>
-                <li><a class="text-white no-underline hover:text-blue-200 text-sm transition uppercase tracking-wider" href="#objetivos">Objetivos</a></li>
-                <li><a class="text-white no-underline hover:text-blue-200 text-sm transition uppercase tracking-wider" href="#dif">DIF</a></li>
-            </ul>
+    <!-- MENÚ -->
+    <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-wider">
+        <a href="#identidad" class="transition hover:opacity-70" style="color: #1e40af;">Identidad</a>
+        <a href="#problema" class="transition hover:opacity-70" style="color: #1e40af;">Problema</a>
+        <a href="#solucion" class="transition hover:opacity-70" style="color: #1e40af;">Solución</a>
+        <a href="#objetivos" class="transition hover:opacity-70" style="color: #1e40af;">Objetivos</a>
+        <a href="#dif" class="transition hover:opacity-70" style="color: #1e40af;">DIF</a>
+    </div>
 
-            <div class="flex items-center">
-                <button onclick="irALogin()" 
-                    class="bg-white text-blue-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-100 transition shadow-md">
-                    Iniciar Sesión
-                </button>
-            </div>
+    <!-- BOTONES DERECHA -->
+    <div class="flex items-center space-x-2">
 
-        </div>
-    </nav>
-</header>
+        <!-- BOTÓN NIVELES (solo logueado) -->
+        <a href="pagina_inicio.html" 
+           id="btn-niveles" 
+           class="hidden bg-green-600 text-white px-5 py-2 rounded-lg font-bold shadow-md no-underline">
+            📚 Mis Niveles
+        </a>
 
-<main class="max-w-5xl mx-auto p-6 space-y-10 relative z-10">
+        <!-- BOTÓN LOGIN -->
+        <button id="btn-login-nav" 
+                onclick="window.location.href='index.html'" 
+                class="bg-white text-blue-600 px-5 py-2 rounded-lg font-bold shadow-md">
+            Iniciar Sesión
+        </button>
 
-    <section id="identidad" class="bg-white p-6 rounded-xl shadow text-center">
-        <h2 class="text-2xl font-bold text-blue-700 mb-4 cursor-pointer"
-            onclick="toggleInfo('info1','btn1')">🏢 Identidad</h2>
+    </div>
 
-            <img src="img/Items.png" alt="Logo de Mis Manos Hablarán" class="mx-auto mb-4 w-48 opacity-80">
+</nav>
 
-        <p class="text-gray-700 text-judstify">
-            Somos un equipo comprometido con la inclusión y la accesibilidad, enfocados en desarrollar herramientas tecnológicas que faciliten el aprendizaje de la Lengua de Señas Mexicana y mejoren la comunicación entre las personas.
-        </p>
-
-        <p id="btn1" onclick="toggleInfo('info1','btn1')" class="mt-3 text-blue-500 cursor-pointer">
-            Haz clic para ver más 👇
-        </p>
-
-        <div id="info1" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600">
-            <p class="mt-3">
-                Equipo desarrollador de la aplicación:
-                <ul class="list-disc list-inside mt-3">
-                    <li>Joshua Meza Martínez</li> 
-                    <li>Leonardo Chavez Romero</li> 
-                    <li> Rodrigo Romero Gonzalez</li>
-                    <li>Fernando Ulises Cano Cortes</li>  
-                </ul>            
+    <header class="text-center pt-28 pb-12 shadow-lg mb-10 overflow-hidden relative" 
+            style="background: linear-gradient(to right, yellow, #2563eb); margin-top: 0;">
+    
+        <div class="relative z-10 px-4">
+            <h1 class="text-5xl font-extrabold tracking-tight" style="color: #1e40af;">
+                Mis Manos Hablarán
+            </h1>
+            <p class="text-xl mt-3 font-semibold" style="color: black; opacity: 0.85;">
+                Plataforma Educativa de Lengua de Señas Mexicana
             </p>
         </div>
-    </section>
+        
+    </header>
 
-    <section id="problema" class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-2xl font-bold text-red-500 mb-4 cursor-pointer"
-            onclick="toggleInfo('info2','btn2')">❗ Problema</h2>
+    <main class="max-w-5xl mx-auto p-6 space-y-12 relative z-10">
 
-        <p class="text-gray-700">
-            El proyecto aborda la urgente necesidad de inclusión y comunicación accesible en el entorno hispanohablante. Actualmente, los recursos en línea para aprender LSM(Lengua de señas mexicana) suelen ser estáticos o desorganizados.
-        </p>
+        <section id="identidad" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-blue-500">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info1','btn1')">
+                <span class="mr-3">🏢</span> Identidad
+            </h2>
 
-        <p id="btn2" onclick="toggleInfo('info2','btn2')" class="mt-3 text-red-500 cursor-pointer">
-            Haz clic para ver más 👇
-        </p>
+            <div class="relative w-full max-w-sm mx-auto overflow-hidden rounded-xl shadow-lg group mb-8 bg-gray-50 border-2 border-dashed border-gray-200 p-3">
 
-        <div id="info2" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600">
-            <ul class="mt-3 list-disc list-inside">
-                <li>Frentes Críticos Identificados:
-                    Barrera de Comunicación: Existe una brecha significativa entre la comunidad oyente y la sorda que restringe la participación social y laboral.</li>
-                  
-                <li>Falta de Plataformas Estructuradas: Los principiantes carecen de una herramienta que combine pedagogía (niveles/quizzes) con utilidad práctica (diccionario).</li>
-            </ul>
-        </div>
-    </section>
+                <div id="carousel-images" class="relative aspect-[4/3] w-full">
+                    <div class="carousel-item active w-full h-full">
+                        <img src="img/joshua.jpeg" class="w-full h-full object-cover rounded-lg" alt="Joshua Martínez">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
+                            <p class="font-bold">Joshua Martínez</p>
+                            <p class="text-xs">Líder Técnico & Arquitectura de Software</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item w-full h-full">
+                        <img src="img/leo.png" class="w-full h-full object-cover rounded-lg" alt="Leonardo Chavez">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
+                            <p class="font-bold">Leonardo Chavez</p>
+                            <p class="text-xs">Desarrollador Full Stack & UI/UX</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item w-full h-full">
+                        <img src="img/jesus.png" class="w-full h-full object-cover rounded-lg" alt="Rodrigo Romero">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
+                            <p class="font-bold">Rodrigo Romero</p>
+                            <p class="text-xs">Desarrollador Back-End & Firebase</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item w-full h-full">
+                        <img src="img/fernando.jpeg" class="w-full h-full object-cover rounded-lg" alt="Fernando Cano">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
+                            <p class="font-bold">Fernando Cano</p>
+                            <p class="text-xs">Especialista en QA & Contenido Educativo</p>
+                        </div>
+                    </div>
+                </div>
 
-    <section id="solucion" class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-2xl font-bold text-green-500 mb-4 cursor-pointer"
-            onclick="toggleInfo('info3','btn3')">💡 Solución</h2>
+                <button onclick="prevSlide()" class="absolute left-5 top-1/2 -translate-y-1/2 bg-white/70 text-blue-700 p-2 rounded-full shadow-md hover:bg-white transition opacity-0 group-hover:opacity-100">
+                &lt; </button>
+                <button onclick="nextSlide()" class="absolute right-5 top-1/2 -translate-y-1/2 bg-white/70 text-blue-700 p-2 rounded-full shadow-md hover:bg-white transition opacity-0 group-hover:opacity-100">
+                &gt; </button>
 
-        <p class="text-gray-700">
-            Proporcionar una plataforma didáctica centrada en el usuario que convierte el aprendizaje pasivo en práctica activa, promoviendo la accesibilidad a través de la memorización y evaluación constante de señas.
-        </p>
+                <div id="carousel-dots" class="absolute bottom-16 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+                    <span class="dot w-3 h-3 bg-white rounded-full cursor-pointer opacity-100" onclick="currentSlide(0)"></span>
+                    <span class="dot w-3 h-3 bg-white rounded-full cursor-pointer opacity-50 hover:opacity-100" onclick="currentSlide(1)"></span>
+                    <span class="dot w-3 h-3 bg-white rounded-full cursor-pointer opacity-50 hover:opacity-100" onclick="currentSlide(2)"></span>
+                    <span class="dot w-3 h-3 bg-white rounded-full cursor-pointer opacity-50 hover:opacity-100" onclick="currentSlide(3)"></span>
+                </div>
+            </div>
 
-        <p id="btn3" onclick="toggleInfo('info3','btn3')" class="mt-3 text-green-500 cursor-pointer">
-            Haz clic para ver más 👇
-        </p>
-
-        <div id="info3" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600">
-            <p class="mt-3">
-                Incluye diccionario, quizzes y progreso personalizado.
+            <p class="text-gray-700 text-lg leading-relaxed text-center">
+                Somos un equipo comprometido con la inclusión y la accesibilidad, enfocados en desarrollar herramientas tecnológicas que faciliten el aprendizaje de la Lengua de Señas Mexicana y mejoren la comunicación entre las personas.
             </p>
-        </div>
-    </section>
 
-    <section id="objetivos" class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-2xl font-bold text-blue-600 mb-4 cursor-pointer"
-            onclick="toggleInfo('info4','btn4')">🎯 Objetivos</h2>
+            <p id="btn1" onclick="toggleInfo('info1','btn1')" class="mt-6 text-blue-600 font-bold cursor-pointer hover:underline text-center">
+                Haz clic para ver más 👇
+            </p>
 
-        <p class="text-gray-700">
-            Desarrollar una plataforma web didáctica, interactiva y accesible que facilite el aprendizaje inicial de la LSM(Lengua de señas mexicana) mediante niveles progresivos y actividades visuales.
-        </p>
+            <div id="info1" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 italic bg-gray-50 rounded-lg px-4 mt-4">
+                <div class="py-4">
+                    <p class="font-bold mb-3 text-center text-blue-800">Misión del Equipo Desarrollador:</p>
+                    <ul class="space-y-2 list-disc list-inside text-gray-700 not-italic">
+                        <li><strong class="text-blue-600">Innovación:</strong> Crear soluciones tecnológicas originales y funcionales.</li>
+                        <li><strong class="text-blue-600">Inclusión:</strong> Integrar perspectivas de usuarios con discapacidad en cada fase.</li>
+                        <li><strong class="text-blue-600">Calidad:</strong> Garantizar una experiencia de usuario fluida y libre de errores.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-        <p id="btn4" onclick="toggleInfo('info4','btn4')" class="mt-3 text-blue-500 cursor-pointer">
-            Haz clic para ver más 👇
-        </p>
+        <section id="problema" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-red-500">
+            <h2 class="text-3xl font-bold text-red-500 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info2','btn2')">
+                <span class="mr-3">❗</span> Problema
+            </h2>
 
-        <div id="info4" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600">
-            <ul class="list-disc list-inside mt-3">
-                <li>Aprendizaje progresivo</li>
-                <li>Interacción constante</li>
-                <li>Inclusión digital</li>
-            </ul>
-        </div>
-    </section>
+            <p class="text-gray-700 text-lg">
+                El proyecto aborda la urgente necesidad de inclusión y comunicación accesible en el entorno hispanohablante. Actualmente, los recursos en línea para aprender LSM suelen ser estáticos o desorganizados.
+            </p>
 
-    <section id="dif" class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-2xl font-bold text-indigo-500 mb-4 cursor-pointer"
-            onclick="toggleInfo('info5','btn5')">🏛️ DIF</h2>
+            <p id="btn2" onclick="toggleInfo('info2','btn2')" class="mt-4 text-red-500 font-bold cursor-pointer hover:underline">
+                Haz clic para ver más 👇
+            </p>
 
-        <p class="text-gray-700">
-            Ofrecer productos o servicios al Sistema Nacional para el Desarrollo Integral de la Familia (DIF) en México implica participar en procesos de compra gubernamental, ya que es una institución pública que opera con recursos fiscales. El DIF busca proveedores para diversas áreas, incluyendo alimentos, materiales de laboratorio, apoyos funcionales, y servicios de atención a personas vulnerabl
-        </p>
+            <div id="info2" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
+                <ul class="py-4 space-y-3">
+                    <li class="flex items-start"><span class="mr-2">❌</span> <strong>Barrera de Comunicación:</strong> Brecha significativa entre la comunidad oyente y sorda que restringe la participación social.</li>
+                    <li class="flex items-start"><span class="mr-2">❌</span> <strong>Falta de Estructura:</strong> Los principiantes carecen de herramientas que combinen pedagogía con utilidad práctica.</li>
+                </ul>
+            </div>
+        </section>
 
-        <p id="btn5" onclick="toggleInfo('info5','btn5')" class="mt-3 text-indigo-500 cursor-pointer">
-            Haz clic para ver más 👇
-        </p>
+        <section id="solucion" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-green-500">
+            <h2 class="text-3xl font-bold text-green-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info3','btn3')">
+                <span class="mr-3">💡</span> Solución
+            </h2>
 
-        <div id="info5" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600">
-            <ul>
-                <li>Misión:Brindar asistencia social y proteger a grupos vulnerables mediante programas de apoyo a menores, personas con discapacidad y adultos mayores.</li>
-                <li> Visión:Ser una institución cercana, eficiente y humana, generando impacto positivo en la sociedad.</li>
-                <li>Valores:Respeto, empatía, amor, servicio, compromiso, honestidad y profesionalismo.</li>
-            </ul>
-        </div>
-    </section>
-</main>
+            <p class="text-gray-700 text-lg">
+                Proporcionar una plataforma didáctica centrada en el usuario que convierte el aprendizaje pasivo en práctica activa, promoviendo la accesibilidad a través de la evaluación constante.
+            </p>
 
-<footer class="text-white text-center py-4 mt-10"
-        style="background: linear-gradient(to right, #2563eb, #1e40af);">
-    <p class="mb-0">© 2026 Mis Manos Hablarán</p>
-</footer>    
+            <p id="btn3" onclick="toggleInfo('info3','btn3')" class="mt-4 text-green-600 font-bold cursor-pointer hover:underline">
+                Haz clic para ver más 👇
+            </p>
 
-<script>
-function toggleInfo(infoId, btnId) {
-    let info = document.getElementById(infoId);
-    let btn = document.getElementById(btnId);
+            <div id="info3" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
+                <p class="py-4">
+                    Nuestra plataforma incluye un <strong>diccionario interactivo</strong>, quizzes dinámicos y un sistema de <strong>progreso personalizado</strong> basado en niveles.
+                </p>
+            </div>
+        </section>
 
-    if (info.classList.contains("max-h-0")) {
-        info.classList.remove("max-h-0");
-        info.classList.add("max-h-96");
-        btn.innerText = "Ver menos 🔼";
-    } else {
-        info.classList.add("max-h-0");
-        info.classList.remove("max-h-96");
-        btn.innerText = "Haz clic para ver más 👇";
-    }
-}
+        <section id="objetivos" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-blue-500">
+            <h2 class="text-3xl font-bold text-blue-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info4','btn4')">
+                <span class="mr-3">🎯</span> Objetivos
+            </h2>
 
-function irALogin() {
-    window.location.href = "index.html";
-}
-</script>
+            <p class="text-gray-700 text-lg">
+                Desarrollar una plataforma web didáctica, interactiva y accesible que facilite el aprendizaje inicial de la LSM mediante niveles progresivos y actividades visuales de alto impacto.
+            </p>
+
+            <p id="btn4" onclick="toggleInfo('info4','btn4')" class="mt-4 text-blue-600 font-bold cursor-pointer hover:underline">
+                Haz clic para ver más 👇
+            </p>
+
+            <div id="info4" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
+                <ul class="py-4 space-y-2 list-disc list-inside">
+                    <li>Aprendizaje progresivo y modular.</li>
+                    <li>Interacción constante mediante recursos multimedia.</li>
+                    <li>Fomentar la inclusión digital en México.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="dif" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-indigo-500">
+            <h2 class="text-3xl font-bold text-indigo-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info5','btn5')">
+                <span class="mr-3">🏛️</span> DIF
+            </h2>
+
+            <p class="text-gray-700 text-lg leading-relaxed">
+                Nuestra propuesta busca alinearse con el Sistema Nacional para el Desarrollo Integral de la Familia (DIF), ofreciendo herramientas que fortalezcan la atención a personas con discapacidad mediante recursos tecnológicos de vanguardia.
+            </p>
+
+            <p id="btn5" onclick="toggleInfo('info5','btn5')" class="mt-4 text-indigo-600 font-bold cursor-pointer hover:underline">
+                Haz clic para ver más 👇
+            </p>
+
+            <div id="info5" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
+                <div class="py-4 space-y-4">
+                    <p><strong>Misión:</strong> Brindar asistencia social y proteger a grupos vulnerables mediante programas de apoyo a personas con discapacidad.</p>
+                    <p><strong>Valores:</strong> Respeto, empatía, servicio y compromiso con la honestidad profesional.</p>
+                </div>
+            </div>
+        </section>
+
+
+
+    </main>
+
+    <footer class="text-white py-4 mt-10 w-full" 
+        style="background: linear-gradient(to right, #2563eb, yellow);">
+    <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="mb-0 font-semibold" style="color: black;">© 2026 Mis Manos Hablarán</p>
+        
+    </div>
+</footer>
+
+    <script>
+        // --- LÓGICA DEL CARRUSEL ---
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+        let carouselTimer;
+
+        function showSlide(index) {
+            // Resetear timer para que no salte inmediatamente después de clic manual
+            stopCarousel();
+
+            if (index < 0) index = totalSlides - 1;
+            if (index >= totalSlides) index = 0;
+
+            // Ocultar actual
+            slides[currentIndex].classList.remove('active');
+            dots[currentIndex].classList.add('opacity-50');
+            dots[currentIndex].classList.remove('opacity-100');
+
+            currentIndex = index;
+
+            // Mostrar nueva
+            slides[currentIndex].classList.add('active');
+            dots[currentIndex].classList.remove('opacity-50');
+            dots[currentIndex].classList.add('opacity-100');
+
+            // Reiniciar timer
+            startCarousel();
+        }
+
+        function nextSlide() {
+            showSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentIndex - 1);
+        }
+
+        function currentSlide(index) {
+            showSlide(index);
+        }
+
+        // Funciones para autoplay
+        function startCarousel() {
+            carouselTimer = setInterval(nextSlide, 4000); // Gira cada 4 segundos
+        }
+
+        function stopCarousel() {
+            clearInterval(carouselTimer);
+        }
+
+        // Iniciar carrusel al cargar la página
+        startCarousel();
+
+
+        // --- LÓGICA DE MODALES ---
+        function toggleInfo(infoId, btnId) {
+            let info = document.getElementById(infoId);
+            let btn = document.getElementById(btnId);
+
+            if (info.classList.contains("max-h-0")) {
+                info.classList.remove("max-h-0");
+                info.classList.add("max-h-96"); // Altura máxima permitida
+                btn.innerText = "Ver menos 🔼";
+            } else {
+                info.classList.add("max-h-0");
+                info.classList.remove("max-h-96");
+                btn.innerText = "Haz clic para ver más 👇";
+            }
+        }
+
+        // --- NAVEGACIÓN ---
+        function irALogin() {
+            window.location.href = "index.html";
+        }
+    </script>
+    <script  type="module" src="app.js"></script>
 
 </body>
+
 </html>

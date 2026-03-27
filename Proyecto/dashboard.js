@@ -366,7 +366,7 @@ async function selectProfileImage(imagePath) {
         button.addEventListener('click', async() => {
             try {
                 await signOut(auth);
-                window.location.href = 'index.html';
+                window.location.href = 'introduccion_usuario.html';
             } catch (error) {
                 console.error("Error al cerrar sesión:", error);
                 alert("Hubo un error al cerrar sesión.");

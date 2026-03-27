@@ -41,22 +41,24 @@
 <body class="min-h-screen flex flex-col font-semibold">
 
     <header class="fixed top-0 left-0 w-full text-white shadow-lg" 
-            style="background: linear-gradient(to right, #2563eb, #1e40af); height: 70px;">
-        <div class="w-full h-full flex items-center justify-between px-4 md:px-12">
-            <a class="text-xl md:text-2xl font-bold no-underline text-white" href="pagina_inicio.html">
+        style="background: linear-gradient(to right, yellow, #2563eb); z-index: 1030; height: 70px;">
+    
+    <div class="w-full h-full flex items-center justify-between px-4 md:px-8">
+        
+        <div class="flex items-center gap-3">
+            <img src="Letras/logo.jpg" alt="Logo Mis Manos Hablarán" class="h-[45px] w-auto rounded-full border-2 border-white object-cover">
+            <a class="navbar-brand text-white fw-bold text-xl md:text-2xl" href="introduccion_usuario.html" style="text-decoration: none;">
                 Mis Manos Hablarán
             </a>
-
-            <nav class="hidden md:flex space-x-6">
-                <a href="pagina_inicio.html" class="text-white no-underline hover:text-blue-200 transition">Inicio / Dashboard</a>
-            </nav>
-
-            <button onclick="window.location.href='pagina_inicio.html'" 
-                    class="bg-white text-blue-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-100 transition shadow">
-                Volver
-            </button>
         </div>
-    </header>
+
+        <a href="pagina_inicio.html" 
+           class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition transform hover:scale-105" 
+           style="font-size: 0.9rem;">
+           <span class="mr-1">🏠</span>Regresar a Inicio
+        </a>
+    </div>
+</header>
 
     <main class="flex-grow max-w-4xl mx-auto w-full px-6 mb-20">
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 flex items-center">
@@ -97,10 +99,17 @@
         </div>
     </main>
 
-    <footer class="w-full text-white text-center py-4"
-            style="background: linear-gradient(to right, #2563eb, #1e40af); position: relative; z-index: 10;">
-        <p class="mb-0 fw-bold">© 2026 Mis Manos Hablarán</p>
-    </footer>
+    <footer class="text-white py-4 mt-10 w-full" 
+        style="background: linear-gradient(to right,#2563eb, yellow);">
+        <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="mb-0 font-semibold" style="color:black;">© 2026 Mis Manos Hablarán</p>
+            
+            <button onclick="window.location.href='introduccion_usuario.html'" 
+                    class="bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition font-bold text-sm">
+                QUIÉNES SOMOS
+            </button>
+        </div>
+    </footer> 
 
     <div id="dictionary-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 hidden p-4">
         <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">

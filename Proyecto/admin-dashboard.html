@@ -20,6 +20,40 @@
             color: #1e293b;
         }
         
+        #auth-loading {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            font-size: 18px;
+            gap: 16px;
+        }
+        
+        #auth-loading .spinner {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        #dashboard-content {
+            display: none;
+            width: 100%;
+        }
+        
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
@@ -198,62 +232,108 @@
             width: 450px;
             text-align: center;
         }
+        
+        #inactivity-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        #inactivity-modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h2>🖐️ Admin LSM</h2>
-        </div>
-        <div style="padding: 20px; color: #94a3b8; font-size: 14px;">GESTIÓN</div>
-        <div style="padding: 10px 25px; background: rgba(255,255,255,0.1); cursor: pointer;">Usuarios</div>
-    </nav>
 
-    <main class="content">
-        <div class="header">
-            <h1>Dashboard de Control</h1>
-            <p>Monitoreo de progreso de los estudiantes.</p>
-        </div>
+    <div id="auth-loading">
+        <div class="spinner"></div>
+        <span>Cargando panel...</span>
+    </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <p>Total Alumnos</p>
-                <div id="stat-total-users" class="stat-card-value">0</div>
+    <div id="dashboard-content">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>🖐️ Admin LSM</h2>
             </div>
-            <div class="stat-card">
-                <p>Nivel Promedio</p>
-                <div id="stat-avg-level" class="stat-card-value">0</div>
+            <div style="padding: 20px; color: #94a3b8; font-size: 14px;">GESTIÓN</div>
+            <div style="padding: 10px 25px; background: rgba(255,255,255,0.1); cursor: pointer;">Usuarios</div>
+            <div id="logout-btn" style="padding: 10px 25px; margin-top: 20px; color: #f87171; cursor: pointer; font-weight: bold;">
+                🚪 Cerrar Sesión
             </div>
-            <div class="stat-card">
-                <p>Graduados</p>
-                <div id="stat-completed" class="stat-card-value">0</div>
-            </div>
-        </div>
+        </nav>
 
-        <div class="table-container">
-            <div class="table-header">
-                <h3 style="font-size: 18px;">Lista de Estudiantes</h3>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="admin-search" style="padding: 8px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Buscar...">
-                    <button id="refresh-btn" class="btn btn-refresh">
-                        <span>🔄</span> Actualizar
-                    </button>
+        <main class="content">
+            <div class="header">
+                <h1>Dashboard de Control</h1>
+                <p>Monitoreo de progreso de los estudiantes.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p>Total Alumnos</p>
+                    <div id="stat-total-users" class="stat-card-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <p>Nivel Promedio</p>
+                    <div id="stat-avg-level" class="stat-card-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <p>Graduados</p>
+                    <div id="stat-completed" class="stat-card-value">0</div>
                 </div>
             </div>
-            <table class="user-table">
-                <thead>
-                    <tr>
-                        <th>Alumno</th>
-                        <th>Correo</th>
-                        <th>Nivel Real</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="users-list"></tbody>
-            </table>
-        </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 style="font-size: 18px;">Lista de Estudiantes</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="admin-search" style="padding: 8px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Buscar...">
+                        <button id="refresh-btn" class="btn btn-refresh"><span>🔄</span> Actualizar</button>
+                    </div>
+                </div>
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Correo</th>
+                            <th>Nivel Real</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-list"></tbody>
+                </table>
+            </div>
+            <div class="table-container" style="margin-top: 30px; padding: 25px; border-left: 4px solid #10b981;">
+                <h3 style="margin-bottom: 15px; color: #065f46;">📥 Registrar Video en Muro (Modo Local)</h3>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 20px;">
+                    Usa esto después de mover el video manualmente a la carpeta <b>video_grabados</b>.
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <input type="text" id="local-profesor-nombre" placeholder="Nombre del Profesor" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <input type="text" id="local-archivo-nombre" placeholder="Nombre exacto del archivo (ej: saludo.mp4)" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+
+                <button id="btn-registrar-local" style="margin-top: 15px; width: 100%; background: #10b981; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+        Publicar en el Muro
+    </button>
+            </div>
+            <div id="contenedor-revision-admin" style="padding: 20px;" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p style="color: #64748b; text-align: center;">Buscando nuevos archivos...</p>
+            </div>
+    </div>
     </main>
+    </div>
 
     <div id="view-modal" class="modal-overlay">
         <div class="modal-content">
@@ -273,7 +353,30 @@
             </div>
         </div>
     </div>
-
+    <div id="email-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="email-target-user" style="margin-bottom: 15px;">Enviar aviso</h3>
+            <p style="color: #64748b; margin-bottom: 20px;">Selecciona el tipo de recordatorio:</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-refresh" onclick="enviarAvisoPorTipo('inactividad')">📧 Aviso por Inactividad</button>
+                <button class="btn btn-view" onclick="enviarAvisoPorTipo('progreso')">📈 Motivación de Progreso</button>
+                <button class="btn btn-danger" style="background:#f1f5f9; color:#475569;" onclick="closeModals()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <div id="inactivity-modal">
+        <div style="background:white; padding:35px; border-radius:20px; width:360px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="font-size:52px; margin-bottom:10px;">⏳</div>
+            <h3 style="font-size:20px; font-weight:700; color:#1e293b; margin-bottom:8px;">¿Sigues ahí?</h3>
+            <p style="color:#64748b; margin-bottom:6px;">Tu sesión se cerrará por inactividad en:</p>
+            <div id="inactivity-countdown" style="font-size:56px; font-weight:800; color:#dc2626; line-height:1; margin:12px 0;">60</div>
+            <p style="color:#64748b; margin-bottom:24px;">segundos</p>
+            <button id="inactivity-stay-btn" style="width:100%; padding:13px; background:#4f46e5; color:white; font-weight:700; border:none; border-radius:10px; cursor:pointer; font-size:15px;">
+                ✅ Seguir en sesión
+            </button>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="module" src="admin.js"></script>
 </body>
 
