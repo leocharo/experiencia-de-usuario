@@ -123,6 +123,11 @@
             color: rgba(255, 255, 255, .85);
         }
         
+        .content-wrapper{
+            display: flex;
+            flex-direction: column;
+            flex:1;
+        }
         .nav-item.active {
             background: rgba(13, 148, 136, .18);
             color: var(--teal-l);
@@ -145,6 +150,16 @@
             border-radius: 20px;
         }
         
+.footer {
+    background: linear-gradient(to right, var(--navy), var(--teal));
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+    font-weight: 600;
+}
+
         .sidebar-user {
             padding: 16px 22px;
             border-top: 1px solid rgba(255, 255, 255, .08);
@@ -1071,7 +1086,7 @@
             <button class="btn-logout-sm" onclick="handleLogout()" title="Cerrar sesión">🚪</button>
         </div>
     </nav>
-
+    <div class="content-wrapper">
     <!-- ═══ MAIN ═══ -->
     <main class="main">
 
@@ -1514,7 +1529,15 @@
         </div>
 
     </main>
+<footer class="footer">
+    <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="mb-0 font-semibold" style="color: var(--teal-l);">
+            © 2026 Mis Manos Hablarán
+        </p>
+    </div>
+</footer>
 
+</div>
     <!-- ══════════ MODAL: Editar video ══════════ -->
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-box">

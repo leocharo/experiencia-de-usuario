@@ -923,7 +923,28 @@ async function confirmSendReport() {
   const contenido = document.getElementById('report-content').innerHTML;
 
   const correoDestino = document.getElementById('correo-destino').value;
-  try {
+
+    const res = await fetch("http://localhost:3000/enviar-reporte",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        correoDestino,
+        contenido
+      })
+    });
+
+    if(!res.ok){
+      throw new Error("error en el servidor");
+    }
+    const Data = await res.json();
+    console.log(Data);
+    renderReportsSent();
+    closeModal('report-modal');
+
+    showToast('Reporte enviado al correo del Administrador ✅ (8.2 / 8.3)', 'success');
+      try {
     await addDoc(collection(db, "reportes"), {
       titulo: `Reporte ${fecha}`,
       fecha: new Date().toLocaleDateString('es-MX'),
@@ -931,23 +952,6 @@ async function confirmSendReport() {
       uid: currentUser.uid,
       email: currentUser.email
     });
-
-    await fetch("http://localhost:3000/enviar-reporte",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        correoDestino: correoDestino,
-        contenido: contenido
-      })
-    });
-
-    renderReportsSent();
-    closeModal('report-modal');
-
-    showToast('Reporte enviado al correo del Administrador ✅ (8.2 / 8.3)', 'success');
-
   } catch (error) {
     console.error(error);
     showToast('Error al enviar reporte ❌', 'error');
