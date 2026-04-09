@@ -47,6 +47,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app);
+const AUTH = getAuth();
 const analytics = getAnalytics(app);
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -67,7 +68,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = {
       uid: user.uid,
-      name: user.displayName || "Creador Contenido",
+      name: user.displayName || "creador contenido",
       email: user.email,
       initials: (user.displayName || "U")[0]
     };
@@ -97,10 +98,9 @@ async function moveVideo(url, nuevoEstado) {
       nuevoEstado
     })
   });
-
   const data = await res.json();
   return data.newUrl;
-}
+  }
         // ══════════════════════════════════════════════
         // INIT
         // ══════════════════════════════════════════════

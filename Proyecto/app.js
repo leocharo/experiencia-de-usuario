@@ -89,7 +89,7 @@ async function handleSignIn(input, password) {
         }
 
         const userData = userDoc.data();
-
+        console.log(userData.rol);
         // 🔥 SOLO VALIDAR CORREO SI ES USUARIO NORMAL
         if (userData.rol === "usuario" && !user.emailVerified) {
 
@@ -101,12 +101,11 @@ async function handleSignIn(input, password) {
                 message: "Debes verificar tu correo antes de iniciar sesión 📩"
             };
         }
-
         // 🔥 REDIRECCIONES SEGÚN ROL
         if (userData.rol === "admin") {
             window.location.href = 'admin-dashboard.html';
-        } else if (userData.rol === "empleado") {
-            window.location.href = 'profesor-dashboard.html';
+        } else if (userData.rol === 'creador') {
+            window.location.href = 'Dashboard_Creador.html';
         } else {
             window.location.href = 'pagina_inicio.html';
         }
