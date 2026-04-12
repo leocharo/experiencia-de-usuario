@@ -49,6 +49,17 @@
             /* Mostrar solo la activa */
             opacity: 1;
         }
+        section {
+    scroll-margin-top: 100px;
+}
+main p {
+    text-align: justify;
+    line-height: 1.7;
+}
+
+main li {
+    text-align: justify;
+}
     </style>
 </head>
 
@@ -68,10 +79,11 @@
     <!-- MENÚ -->
     <div class="hidden lg:flex space-x-8 text-xs font-bold uppercase tracking-wider">
         <a href="#identidad" class="transition hover:opacity-70" style="color: #1e40af;">Identidad</a>
-        <a href="#problema" class="transition hover:opacity-70" style="color: #1e40af;">Problema</a>
-        <a href="#solucion" class="transition hover:opacity-70" style="color: #1e40af;">Solución</a>
         <a href="#objetivos" class="transition hover:opacity-70" style="color: #1e40af;">Objetivos</a>
         <a href="#dif" class="transition hover:opacity-70" style="color: #1e40af;">DIF</a>
+        <a href="opiniones.html" class="transition hover:opacity-70" style="color: #1e40af;"> Opiniones</a>
+        <a href="equipo.html" class="transition hover:opacity-70" style="color: #1e40af;"> Currículums</a>
+
     </div>
 
     <!-- BOTONES DERECHA -->
@@ -120,34 +132,35 @@
 
                 <div id="carousel-images" class="relative aspect-[4/3] w-full">
                     <div class="carousel-item active w-full h-full">
-                        <img src="img/joshua.jpeg" class="w-full h-full object-cover rounded-lg" alt="Joshua Martínez">
+                        <img src="img/joshua.jpeg"  onclick="window.location.href='equipo.html#joshua' "class="w-full h-full object-cover rounded-lg cursor-pointer hover:scale-105 transition">
                         <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
                             <p class="font-bold">Joshua Martínez</p>
                             <p class="text-xs">Líder Técnico & Arquitectura de Software</p>
                         </div>
                     </div>
                     <div class="carousel-item w-full h-full">
-                        <img src="img/leo.png" class="w-full h-full object-cover rounded-lg" alt="Leonardo Chavez">
+                        <img src="img/leo.png" class="w-full h-full object-cover rounded-lg" onclick="window.location.href='equipo.html#leo'" alt="Leonardo Chavez">
                         <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
                             <p class="font-bold">Leonardo Chavez</p>
                             <p class="text-xs">Desarrollador Full Stack & UI/UX</p>
                         </div>
                     </div>
                     <div class="carousel-item w-full h-full">
-                        <img src="img/jesus.png" class="w-full h-full object-cover rounded-lg" alt="Rodrigo Romero">
+                        <img src="img/jesus.png" class="w-full h-full object-cover rounded-lg" onclick="window.location.href='equipo.html#jesus'" alt="Rodrigo Romero">
                         <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
                             <p class="font-bold">Rodrigo Romero</p>
                             <p class="text-xs">Desarrollador Back-End & Firebase</p>
                         </div>
                     </div>
                     <div class="carousel-item w-full h-full">
-                        <img src="img/fernando.jpeg" class="w-full h-full object-cover rounded-lg" alt="Fernando Cano">
+                        <img src="img/fernando.jpeg" class="w-full h-full object-cover rounded-lg" onclick="window.location.href='equipo.html#fernando'" alt="Fernando Cano">
                         <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-center p-3 rounded-b-lg">
                             <p class="font-bold">Fernando Cano</p>
                             <p class="text-xs">Especialista en QA & Contenido Educativo</p>
                         </div>
                     </div>
                 </div>
+                <p class="text-center text-sm text-gray-500 mt-3 animate-pulse">Haz clic en la foto para obtener más información</p>
 
                 <button onclick="prevSlide()" class="absolute left-5 top-1/2 -translate-y-1/2 bg-white/70 text-blue-700 p-2 rounded-full shadow-md hover:bg-white transition opacity-0 group-hover:opacity-100">
                 &lt; </button>
@@ -181,51 +194,9 @@
                 </div>
             </div>
         </section>
-
-        <section id="problema" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-red-500">
-            <h2 class="text-3xl font-bold text-red-500 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info2','btn2')">
-                <span class="mr-3">❗</span> Problema
-            </h2>
-
-            <p class="text-gray-700 text-lg">
-                El proyecto aborda la urgente necesidad de inclusión y comunicación accesible en el entorno hispanohablante. Actualmente, los recursos en línea para aprender LSM suelen ser estáticos o desorganizados.
-            </p>
-
-            <p id="btn2" onclick="toggleInfo('info2','btn2')" class="mt-4 text-red-500 font-bold cursor-pointer hover:underline">
-                Haz clic para ver más 👇
-            </p>
-
-            <div id="info2" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
-                <ul class="py-4 space-y-3">
-                    <li class="flex items-start"><span class="mr-2">❌</span> <strong>Barrera de Comunicación:</strong> Brecha significativa entre la comunidad oyente y sorda que restringe la participación social.</li>
-                    <li class="flex items-start"><span class="mr-2">❌</span> <strong>Falta de Estructura:</strong> Los principiantes carecen de herramientas que combinen pedagogía con utilidad práctica.</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="solucion" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-green-500">
-            <h2 class="text-3xl font-bold text-green-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info3','btn3')">
-                <span class="mr-3">💡</span> Solución
-            </h2>
-
-            <p class="text-gray-700 text-lg">
-                Proporcionar una plataforma didáctica centrada en el usuario que convierte el aprendizaje pasivo en práctica activa, promoviendo la accesibilidad a través de la evaluación constante.
-            </p>
-
-            <p id="btn3" onclick="toggleInfo('info3','btn3')" class="mt-4 text-green-600 font-bold cursor-pointer hover:underline">
-                Haz clic para ver más 👇
-            </p>
-
-            <div id="info3" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
-                <p class="py-4">
-                    Nuestra plataforma incluye un <strong>diccionario interactivo</strong>, quizzes dinámicos y un sistema de <strong>progreso personalizado</strong> basado en niveles.
-                </p>
-            </div>
-        </section>
-
         <section id="objetivos" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-blue-500">
             <h2 class="text-3xl font-bold text-blue-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info4','btn4')">
-                <span class="mr-3">🎯</span> Objetivos
+                <span class="mr-3"></span> Objetivos
             </h2>
 
             <p class="text-gray-700 text-lg">
@@ -247,7 +218,7 @@
 
         <section id="dif" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-indigo-500">
             <h2 class="text-3xl font-bold text-indigo-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info5','btn5')">
-                <span class="mr-3">🏛️</span> DIF
+                <span class="mr-3"></span> DIF
             </h2>
 
             <p class="text-gray-700 text-lg leading-relaxed">
@@ -265,15 +236,49 @@
                 </div>
             </div>
         </section>
+        <section class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-purple-500">
+    <h2 class="text-3xl font-bold text-purple-600 mb-6"> Justificación</h2>
+
+    <p class="text-gray-700 text-lg leading-relaxed">
+        El desarrollo de la plataforma “Mis Manos Hablarán” surge como respuesta a la necesidad de crear herramientas tecnológicas accesibles que promuevan la inclusión social de personas con discapacidad auditiva. En México, el acceso a recursos educativos estructurados para el aprendizaje de la Lengua de Señas Mexicana (LSM) es limitado, lo que genera barreras en la comunicación cotidiana.
+    </p>
+
+    <p class="text-gray-700 text-lg mt-4">
+        Este proyecto busca reducir dichas barreras mediante una solución digital interactiva, facilitando el aprendizaje autónomo y promoviendo la sensibilización social hacia la diversidad lingüística.
+    </p>
+</section>
+
+<section class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-indigo-400">
+    <h2 class="text-3xl font-bold text-indigo-600 mb-6"> Impacto Social</h2>
+
+    <p class="text-gray-700 text-lg leading-relaxed">
+        La implementación de esta plataforma tiene un impacto directo en la inclusión educativa y social, permitiendo que más personas puedan aprender LSM de manera accesible. Además, fomenta la empatía y la integración entre la comunidad oyente y la comunidad sorda.
+    </p>
+
+    <ul class="mt-4 list-disc list-inside text-gray-700">
+        <li>Promueve la inclusión digital en México</li>
+        <li>Reduce barreras de comunicación</li>
+        <li>Fomenta la educación accesible</li>
+        <li>Apoya iniciativas sociales como el DIF</li>
+    </ul>
+</section>
 
 
 
     </main>
+    
 
     <footer class="text-white py-4 mt-10 w-full" 
         style="background: linear-gradient(to right, #2563eb, yellow);">
     <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
         <p class="mb-0 font-semibold" style="color: black;">© 2026 Mis Manos Hablarán</p>
+         <a href="opiniones.html" 
+           class="font-bold hover:underline"
+           style="color: black;">
+            Opiniones y sugerencias
+        </a>
+
+
         
     </div>
 </footer>
