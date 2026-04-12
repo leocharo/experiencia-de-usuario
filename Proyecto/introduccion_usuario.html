@@ -81,8 +81,9 @@ main li {
         <a href="#identidad" class="transition hover:opacity-70" style="color: #1e40af;">Identidad</a>
         <a href="#objetivos" class="transition hover:opacity-70" style="color: #1e40af;">Objetivos</a>
         <a href="#dif" class="transition hover:opacity-70" style="color: #1e40af;">DIF</a>
-        <a href="opiniones.html" class="transition hover:opacity-70" style="color: #1e40af;"> Opiniones</a>
         <a href="equipo.html" class="transition hover:opacity-70" style="color: #1e40af;"> Currículums</a>
+        <a href="opiniones.html" class="transition hover:opacity-70" style="color: #1e40af;"> Opiniones</a>
+
 
     </div>
 
@@ -196,7 +197,7 @@ main li {
         </section>
         <section id="objetivos" class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-blue-500">
             <h2 class="text-3xl font-bold text-blue-600 mb-6 flex items-center cursor-pointer" onclick="toggleInfo('info4','btn4')">
-                <span class="mr-3"></span> Objetivos
+                <span class="mr-3"></span> Objetivo
             </h2>
 
             <p class="text-gray-700 text-lg">
@@ -242,10 +243,18 @@ main li {
     <p class="text-gray-700 text-lg leading-relaxed">
         El desarrollo de la plataforma “Mis Manos Hablarán” surge como respuesta a la necesidad de crear herramientas tecnológicas accesibles que promuevan la inclusión social de personas con discapacidad auditiva. En México, el acceso a recursos educativos estructurados para el aprendizaje de la Lengua de Señas Mexicana (LSM) es limitado, lo que genera barreras en la comunicación cotidiana.
     </p>
-
-    <p class="text-gray-700 text-lg mt-4">
+     <p id="btn6" onclick="toggleInfo('info6','btn6')" class="mt-4 text-indigo-600 font-bold cursor-pointer hover:underline">
+                Haz clic para ver más 👇
+            </p>
+    <div id="info6" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
+                <div class="py-4 space-y-4">
+                    <p class="text-gray-700 text-lg mt-4">
         Este proyecto busca reducir dichas barreras mediante una solución digital interactiva, facilitando el aprendizaje autónomo y promoviendo la sensibilización social hacia la diversidad lingüística.
     </p>
+                </div>
+            </div>
+
+    
 </section>
 
 <section class="bg-white p-8 rounded-2xl shadow-md border-t-4 border-indigo-400">
@@ -254,6 +263,11 @@ main li {
     <p class="text-gray-700 text-lg leading-relaxed">
         La implementación de esta plataforma tiene un impacto directo en la inclusión educativa y social, permitiendo que más personas puedan aprender LSM de manera accesible. Además, fomenta la empatía y la integración entre la comunidad oyente y la comunidad sorda.
     </p>
+     <p id="btn7" onclick="toggleInfo('info7','btn7')" class="mt-4 text-indigo-600 font-bold cursor-pointer hover:underline">
+                Haz clic para ver más 👇
+            </p>
+    <div id="info7" class="max-h-0 overflow-hidden transition-all duration-500 text-gray-600 bg-gray-50 rounded-lg px-4">
+            <div class="py-4 space-y-4">
 
     <ul class="mt-4 list-disc list-inside text-gray-700">
         <li>Promueve la inclusión digital en México</li>
@@ -261,6 +275,7 @@ main li {
         <li>Fomenta la educación accesible</li>
         <li>Apoya iniciativas sociales como el DIF</li>
     </ul>
+    </div>
 </section>
 
 

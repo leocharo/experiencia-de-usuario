@@ -20,10 +20,13 @@ html {
 <header class="text-center py-10 shadow-lg relative"
 style="background: linear-gradient(to right, yellow, #2563eb);">
 
-<a href="introduccion_usuario.html"
-   class="absolute top-6 left-6 bg-blue-700 text-white px-4 py-2 rounded-full font-bold hover:bg-blue-800">
-   ⬅ Volver
-</a>
+ <div class="absolute top-6 left-6">
+        <a href="introduccion_usuario.html"
+           class="flex items-center gap-2 bg-white text-blue-700 px-4 py-2 rounded-full shadow-md font-bold text-sm transition hover:bg-yellow-200 hover:scale-105">
+             Volver
+        </a>
+    </div>
+
 
 <h1 class="text-4xl font-bold text-blue-900">Equipo de Desarrollo</h1>
 <p class="text-gray-800 mt-2">Conoce a los creadores de la aplicación</p>
@@ -425,7 +428,14 @@ style="background: linear-gradient(to right, yellow, #2563eb);">
 <!-- FOOTER -->
 <footer class="text-center py-4"
 style="background: linear-gradient(to right, #2563eb, yellow);">
-<p class="text-black font-semibold">© 2026 Mis Manos Hablarán</p>
+  <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="mb-0 font-semibold" style="color: black;">© 2026 Mis Manos Hablarán</p>
+        <a href="opiniones.html" 
+           class="font-bold hover:underline"
+           style="color: black;">
+            Opiniones y sugerencias
+        </a>
+    </div>        
 </footer>
 
 </body>
