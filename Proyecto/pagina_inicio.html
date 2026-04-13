@@ -255,6 +255,9 @@
     <div id="profile-modal"
         class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 hidden">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
+            <button id="close-profile-modal" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition duration-300">
+                <i class="ph-x-circle-fill text-3xl"></i>
+            </button>
             <center>
                 <h3 class="text-2xl font-semibold text-gray-900 mb-8">Mi Perfil y Progreso</h3>
             </center>
@@ -270,10 +273,23 @@
                         <i class="ph-camera-fill text-white text-xl"></i>
                     </button>
                 </div>
-
+            
                 <div class="mb-4 text-center">
-                    <p class="text-sm text-gray-500">Nombre de Usuario:</p>
-                    <p id="profile-username" class="text-2xl font-semibold text-gray-900">[Cargando...]</p>
+                    <p class="text-sm text-gray-500">Nombre de Usuario:</p><div class="flex items-center justify-center space-x-2">
+    <p id="profile-username" class="text-2xl font-semibold text-gray-900">[Cargando...]</p>
+
+    <!-- ✏️ BOTÓN EDITAR -->
+    <button id="edit-username-btn" class="text-blue-500 hover:text-blue-700">
+        <i class="ph-pencil-simple-fill text-xl"></i>
+    </button>
+</div>
+
+<!-- INPUT OCULTO -->
+<input 
+    type="text" 
+    id="username-input" 
+    class="hidden mt-2 text-center border-b-2 border-blue-400 focus:outline-none text-xl"
+>
                 </div>
 
                 <div class="w-full mt-4">
@@ -331,10 +347,6 @@
                 </div>
                 <p id="photo-status" class="text-sm mt-4"></p>
             </div>
-            <button id="close-profile-modal"
-                class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition duration-300">
-                <i class="ph-x-circle-fill text-3xl"></i>
-            </button>
         </div>
     </div>
 

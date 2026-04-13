@@ -392,3 +392,47 @@ document.getElementById('level-1')?.addEventListener('click', () => {
         }
     });
 });
+
+
+// ============================================================
+//  EDITAR NOMBRE DE USUARIO
+// ============================================================
+const editBtn = document.getElementById("edit-username-btn");
+const usernameInput = document.getElementById("username-input");
+
+if (editBtn && usernameInput && userIdDisplay) {
+
+    editBtn.addEventListener("click", () => {
+        usernameInput.classList.remove("hidden");
+        usernameInput.value = userIdDisplay.textContent;
+        userIdDisplay.classList.add("hidden");
+    });
+
+    const saveUsername = async () => {
+        const newName = usernameInput.value.trim();
+
+        if (newName === "") {
+            alert("El nombre no puede estar vacío");
+            return;
+        }
+
+        if (!currentUserId) return;
+
+        try {
+            const profileRef = doc(db, "perfiles", currentUserId);
+            await updateDoc(profileRef, { username: newName });
+            userIdDisplay.textContent = newName;
+        } catch (error) {
+            console.error("Error al actualizar nombre:", error);
+        }
+
+        usernameInput.classList.add("hidden");
+        userIdDisplay.classList.remove("hidden");
+    };
+
+    usernameInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") saveUsername();
+    });
+
+    usernameInput.addEventListener("blur", saveUsername);
+}

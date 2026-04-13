@@ -8,15 +8,12 @@
     <link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        /* CSS para elementos que NO son de Tailwind (puedes moverlos a styles.css) */
-        
         .auth-card h2 {
             font-size: 1.5rem;
-            /* Título de la tarjeta */
             font-weight: 700;
             color: #1e40af;
-            /* Blue-700 */
             margin-bottom: 1.5rem;
             text-align: center;
         }
@@ -25,7 +22,6 @@
             width: 80px;
             height: 80px;
             background-color: #bfdbfe;
-            /* Blue-200 */
             border-radius: 50%;
             margin: 0 auto 20px;
             display: flex;
@@ -33,7 +29,6 @@
             align-items: center;
             font-size: 3rem;
             border: 4px solid #3b82f6;
-            /* Blue-500 */
         }
         
         .avatar-icon-register {
@@ -41,14 +36,12 @@
             height: 64px;
             font-size: 2.5rem;
             background-color: #bfdbfe;
-            /* Blue-200 */
             border-radius: 50%;
             margin: 0 auto 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             border: 4px solid #3b82f6;
-            /* Blue-500 */
         }
         
         .input-group {
@@ -56,7 +49,6 @@
             align-items: center;
             margin-bottom: 1rem;
             border-bottom: 2px solid #e5e7eb;
-            /* Gray-200 */
             padding: 0.5rem 0;
         }
         
@@ -71,15 +63,13 @@
             outline: none;
             padding: 0.5rem 0;
             background: transparent;
-            color: #e5efff;
-            /* Gray-800 */
+            color: #111827;
         }
         
         .auth-button {
             width: 100%;
             padding: 0.75rem;
             background-color: #3b82f6;
-            /* Blue-500 */
             color: white;
             font-weight: bold;
             border-radius: 0.5rem;
@@ -89,16 +79,6 @@
         
         .auth-button:hover {
             background-color: #2563eb;
-            /* Blue-600 */
-        }
-        
-        .actions-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-            color: #4b5563;
-            /* Gray-600 */
         }
         
         .switch-link {
@@ -110,7 +90,6 @@
         
         .switch-link a {
             color: #1e40af;
-            /* Blue-700 */
             font-weight: bold;
         }
         
@@ -119,22 +98,89 @@
             margin-top: 1rem;
             font-weight: 600;
         }
-        /* Ocultamos los logos laterales en móvil y los mostramos en escritorio */
         
         .side-logo {
             display: none;
             max-width: 250px;
-            /* Tamaño máximo para escritorio */
             height: auto;
             opacity: 0.8;
             align-self: center;
         }
         
         @media (min-width: 1024px) {
-            /* lg screens */
             .side-logo {
                 display: block;
             }
+        }
+        /* 👁️ cursor */
+        
+        .toggle-eye {
+            cursor: pointer;
+        }
+        /* Modal overlay */
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-box {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-box h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .modal-box p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+        
+        .modal-cancel-btn {
+            width: 100%;
+            padding: 0.65rem;
+            background-color: #e5e7eb;
+            color: #374151;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            margin-top: 0.75rem;
+            transition: background-color 0.3s;
+        }
+        
+        .modal-cancel-btn:hover {
+            background-color: #d1d5db;
+        }
+        
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            color: #1e40af;
+            font-weight: 600;
+            margin-top: -0.25rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .forgot-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -144,69 +190,137 @@
     <div class="w-full max-w-5xl flex justify-center items-center">
         <div class="w-full flex flex-col lg:flex-row justify-center items-center lg:space-x-12">
 
-            <img src="Letras/logo_sin_fondo.png" alt="Mis Manos Hablarán Logo" class="side-logo left-logo hidden lg:block">
+            <img src="Letras/logo_sin_fondo.png" class="side-logo hidden lg:block">
 
+            <!-- LOGIN -->
             <div id="login-view" class="auth-card bg-white bg-opacity-90 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-sm">
                 <h2>INICIO DE SESIÓN</h2>
-                <div class="avatar-icon">
 
-                </div>
+                <div class="avatar-icon"></div>
+
                 <form id="login-form">
                     <div class="input-group">
                         <span class="icon">👤</span>
-                        <input type="text" id="login-email" placeholder="Correo Electrónico o Usuario" required>
+                        <input type="text" id="login-email" placeholder="Correo o Usuario" required>
                     </div>
+
                     <div class="input-group">
                         <span class="icon">🔒</span>
                         <input type="password" id="login-password" placeholder="Contraseña" required>
+                        <span class="icon toggle-eye" id="toggle-login-password">👁️</span>
                     </div>
-                    <div class="actions-row">
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox"> <span>Recordarme</span>
-                        </label>
 
-                    </div>
+                    <!-- Botón olvidé mi contraseña -->
+                    <a class="forgot-link" id="open-forgot-modal">¿Olvidaste tu contraseña?</a>
+
                     <button type="submit" class="auth-button">INICIAR SESIÓN</button>
-                                </form>
+                </form>
                 <p class="switch-link">
                     ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
                 </p>
+
                 <p id="login-message" class="message-text"></p>
             </div>
 
+            <!-- REGISTRO -->
             <div id="register-view" class="auth-card bg-white bg-opacity-90 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-sm hidden">
                 <h2>REGISTRO</h2>
-                <div class="avatar-icon-register">
-                    <span class="text-blue-500">📝</span>
-                </div>
+
+                <div class="avatar-icon-register">📝</div>
+
                 <form id="register-form">
                     <div class="input-group">
                         <span class="icon">✏️</span>
-                        <input type="text" id="register-username" placeholder="Nombre de Usuario" required>
+                        <input type="text" id="register-username" placeholder="Usuario" required>
                     </div>
+
                     <div class="input-group">
                         <span class="icon">✉️</span>
-                        <input type="email" id="register-email" placeholder="Correo Electrónico" required>
+                        <input type="email" id="register-email" placeholder="Correo" required>
                     </div>
+
                     <div class="input-group">
                         <span class="icon">🔒</span>
-                        <input type="password" id="register-password" placeholder="Contraseña (mín. 6 caracteres)" required>
+                        <input type="password" id="register-password" placeholder="Contraseña" required>
+                        <span class="icon toggle-eye" id="toggle-register-password">👁️</span>
                     </div>
+
                     <button type="submit" class="auth-button">REGISTRARSE</button>
                 </form>
+
                 <p class="switch-link">
                     ¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar Sesión</a>
                 </p>
+
                 <p id="register-message" class="message-text"></p>
             </div>
 
-            <img src="Letras/logo_sin_fondo.png" alt="Mis Manos Hablarán Logo" class="side-logo right-logo hidden lg:block">
+            <img src="Letras/logo_sin_fondo.png" class="side-logo hidden lg:block">
 
+        </div>
+    </div>
+
+    <!-- BOTÓN -->
+    <button onclick="window.location.href='introduccion_usuario.html'" class="fixed right-5 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 transition z-50">
+        QUIÉNES SOMOS
+    </button>
+
+    <!-- MODAL: Olvidé mi contraseña -->
+    <div id="forgot-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>🔑 Recuperar Contraseña</h3>
+            <p>Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+            <div class="input-group">
+                <span class="icon">✉️</span>
+                <input type="email" id="forgot-email" placeholder="Tu correo registrado" required>
+            </div>
+            <p id="forgot-message" class="message-text" style="font-size:0.85rem;"></p>
+            <button id="send-reset-btn" class="auth-button" style="margin-top:1rem;">ENVIAR CORREO</button>
+            <button id="close-forgot-modal" class="modal-cancel-btn">Cancelar</button>
         </div>
     </div>
 
     <script type="module" src="app.js"></script>
     <script src="fondo.js"></script>
+
+    <!-- 👁️ SCRIPT -->
+    <script>
+        // LOGIN
+        const loginPassword = document.getElementById('login-password');
+        const toggleLoginPassword = document.getElementById('toggle-login-password');
+
+        toggleLoginPassword.addEventListener('click', () => {
+            const type = loginPassword.type === 'password' ? 'text' : 'password';
+            loginPassword.type = type;
+            toggleLoginPassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // REGISTRO
+        const registerPassword = document.getElementById('register-password');
+        const toggleRegisterPassword = document.getElementById('toggle-register-password');
+
+        toggleRegisterPassword.addEventListener('click', () => {
+            const type = registerPassword.type === 'password' ? 'text' : 'password';
+            registerPassword.type = type;
+            toggleRegisterPassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // MODAL: Olvidé mi contraseña
+        const forgotModal = document.getElementById('forgot-modal');
+        document.getElementById('open-forgot-modal').addEventListener('click', () => {
+            document.getElementById('forgot-email').value = '';
+            document.getElementById('forgot-message').textContent = '';
+            forgotModal.classList.remove('hidden');
+        });
+        document.getElementById('close-forgot-modal').addEventListener('click', () => {
+            forgotModal.classList.add('hidden');
+        });
+        // Cerrar al hacer clic fuera del modal
+        forgotModal.addEventListener('click', (e) => {
+            if (e.target === forgotModal) forgotModal.classList.add('hidden');
+        });
+    </script>
+
 </body>
 
 </html>
