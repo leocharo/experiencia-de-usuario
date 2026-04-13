@@ -102,11 +102,11 @@ form.addEventListener("submit", async (e) => {
             fecha: serverTimestamp() // 🔥 hora automática de Firebase
         });
 
-        alert("✅ Guardado correctamente");
+        alert(" Guardado correctamente");
         form.reset();
 
     } catch (error) {
         console.error("Error:", error);
-        alert("❌ Error al guardar");
+        alert(" Error al guardar");
     }
 });

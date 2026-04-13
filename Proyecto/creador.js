@@ -987,7 +987,7 @@ function showToast(msg, type = 'info') {
 async function handleLogout() {
   try {
     await signOut(auth);
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } catch (error) {
     console.error(error);
     showToast('Error al cerrar sesión ❌', 'error');
