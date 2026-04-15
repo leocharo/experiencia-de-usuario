@@ -269,6 +269,8 @@ async function loadUserData(userId) {
         if (loadingMessage) loadingMessage.classList.add('hidden');
     }
 }
+const muroBtn = document.getElementById('btn-muro');
+if (muroBtn) muroBtn.addEventListener('click', function() { window.location.href = 'muro_comunidad.html'; });
 
 // --- 7. FUNCION DISPLAY PROGRESO ---
 function displayProgressLevels(lettersCompleted, wordsCompleted, daysCompleted, monthsCompleted) {

@@ -461,7 +461,25 @@
                     </table>
                 </div>
             </div>
-
+<div class="table-container" style="margin-top: 40px;">
+    <div class="table-header">
+        <h3>Historial de Accesos (Logs)</h3>
+        <button class="btn btn-refresh" onclick="loadLoginLogs()">🔄 Actualizar Logs</button>
+    </div>
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>Usuario / Rol</th>
+                <th>Correo</th>
+                <th>Fecha y Hora</th>
+                <th>ID Sesión</th>
+            </tr>
+        </thead>
+        <tbody id="logs-list">
+            <tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8;">Cargando historial...</td></tr>
+        </tbody>
+    </table>
+</div>
             <!-- SECCIÓN PUBLICACIONES PENDIENTES -->
             <div id="section-publicaciones" style="display:none;">
                 <div class="header">

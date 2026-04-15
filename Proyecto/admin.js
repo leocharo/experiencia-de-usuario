@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════════
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc }
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc, query, orderBy, limit}
     from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut }
     from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
@@ -41,6 +41,7 @@ onAuthStateChanged(auth, async (user) => {
             if (loadingEl) loadingEl.style.display = 'none';
             if (contentEl) contentEl.style.display = 'flex';
             loadAdminData();
+            loadLoginLogs();
         } else {
             window.location.href = 'index.html';
         }
@@ -429,3 +430,40 @@ if (logoutBtn) {
         }
     };
 }
+// ── CARGAR LOGS DE INICIO DE SESIÓN ──────────────────────────────
+window.loadLoginLogs = async function() {
+    const logBody = document.getElementById('logs-list');
+    if (!logBody) return;
+
+    try {
+        // Consulta los últimos 30 inicios de sesión ordenados por fecha
+        const q = query(collection(db, 'logs_acceso'), orderBy('fecha', 'desc'), limit(30));
+        const querySnapshot = await getDocs(q);
+        
+        logBody.innerHTML = '';
+
+        if (querySnapshot.empty) {
+            logBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;">No hay registros de acceso.</td></tr>';
+            return;
+        }
+
+        querySnapshot.forEach((docSnap) => {
+            const log = docSnap.data();
+            const fecha = log.fecha ? new Date(log.fecha.seconds * 1000).toLocaleString('es-MX') : '—';
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <strong>${log.nombre || 'Usuario'}</strong>
+                    <br><span style="font-size:10px; color:#6366f1; text-transform:uppercase; font-weight:bold;">${log.rol || 'estudiante'}</span>
+                </td>
+                <td>${log.email || '—'}</td>
+                <td>${fecha}</td>
+                <td style="font-family:monospace; font-size:11px; color:#94a3b8;">${docSnap.id.slice(0,8)}</td>
+            `;
+            logBody.appendChild(tr);
+        });
+    } catch (e) {
+        console.error('Error cargando logs:', e);
+    }
+};

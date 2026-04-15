@@ -7,7 +7,8 @@ import {
     signInWithEmailAndPassword,
     onAuthStateChanged,
     sendEmailVerification,
-    signOut
+    signOut,
+    sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {
     getFirestore,
@@ -17,7 +18,9 @@ import {
     collection,
     query,
     where,
-    getDocs
+    getDocs,
+    addDoc,           // <--- MOVIDO AQUÍ
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 
@@ -80,7 +83,6 @@ async function handleSignIn(input, password) {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // 🔥 OBTENER DATOS DEL USUARIO
         const userDoc = await getDoc(doc(db, "perfiles", user.uid));
 
         if (!userDoc.exists()) {
@@ -89,19 +91,22 @@ async function handleSignIn(input, password) {
         }
 
         const userData = userDoc.data();
-        console.log(userData.rol);
-        // 🔥 SOLO VALIDAR CORREO SI ES USUARIO NORMAL
+
+        // ✅ REGISTRO LOCAL DEL LOG (Justo después de obtener userData)
+        await addDoc(collection(db, 'logs_acceso'), {
+            nombre: userData.username || 'Usuario',
+            email: user.email,
+            rol: userData.rol || 'estudiante',
+            fecha: serverTimestamp()
+        });
+
+        // Continuación de tu lógica de roles...
         if (userData.rol === "usuario" && !user.emailVerified) {
-
-            await sendEmailVerification(user); // opcional (reenviar)
+            await sendEmailVerification(user);
             await signOut(auth);
-
-            return {
-                success: false,
-                message: "Debes verificar tu correo antes de iniciar sesión 📩"
-            };
+            return { success: false, message: "Debes verificar tu correo 📩" };
         }
-        // 🔥 REDIRECCIONES SEGÚN ROL
+
         if (userData.rol === "admin") {
             window.location.href = 'admin-dashboard.html';
         } else if (userData.rol === 'creador') {
@@ -113,6 +118,7 @@ async function handleSignIn(input, password) {
         return { success: true };
 
     } catch (error) {
+        console.error(error);
         return { success: false, message: 'Correo o contraseña incorrectos.' };
     }
 }
@@ -214,8 +220,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnLoginNav.classList.remove('hidden');
             }
         }
+        
     });
-});
+    
+}); 
 const resendBtn = document.getElementById('resend-verification');
 
 if (resendBtn) {
