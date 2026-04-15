@@ -1066,15 +1066,13 @@
             </div>
             <div class="nav-item" onclick="goTo('estado',this)">
                 <span class="nav-icon">🔍</span> Estado de Videos
-                <span id="badge-pending" class="nav-badge">3</span>
+                
             </div>
-            <div class="nav-item" onclick="goTo('soporte',this)">
-                <span class="nav-icon">🛠️</span> Soporte Técnico
+            <div class="nav-item" onclick="goTo('subir-youtube',this)">
+                <span class="nav-icon">⬆️</span> Subir video Youtube
+                
             </div>
-            <div class="nav-label">Reportes</div>
-            <div class="nav-item" onclick="goTo('reporte',this)">
-                <span class="nav-icon">📊</span> Mi Progreso
-            </div>
+            
         </div>
 
         <div class="sidebar-user">
@@ -1347,6 +1345,9 @@
             </div>
 
         </div>
+        <div class="action-card" onclick="openYoutubeModal()">
+    
+</div>
 
         <!-- ══════════════════════════════════════
        SECCIÓN 3: EDITAR CONTENIDO (4.1–4.3)
@@ -1433,100 +1434,6 @@
             </div>
         </div>
 
-        <!-- ══════════════════════════════════════
-       SECCIÓN 6: SOPORTE TÉCNICO (6.1–6.2)
-  ══════════════════════════════════════ -->
-        <div id="sec-soporte" class="section">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-
-                <div class="card">
-                    <div class="card-head">
-                        <div>
-                            <h3>🛠️ Editar / Reemplazar video incorrecto</h3>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group" style="margin-bottom:14px;">
-                            <label class="form-label">Seleccionar video a corregir</label>
-                            <select id="soporte-video-sel" class="form-select">
-              <option value="">— Elige un video —</option>
-            </select>
-                        </div>
-                        <div class="form-group" style="margin-bottom:14px;">
-                            <label class="form-label">Subir versión corregida</label>
-                            <input type="file" id="soporte-file" class="form-input" accept="video/*" style="padding:7px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom:14px;">
-                            <label class="form-label">Nota de corrección</label>
-                            <textarea id="soporte-nota" class="form-textarea" placeholder="Describe qué corregiste en este video..."></textarea>
-                        </div>
-                        <button class="btn btn-primary" style="width:100%;" onclick="submitCorrection()">🔄 Actualizar y re-enviar</button>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-head">
-                        <div>
-                            <h3>📋 Historial de correcciones</h3>
-                        </div>
-                    </div>
-                    <div style="padding:16px 20px;" id="corrections-list">
-                        <div class="empty">
-                            <div class="empty-icon">📋</div>
-                            <div class="empty-title">Sin correcciones aún</div>
-                            <div class="empty-sub">Aquí aparecerán los videos que hayas corregido</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- ══════════════════════════════════════
-       SECCIÓN 7: REPORTE DE PROGRESO (8.1–8.3)
-  ══════════════════════════════════════ -->
-        <div id="sec-reporte" class="section">
-            <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
-
-                <!-- Reporte mensual -->
-                <div class="card">
-                    <div class="card-head">
-                        <div>
-                            <h3>📊 Mi progreso mensual (8.1)</h3>
-                        </div>
-                        <div style="display:flex;gap:8px;">
-                            <button class="btn btn-outline" onclick="generateReport()">📄 Generar reporte</button>
-                            <button class="btn btn-primary" onclick="sendReport()">📤 Enviar al admin (8.2)</button>
-                        </div>
-                    </div>
-                    <div class="card-body" id="report-body">
-                        <!-- Se llena dinámicamente -->
-                    </div>
-                </div>
-
-                <!-- Resumen -->
-                <div>
-                    <div class="card" style="margin-bottom:16px;">
-                        <div class="card-head">
-                            <div>
-                                <h3>🏅 Logros</h3>
-                            </div>
-                        </div>
-                        <div class="card-body" id="achievements-body">
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head">
-                            <div>
-                                <h3>📬 Reportes enviados (8.3)</h3>
-                            </div>
-                        </div>
-                        <div style="padding:14px 20px;" id="reports-sent-list">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
 
     </main>
 <footer class="footer">
@@ -1606,7 +1513,47 @@
 
     <!-- Toast -->
     <div id="toast-wrap"></div>
+    <div id="sec-subir-youtube" class="section">
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h3>▶️ Publicar desde YouTube</h3>
+                <p>Comparte contenido externo directamente en el muro de la comunidad</p>
+            </div>
+        </div>
+        <div class="card-body" style="text-align: center; padding: 40px;">
+            <div style="font-size: 64px; margin-bottom: 20px;">🎬</div>
+            <p style="color: var(--slate); margin-bottom: 24px;">Haz clic en el botón de abajo para configurar el enlace del video.</p>
+            
+            <button class="btn btn-primary" onclick="openYoutubeModal()" style="padding: 15px 30px;">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 8px;"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Configurar Video de YouTube
+            </button>
+        </div>
+    </div>
+</div>
 
+<div id="youtube-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title">▶️ Publicar desde YouTube</div>
+        <div class="modal-sub">Pega el enlace del video para compartirlo en el muro</div>
+        
+        <div class="form-group" style="margin-bottom:15px;">
+            <label class="form-label">Enlace de YouTube</label>
+            <input type="text" id="yt-url" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        
+        <div class="form-group" style="margin-bottom:15px;">
+            <label class="form-label">Título del Video</label>
+            <input type="text" id="yt-titulo" class="form-input" placeholder="Ej: Clase de señas básicas">
+        </div>
+
+        <div style="display:flex;gap:10px;">
+            <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('youtube-modal')">Cancelar</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="saveYoutubeLink()">Guardar Link</button>
+        </div>
+    </div>
+</div>
     <style>
         @keyframes slideUp {
             from {

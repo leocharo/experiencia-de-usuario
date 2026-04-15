@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
     <title>Admin - Mis Manos Hablarán</title>
     <style>
         * {
@@ -34,24 +35,19 @@
             gap: 16px;
         }
         
-        #auth-loading .spinner {
+        .spinner {
             width: 48px;
             height: 48px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
+            border: 5px solid rgba(255, 255, 255, .3);
             border-top-color: white;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin .8s linear infinite;
         }
         
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
-        }
-        
-        #dashboard-content {
-            display: none;
-            width: 100%;
         }
         
         .sidebar {
@@ -61,11 +57,13 @@
             height: 100vh;
             position: sticky;
             top: 0;
+            display: flex;
+            flex-direction: column;
         }
         
         .sidebar-header {
             padding: 30px 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
         }
         
         .sidebar-header h2 {
@@ -73,6 +71,25 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: .3s;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, .05);
+            color: white;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, .1);
+            color: white;
+            border-left: 4px solid #667eea;
         }
         
         .content {
@@ -85,7 +102,7 @@
             background: white;
             padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
             margin-bottom: 30px;
         }
         
@@ -100,7 +117,7 @@
             background: white;
             padding: 25px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
         }
         
         .stat-card-value {
@@ -113,8 +130,9 @@
         .table-container {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
             overflow: hidden;
+            margin-bottom: 30px;
         }
         
         .table-header {
@@ -123,6 +141,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .user-table {
@@ -149,27 +169,8 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-        }
-        
-        .badge-level-1 {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-        
-        .badge-level-2 {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        
-        .badge-level-3 {
-            background: #fae8ff;
-            color: #86198f;
-        }
-        
-        .badge-level-4 {
-            background: #dcfce7;
-            color: #16a34a;
-            border: 1px solid #16a34a;
+            background: #eff6ff;
+            color: #2563eb;
         }
         
         .btn {
@@ -179,7 +180,12 @@
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
-            transition: 0.2s;
+            transition: .2s;
+            margin-right: 4px;
+        }
+        
+        .btn:hover {
+            opacity: .85;
         }
         
         .btn-view {
@@ -192,6 +198,16 @@
             color: #dc2626;
         }
         
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+        
         .btn-refresh {
             background: #10b981;
             color: white;
@@ -199,25 +215,135 @@
             align-items: center;
             gap: 8px;
         }
+        /* ── MURO GRID ── */
         
-        .btn-refresh:hover {
-            background: #059669;
+        .muro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 25px;
         }
+        
+        .muro-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fafafa;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+        }
+        
+        .muro-card-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .muro-card-profesor {
+            font-weight: 700;
+            color: #1d4ed8;
+            font-size: 14px;
+        }
+        
+        .muro-card-fecha {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        
+        .muro-card-body {
+            padding: 14px 16px;
+        }
+        
+        .muro-card-texto {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .muro-card-img {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+        /* ── YOUTUBE EMBED IN ADMIN MURO ── */
+        
+        .muro-yt-wrap {
+            position: relative;
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .muro-yt-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .muro-card-footer {
+            padding: 10px 16px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chip-type {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .btn-delete-muro {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+        
+        .btn-delete-muro:hover {
+            background: #fca5a5;
+        }
+        
+        .muro-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+            grid-column: 1 / -1;
+        }
+        
+        .muro-empty .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        /* ── MODAL ── */
         
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            inset: 0;
+            background: rgba(0, 0, 0, .6);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             visibility: hidden;
             opacity: 0;
-            transition: 0.3s;
+            transition: .3s;
         }
         
         .modal-overlay.active {
@@ -233,126 +359,181 @@
             text-align: center;
         }
         
-        #inactivity-modal {
+        .toast {
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            visibility: hidden;
+            bottom: 30px;
+            right: 30px;
+            background: #1e293b;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+            transform: translateY(80px);
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: all .3s;
+            z-index: 9000;
         }
         
-        #inactivity-modal.show {
-            visibility: visible;
+        .toast.show {
+            transform: translateY(0);
             opacity: 1;
+        }
+        /* ── STATS MURO ── */
+        
+        .muro-stats-bar {
+            display: flex;
+            gap: 12px;
+            padding: 0 25px 0;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .muro-stat-pill {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
         }
     </style>
 </head>
 
 <body>
-
     <div id="auth-loading">
         <div class="spinner"></div>
         <span>Cargando panel...</span>
     </div>
 
-    <div id="dashboard-content">
+    <div id="dashboard-content" style="display: none; width: 100%;">
         <nav class="sidebar">
             <div class="sidebar-header">
                 <h2>🖐️ Admin LSM</h2>
             </div>
-            <div style="padding: 20px; color: #94a3b8; font-size: 14px;">GESTIÓN</div>
-            <div style="padding: 10px 25px; background: rgba(255,255,255,0.1); cursor: pointer;">Usuarios</div>
-            <div id="logout-btn" style="padding: 10px 25px; margin-top: 20px; color: #f87171; cursor: pointer; font-weight: bold;">
-                🚪 Cerrar Sesión
-            </div>
+            <div style="padding: 20px; color: #94a3b8; font-size: 12px; font-weight: bold; letter-spacing: 1px;">GESTIÓN</div>
+            <div id="btn-nav-usuarios" class="nav-item active">👥 Usuarios</div>
+            <div id="btn-nav-publicaciones" class="nav-item">🕒 Pubs. Pendientes <span id="badge-solicitudes" style="display:none;background:#ef4444;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;">0</span></div>
+            <div id="btn-nav-muro" class="nav-item">🌐 Ver Muro</div>
+            <div id="logout-btn" style="padding: 15px 25px; margin-top: auto; color: #f87171; cursor: pointer; font-weight: bold; font-size: 14px;">🚪 Cerrar Sesión</div>
         </nav>
 
         <main class="content">
-            <div class="header">
-                <h1>Dashboard de Control</h1>
-                <p>Monitoreo de progreso de los estudiantes.</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <p>Total Alumnos</p>
-                    <div id="stat-total-users" class="stat-card-value">0</div>
+            <!-- SECCIÓN USUARIOS -->
+            <div id="section-usuarios">
+                <div class="header">
+                    <h1>Dashboard de Control</h1>
+                    <p>Monitoreo de progreso de los estudiantes.</p>
                 </div>
-                <div class="stat-card">
-                    <p>Nivel Promedio</p>
-                    <div id="stat-avg-level" class="stat-card-value">0</div>
-                </div>
-                <div class="stat-card">
-                    <p>Graduados</p>
-                    <div id="stat-completed" class="stat-card-value">0</div>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <div class="table-header">
-                    <h3 style="font-size: 18px;">Lista de Estudiantes</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="admin-search" style="padding: 8px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Buscar...">
-                        <button id="refresh-btn" class="btn btn-refresh"><span>🔄</span> Actualizar</button>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p style="color:#64748b; font-size:14px;">Total Alumnos</p>
+                        <div id="stat-total-users" class="stat-card-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <p style="color:#64748b; font-size:14px;">Nivel Promedio</p>
+                        <div id="stat-avg-level" class="stat-card-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <p style="color:#64748b; font-size:14px;">Graduados</p>
+                        <div id="stat-completed" class="stat-card-value">0</div>
                     </div>
                 </div>
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>Alumno</th>
-                            <th>Correo</th>
-                            <th>Nivel Real</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="users-list"></tbody>
-                </table>
-            </div>
-            <div class="table-container" style="margin-top: 30px; padding: 25px; border-left: 4px solid #10b981;">
-                <h3 style="margin-bottom: 15px; color: #065f46;">📥 Registrar Video en Muro (Modo Local)</h3>
-                <p style="font-size: 13px; color: #64748b; margin-bottom: 20px;">
-                    Usa esto después de mover el video manualmente a la carpeta <b>video_grabados</b>.
-                </p>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <input type="text" id="local-profesor-nombre" placeholder="Nombre del Profesor" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    <input type="text" id="local-archivo-nombre" placeholder="Nombre exacto del archivo (ej: saludo.mp4)" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Lista de Estudiantes</h3>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <input type="text" id="admin-search" style="padding:10px; border:1px solid #e2e8f0; border-radius:8px;" placeholder="Buscar...">
+                            <button id="refresh-btn" class="btn btn-refresh">🔄 Actualizar</button>
+                        </div>
+                    </div>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th>Correo</th>
+                                <th>Nivel Real</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-list"></tbody>
+                    </table>
                 </div>
-
-                <button id="btn-registrar-local" style="margin-top: 15px; width: 100%; background: #10b981; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-        Publicar en el Muro
-    </button>
             </div>
-            <div id="contenedor-revision-admin" style="padding: 20px;" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p style="color: #64748b; text-align: center;">Buscando nuevos archivos...</p>
+
+            <!-- SECCIÓN PUBLICACIONES PENDIENTES -->
+            <div id="section-publicaciones" style="display:none;">
+                <div class="header">
+                    <h1>Moderación de Muro</h1>
+                    <p>Revisa y aprueba el contenido de los profesores.</p>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Solicitudes Pendientes</h3>
+                        <button class="btn btn-refresh" onclick="cargarRevisionesMuro()">🔄 Actualizar</button>
+                    </div>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Profesor</th>
+                                <th>Contenido</th>
+                                <th>Tipo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-revision-muro"></tbody>
+                    </table>
+                </div>
             </div>
-    </div>
-    </main>
+
+            <!-- SECCIÓN MURO -->
+            <div id="section-muro" style="display:none;">
+                <div class="header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h1>Muro de la Comunidad</h1>
+                        <p>Publicaciones aprobadas visibles para los estudiantes.</p>
+                    </div>
+                    <button class="btn btn-refresh" onclick="cargarMuro()">🔄 Actualizar</button>
+                </div>
+                <div class="muro-stats-bar" id="muro-stats-bar"></div>
+                <div id="muro-grid" class="muro-grid"></div>
+            </div>
+        </main>
     </div>
 
+    <!-- MODALES -->
     <div id="view-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3 id="modal-user-name" style="margin-bottom: 20px; font-size: 24px;">Detalles</h3>
+            <h3 id="modal-user-name"></h3>
             <div id="levels-details-container"></div>
-            <button class="btn btn-view" style="margin-top: 25px; width: 100%; padding: 12px;" onclick="closeModals()">Cerrar</button>
+            <button class="btn btn-view" style="width:100%; margin-top:20px;" onclick="closeModals()">Cerrar</button>
         </div>
     </div>
 
     <div id="delete-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-bottom: 15px;">¿Eliminar usuario?</h3>
-            <p style="color: #64748b; margin-bottom: 20px;">Esta acción es permanente.</p>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn btn-view" style="flex: 1;" onclick="closeModals()">Cancelar</button>
-                <button id="confirm-delete-btn" class="btn btn-danger" style="flex: 1;">Eliminar Ahora</button>
+            <h3>¿Eliminar usuario?</h3>
+            <p style="color:#64748b; margin-top:8px; font-size:14px;">Esta acción eliminará al usuario del sistema.</p>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn btn-view" style="flex:1" onclick="closeModals()">No</button>
+                <button id="confirm-delete-btn" class="btn btn-danger" style="flex:1">Sí, eliminar</button>
             </div>
         </div>
     </div>
+
+    <div id="delete-muro-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="font-size:2.5rem; margin-bottom:12px;">🗑️</div>
+            <h3>¿Eliminar esta publicación?</h3>
+            <p style="color:#64748b; margin-top:8px; font-size:14px;">Se eliminará del muro y no podrá recuperarse.</p>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn btn-view" style="flex:1" onclick="closeModals()">Cancelar</button>
+                <button id="confirm-delete-muro-btn" class="btn btn-reject" style="flex:1">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="email-modal" class="modal-overlay">
         <div class="modal-content">
             <h3 id="email-target-user" style="margin-bottom: 15px;">Enviar aviso</h3>
@@ -364,20 +545,96 @@
             </div>
         </div>
     </div>
-    <div id="inactivity-modal">
-        <div style="background:white; padding:35px; border-radius:20px; width:360px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-            <div style="font-size:52px; margin-bottom:10px;">⏳</div>
-            <h3 style="font-size:20px; font-weight:700; color:#1e293b; margin-bottom:8px;">¿Sigues ahí?</h3>
-            <p style="color:#64748b; margin-bottom:6px;">Tu sesión se cerrará por inactividad en:</p>
-            <div id="inactivity-countdown" style="font-size:56px; font-weight:800; color:#dc2626; line-height:1; margin:12px 0;">60</div>
-            <p style="color:#64748b; margin-bottom:24px;">segundos</p>
-            <button id="inactivity-stay-btn" style="width:100%; padding:13px; background:#4f46e5; color:white; font-weight:700; border:none; border-radius:10px; cursor:pointer; font-size:15px;">
-                ✅ Seguir en sesión
-            </button>
-        </div>
-    </div>
+
+    <div id="toast" class="toast"></div>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="module" src="admin.js"></script>
+
+    <script>
+        // ══════════════════════════════════════════════════════════════
+        // admin-dashboard.html — Script inline
+        // Navegación, modales y helpers. La lógica real está en admin.js
+        // ══════════════════════════════════════════════════════════════
+
+        // ── NAVEGACIÓN ────────────────────────────────────────────────
+        const sections = {
+            usuarios:     'section-usuarios',
+            publicaciones:'section-publicaciones',
+            muro:         'section-muro'
+        };
+        const navBtns = {
+            usuarios:     'btn-nav-usuarios',
+            publicaciones:'btn-nav-publicaciones',
+            muro:         'btn-nav-muro'
+        };
+
+        function switchSection(key) {
+            Object.keys(sections).forEach(k => {
+                document.getElementById(sections[k]).style.display = k === key ? 'block' : 'none';
+                document.getElementById(navBtns[k]).classList.toggle('active', k === key);
+            });
+        }
+
+        document.getElementById('btn-nav-usuarios').addEventListener('click', () => {
+            switchSection('usuarios');
+        });
+        document.getElementById('btn-nav-publicaciones').addEventListener('click', () => {
+            switchSection('publicaciones');
+            // cargarRevisionesMuro viene de admin.js
+            if (typeof cargarRevisionesMuro === 'function') cargarRevisionesMuro();
+        });
+        document.getElementById('btn-nav-muro').addEventListener('click', () => {
+            switchSection('muro');
+            if (typeof cargarMuro === 'function') cargarMuro();
+        });
+
+        window.closeModals = function() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        };
+
+        // ── YOUTUBE HELPER (usado por admin.js) ───────────────────────
+        function getYouTubeEmbedUrl(url) {
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+            ];
+            for (const p of patterns) {
+                const m = url.match(p);
+                if (m) return `https://www.youtube.com/embed/${m[1]}`;
+            }
+            return null;
+        }
+
+        // ── Actualizar badge cada 15 segundos ────────────────────────
+        function actualizarBadge() {
+            try {
+                const todas = JSON.parse(localStorage.getItem('solicitudes_muro') || '[]');
+                const count = todas.filter(s => s.estado === 'pendiente').length;
+                const badge = document.getElementById('badge-solicitudes');
+                if (badge) {
+                    badge.textContent   = count > 0 ? count : '';
+                    badge.style.display = count > 0 ? 'inline-block' : 'none';
+                }
+            } catch(e) {}
+        }
+
+        // Llamar al badge al cargar y periódicamente
+        actualizarBadge();
+        setInterval(actualizarBadge, 15000);
+
+        // También escuchar cambios de storage (si el creador está en otra pestaña)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'solicitudes_muro') {
+                actualizarBadge();
+                // Si la sección de publicaciones está visible, recargar
+                const secPubs = document.getElementById('section-publicaciones');
+                if (secPubs && secPubs.style.display !== 'none') {
+                    if (typeof cargarRevisionesMuro === 'function') cargarRevisionesMuro();
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

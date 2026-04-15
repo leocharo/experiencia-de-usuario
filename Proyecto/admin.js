@@ -1,11 +1,15 @@
+// ══════════════════════════════════════════════════════════════════
+// admin.js  —  Firebase Auth + Firestore para usuarios.
+//              localStorage para gestión de contenido del muro.
+// ══════════════════════════════════════════════════════════════════
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc }
+    from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-// CAMBIO AQUÍ: Usamos el objeto global de la ventana en lugar de import
-var emailjs = window.emailjs;
-
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyC7zx9CreT58V1AWTq7pMoS_ps65mXf-9Y",
     authDomain: "mis-manos-hablaran-44e17.firebaseapp.com",
     projectId: "mis-manos-hablaran-44e17",
@@ -14,249 +18,414 @@ var firebaseConfig = {
     appId: "1:637462888639:web:c4070137237c211dbd460a"
 };
 
-var app = initializeApp(firebaseConfig);
-var db = getFirestore(app);
-var auth = getAuth(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
 
-// Inicializar EmailJS
-if (emailjs) {
-    emailjs.init("Au9kUY26dgMboudTk");
-}
+// ── localStorage keys ────────────────────────────────────────────
+const SOLICITUDES_KEY = 'solicitudes_muro';
 
-var currentUserIdToDelete = null;
-var cachedUsers = {};
-var selectedUserEmail = "";
-var selectedUserName = "";
+let cachedUsers           = {};
+let currentUserIdToDelete = null;
 
-var INACTIVITY_LIMIT = 900000;
-var WARNING_SECONDS = 60;
-var inactivityTimer = null;
-var countdownInterval = null;
-var warningVisible = false;
-
-onAuthStateChanged(auth, async function(user) {
-    var loadingEl = document.getElementById('auth-loading');
-    var contentEl = document.getElementById('dashboard-content');
-    if (!user) {
-        window.location.href = "index.html";
-        return;
-    }
+// ════════════════════════════════════════════════════════════════
+// AUTH CHECK
+// ════════════════════════════════════════════════════════════════
+onAuthStateChanged(auth, async (user) => {
+    const loadingEl = document.getElementById('auth-loading');
+    const contentEl = document.getElementById('dashboard-content');
+    if (!user) { window.location.href = 'index.html'; return; }
     try {
-        var userDoc = await getDoc(doc(db, "perfiles", user.uid));
-        if (userDoc.exists() && userDoc.data().rol === "admin") {
+        const userDoc = await getDoc(doc(db, 'perfiles', user.uid));
+        if (userDoc.exists() && userDoc.data().rol === 'admin') {
             if (loadingEl) loadingEl.style.display = 'none';
             if (contentEl) contentEl.style.display = 'flex';
-            iniciarTemporizador();
             loadAdminData();
         } else {
-            window.location.href = "index.html";
+            window.location.href = 'index.html';
         }
     } catch (error) {
-        window.location.href = "index.html";
+        window.location.href = 'index.html';
     }
 });
 
-function calcularNivelReal(user) {
-    if (user.nivel4_completado) return 4;
-    if (user.nivel3_completado) return 3;
-    if (user.nivel2_completado) return 2;
-    if (user.nivel1_completado) return 1;
-    return 1;
-}
-
+// ════════════════════════════════════════════════════════════════
+// USUARIOS (Firestore)
+// ════════════════════════════════════════════════════════════════
 async function loadAdminData() {
-    var listBody = document.getElementById('users-list');
+    const listBody = document.getElementById('users-list');
     if (!listBody) return;
     try {
-        var querySnapshot = await getDocs(collection(db, "perfiles"));
+        const querySnapshot = await getDocs(collection(db, 'perfiles'));
         listBody.innerHTML = '';
-        var stats = { total: 0, levelsSum: 0, finished: 0 };
-        querySnapshot.forEach(function(docSnap) {
-            var user = docSnap.data();
-            var id = docSnap.id;
+        let stats = { total: 0, levelsSum: 0, finished: 0 };
+
+        querySnapshot.forEach((docSnap) => {
+            const user = docSnap.data();
             if (user.rol === 'admin') return;
+            const id = docSnap.id;
             cachedUsers[id] = user;
-            var nivel = calcularNivelReal(user);
+
+            const nivel = user.nivel4_completado ? 4 :
+                          user.nivel3_completado ? 3 :
+                          user.nivel2_completado ? 2 : 1;
+
             stats.total++;
             stats.levelsSum += nivel;
             if (user.nivel4_completado) stats.finished++;
-            var row = document.createElement('tr');
-            row.innerHTML = '<td><strong>' + (user.username || "Estudiante") + '</strong></td>' +
-                '<td>' + (user.email || "Sin correo") + '</td>' +
-                '<td><span class="badge badge-level-' + nivel + '">Nivel ' + nivel + '</span></td>' +
-                '<td>' +
-                '<button class="btn btn-view" onclick="verDetalles(\'' + id + '\')">Vista</button> ' +
-                '<button class="btn btn-refresh" style="background:#f0fdf4; color:#16a34a; border:none;" onclick="abrirAviso(\'' + id + '\')">Aviso</button> ' +
-                '<button class="btn btn-danger" onclick="confirmarEliminar(\'' + id + '\')">Eliminar</button>' +
-                '</td>';
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${user.username || 'Estudiante'}</strong></td>
+                <td>${user.email || ''}</td>
+                <td><span class="badge">Nivel ${nivel}</span></td>
+                <td>
+                    <button class="btn btn-view" onclick="verDetalles('${id}')">Vista</button>
+                    <button class="btn btn-success" style="background:#10b981;color:white;" onclick="abrirMenuEmail('${id}')">📧 Aviso</button>
+                    <button class="btn btn-danger" onclick="confirmarEliminar('${id}')">Eliminar</button>
+                </td>`;
             listBody.appendChild(row);
         });
+
         document.getElementById('stat-total-users').textContent = stats.total;
-        document.getElementById('stat-avg-level').textContent = stats.total > 0 ? (stats.levelsSum / stats.total).toFixed(1) : "0";
-        document.getElementById('stat-completed').textContent = stats.finished;
-    } catch (e) { console.error(e); }
-}
-
-function mostrarAviso() {
-    warningVisible = true;
-    var segundos = WARNING_SECONDS;
-    var modal = document.getElementById('inactivity-modal');
-    var countdownEl = document.getElementById('inactivity-countdown');
-    if (countdownEl) countdownEl.textContent = segundos;
-    if (modal) modal.classList.add('show');
-    countdownInterval = setInterval(async function() {
-        segundos--;
-        if (countdownEl) countdownEl.textContent = segundos;
-        if (segundos <= 0) {
-            clearInterval(countdownInterval);
-            await ejecutarLogout();
-        }
-    }, 1000);
-}
-
-function resetTimer() {
-    if (warningVisible) return;
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(mostrarAviso, INACTIVITY_LIMIT);
-}
-
-function iniciarTemporizador() {
-    var evts = ['mousemove', 'mousedown', 'keydown', 'scroll', 'click'];
-    for (var i = 0; i < evts.length; i++) {
-        document.addEventListener(evts[i], resetTimer, { passive: true });
+        document.getElementById('stat-avg-level').textContent   = stats.total > 0 ? (stats.levelsSum / stats.total).toFixed(1) : '0';
+        document.getElementById('stat-completed').textContent   = stats.finished;
+    } catch (e) {
+        console.error('Error cargando usuarios:', e);
     }
-    resetTimer();
 }
 
-async function ejecutarLogout() {
-    await signOut(auth);
-    window.location.href = "index.html";
-}
-
-window.abrirAviso = function(userId) {
-    var user = cachedUsers[userId];
-    if (user) {
-        selectedUserEmail = user.email;
-        selectedUserName = user.username;
-        var targetText = document.getElementById('email-target-user');
-        var emailModal = document.getElementById('email-modal');
-        if (targetText) { targetText.textContent = "Enviar aviso a: " + selectedUserName; }
-        if (emailModal) { emailModal.classList.add('active'); }
-    }
-};
-
-window.enviarAvisoPorTipo = async function(tipo) {
-    var templateIDs = { inactividad: "template_69ol06r", progreso: "template_bvfb1je" };
-    try {
-        await emailjs.send('service_khetf14', templateIDs[tipo], {
-            to_name: selectedUserName,
-            to_email: selectedUserEmail,
-            message: tipo === 'inactividad' ? "Te extrañamos en el curso." : "¡Sigue así, ya casi terminas!"
+// Búsqueda
+const searchInput = document.getElementById('admin-search');
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        document.querySelectorAll('#users-list tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
         });
-        alert("✉️ Correo enviado con éxito.");
-        window.closeModals();
-    } catch (error) {
-        alert("Error al enviar el correo.");
-    }
-};
+    });
+}
 
-window.closeModals = function() {
-    var modals = document.querySelectorAll('.modal-overlay');
-    for (var i = 0; i < modals.length; i++) { modals[i].classList.remove('active'); }
-    var inact = document.getElementById('inactivity-modal');
-    if (inact) inact.classList.remove('show');
-};
+const refreshBtn = document.getElementById('refresh-btn');
+if (refreshBtn) refreshBtn.addEventListener('click', loadAdminData);
 
+// Ver detalles
 window.verDetalles = function(id) {
-    var user = cachedUsers[id];
+    const user    = cachedUsers[id];
+    const nameEl  = document.getElementById('modal-user-name');
+    const detailEl= document.getElementById('levels-details-container');
     if (!user) return;
-    var container = document.getElementById('levels-details-container');
-    document.getElementById('modal-user-name').textContent = "Progreso de " + user.username;
-    var niveles = [
-        { n: 1, l: "Abecedario", c: user.nivel1_completado },
-        { n: 2, l: "Palabras", c: user.nivel2_completado },
-        { n: 3, l: "Calendario", c: user.nivel3_completado },
-        { n: 4, l: "Meses", c: user.nivel4_completado }
-    ];
-    container.innerHTML = niveles.map(function(niv) {
-        return '<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;">' +
-            '<span>Nivel ' + niv.n + ': ' + niv.l + '</span>' +
-            '<span>' + (niv.c ? '✅' : '⏳') + '</span></div>';
-    }).join('');
+    if (nameEl)   nameEl.textContent = user.username || 'Estudiante';
+    if (detailEl) {
+        detailEl.innerHTML = `
+            <p style="margin-top:10px;color:#64748b;font-size:13px;">Correo: ${user.email || 'N/A'}</p>
+            <div style="margin-top:16px;text-align:left;">
+                <p style="font-size:13px;">Nivel 1: ${user.nivel1_completado ? '✅' : '⏳'}</p>
+                <p style="font-size:13px;">Nivel 2: ${user.nivel2_completado ? '✅' : '⏳'}</p>
+                <p style="font-size:13px;">Nivel 3: ${user.nivel3_completado ? '✅' : '⏳'}</p>
+                <p style="font-size:13px;">Nivel 4: ${user.nivel4_completado ? '✅' : '⏳'}</p>
+            </div>`;
+    }
     document.getElementById('view-modal').classList.add('active');
 };
 
+// Eliminar usuario
 window.confirmarEliminar = function(id) {
     currentUserIdToDelete = id;
     document.getElementById('delete-modal').classList.add('active');
 };
 
-var btnDelete = document.getElementById('confirm-delete-btn');
-if (btnDelete) {
-    btnDelete.addEventListener('click', async function() {
-        if (currentUserIdToDelete) {
-            await deleteDoc(doc(db, "perfiles", currentUserIdToDelete));
+const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', async () => {
+        if (!currentUserIdToDelete) return;
+        try {
+            await deleteDoc(doc(db, 'perfiles', currentUserIdToDelete));
+            currentUserIdToDelete = null;
             window.closeModals();
             loadAdminData();
-        }
-    });
-}
-
-var btnStay = document.getElementById('inactivity-stay-btn');
-if (btnStay) {
-    btnStay.addEventListener('click', function() {
-        warningVisible = false;
-        document.getElementById('inactivity-modal').classList.remove('show');
-        clearInterval(countdownInterval);
-        resetTimer();
-    });
-}
-
-var btnLogout = document.getElementById('logout-btn');
-if (btnLogout) {
-    btnLogout.addEventListener('click', function() {
-        if (confirm("¿Cerrar sesión?")) ejecutarLogout();
-    });
-}
-
-var searchInput = document.getElementById('admin-search');
-if (searchInput) {
-    searchInput.addEventListener('input', function(e) {
-        var term = e.target.value.toLowerCase();
-        var rows = document.querySelectorAll('#users-list tr');
-        for (var i = 0; i < rows.length; i++) {
-            var txt = rows[i].innerText.toLowerCase();
-            rows[i].style.display = txt.indexOf(term) > -1 ? "" : "none";
-        }
-    });
-}
-
-const btnRegistrar = document.getElementById('btn-registrar-local');
-if (btnRegistrar) {
-    btnRegistrar.addEventListener('click', async() => {
-        const profesor = document.getElementById('local-profesor-nombre').value;
-        const archivo = document.getElementById('local-archivo-nombre').value;
-
-        if (!profesor || !archivo) {
-            return alert("Por favor llena ambos campos.");
-        }
-
-        try {
-            await addDoc(collection(db, "solicitudes_multimedia"), {
-                profesorNombre: profesor,
-                nombreArchivo: archivo,
-                estado: "aceptado", // Se registra como aceptado de una vez
-                fecha: new Date(),
-                tipo: archivo.endsWith('.mp4') ? 'video/mp4' : 'image/png' // Detección simple
-            });
-
-            alert("✅ ¡Registrado! Asegúrate de que '" + archivo + "' esté dentro de la carpeta video_grabados.");
-
-            // Limpiar campos
-            document.getElementById('local-profesor-nombre').value = '';
-            document.getElementById('local-archivo-nombre').value = '';
         } catch (e) {
-            console.error("Error al registrar:", e);
+            alert('Error al eliminar usuario.');
         }
     });
+}
+
+// ════════════════════════════════════════════════════════════════
+// EMAIL JS
+// ════════════════════════════════════════════════════════════════
+let selectedUserEmail = null;
+let selectedUserName  = null;
+
+emailjs.init('Au9kUY26dgMboudTk');
+
+window.abrirMenuEmail = function(id) {
+    const user = cachedUsers[id];
+    if (!user) return;
+    selectedUserEmail = user.email;
+    selectedUserName  = user.username || 'Estudiante';
+    const targetText  = document.getElementById('email-target-user');
+    if (targetText) targetText.textContent = 'Enviar aviso a: ' + selectedUserName;
+    document.getElementById('email-modal').classList.add('active');
+};
+
+window.enviarAvisoPorTipo = async function(tipo) {
+    if (!selectedUserEmail) { alert('No se ha seleccionado destinatario.'); return; }
+    const templateIDs = {
+        inactividad: 'template_69ol06r',
+        progreso:    'template_bvfb1je'
+    };
+    try {
+        await emailjs.send('service_khetf14', templateIDs[tipo], {
+            to_name:  selectedUserName,
+            to_email: selectedUserEmail,
+            message:  tipo === 'inactividad' ? 'Te extrañamos en el curso.' : '¡Sigue así, ya casi terminas!'
+        });
+        alert('✉️ Correo enviado con éxito a ' + selectedUserEmail);
+        window.closeModals();
+    } catch (error) {
+        console.error('Error EmailJS:', error);
+        alert('Error al enviar el correo. Revisa la consola.');
+    }
+};
+
+// ════════════════════════════════════════════════════════════════
+// GESTIÓN DE SOLICITUDES DE CONTENIDO (localStorage)
+// ════════════════════════════════════════════════════════════════
+
+function getSolicitudes() {
+    try { return JSON.parse(localStorage.getItem(SOLICITUDES_KEY) || '[]'); }
+    catch (e) { return []; }
+}
+
+function saveSolicitudes(arr) {
+    localStorage.setItem(SOLICITUDES_KEY, JSON.stringify(arr));
+}
+
+// ── Cargar solicitudes pendientes ────────────────────────────────
+window.cargarRevisionesMuro = function() {
+    const tbody = document.getElementById('lista-revision-muro');
+    if (!tbody) return;
+
+    const todas      = getSolicitudes();
+    const pendientes = todas.filter(s => s.estado === 'pendiente');
+
+    // Actualizar badge de nav
+    const badge = document.getElementById('badge-solicitudes');
+    if (badge) {
+        badge.textContent   = pendientes.length > 0 ? pendientes.length : '';
+        badge.style.display = pendientes.length > 0 ? 'inline-block' : 'none';
+    }
+
+    tbody.innerHTML = '';
+
+    if (!pendientes.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">
+            ✅ No hay solicitudes pendientes en este momento.
+        </td></tr>`;
+        return;
+    }
+
+    pendientes.forEach(data => {
+        const tipoLabel = data.tipo === 'video/youtube' ? '▶️ YouTube' :
+                          data.tipo && data.tipo.indexOf('image') === 0 ? '🖼️ Imagen' :
+                          '🎬 Video';
+
+        // Preview del contenido
+        let preview = '';
+        if (data.tipo === 'video/youtube' && data.archivoURL) {
+            const embedUrl = getYouTubeEmbedUrl(data.archivoURL);
+            if (embedUrl) {
+                preview = `<div style="position:relative;width:160px;aspect-ratio:16/9;border-radius:6px;overflow:hidden;margin-bottom:4px;">
+                    <iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>
+                </div>`;
+            }
+        } else if (data.archivoURL && data.archivoURL.startsWith('data:video')) {
+            preview = `<video src="${data.archivoURL}" style="width:160px;border-radius:6px;max-height:90px;" controls></video>`;
+        }
+
+        const contenidoTexto = data.titulo || data.texto || data.nombreArchivo || '—';
+        const fechaStr = data.fecha ? new Date(data.fecha).toLocaleDateString('es-MX', {
+            day:'2-digit', month:'short', year:'numeric'
+        }) : '';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <strong>${data.profesorNombre || 'Creador'}</strong>
+                <div style="font-size:11px;color:#94a3b8;">${data.profesorEmail || ''}</div>
+            </td>
+            <td>
+                ${preview}
+                <div style="font-size:13px;color:#475569;max-width:220px;">${contenidoTexto}</div>
+                <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${data.tema || ''} ${data.nivel ? '· Nivel ' + data.nivel : ''}</div>
+                <div style="font-size:11px;color:#94a3b8;">${fechaStr}</div>
+            </td>
+            <td><span class="badge">${tipoLabel}</span></td>
+            <td>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <button class="btn btn-success" onclick="cambiarEstado('${data.id}', 'aceptado')">✅ Aprobar</button>
+                    <button class="btn btn-reject" onclick="pedirComentarioRechazo('${data.id}')">❌ Rechazar</button>
+                </div>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+};
+
+// ── Aprobar / Rechazar ────────────────────────────────────────────
+window.cambiarEstado = function(id, nuevoEstado, comentario = '') {
+    const todas = getSolicitudes();
+    const idx   = todas.findIndex(s => s.id === id);
+    if (idx === -1) return;
+
+    todas[idx].estado          = nuevoEstado;
+    todas[idx].comentarioAdmin = comentario;
+    todas[idx].fechaResolucion = new Date().toISOString();
+    saveSolicitudes(todas);
+
+    window.cargarRevisionesMuro();
+    window.cargarMuro();
+
+    const msg = nuevoEstado === 'aceptado' ?
+        '✅ Publicación aprobada y publicada en el muro' :
+        '❌ Publicación rechazada';
+    showToast(msg);
+};
+
+// Pedir comentario antes de rechazar
+window.pedirComentarioRechazo = function(id) {
+    const comentario = prompt('(Opcional) Escribe un comentario para el creador sobre por qué se rechaza:') || '';
+    window.cambiarEstado(id, 'rechazado', comentario);
+};
+
+// ── Cargar muro (aprobados) ───────────────────────────────────────
+window.cargarMuro = function() {
+    const grid     = document.getElementById('muro-grid');
+    const statsBar = document.getElementById('muro-stats-bar');
+    if (!grid) return;
+
+    const todas     = getSolicitudes();
+    const aprobadas = todas.filter(s => s.estado === 'aceptado');
+
+    // Stats
+    if (statsBar) {
+        const ytCount    = aprobadas.filter(p => p.tipo === 'video/youtube').length;
+        const videoCount = aprobadas.filter(p => p.tipo && p.tipo.indexOf('video') === 0 && p.tipo !== 'video/youtube').length;
+        statsBar.innerHTML = `
+            <div class="muro-stat-pill">📋 ${aprobadas.length} publicaciones</div>
+            <div class="muro-stat-pill">▶️ ${ytCount} YouTube</div>
+            <div class="muro-stat-pill">🎬 ${videoCount} videos</div>`;
+    }
+
+    grid.innerHTML = '';
+
+    if (!aprobadas.length) {
+        grid.innerHTML = `<div class="muro-empty">
+            <div class="icon">📭</div>
+            <p style="font-weight:600;">No hay publicaciones aprobadas aún.</p>
+            <p style="font-size:13px;margin-top:8px;">Aprueba publicaciones en "Pubs. Pendientes".</p>
+        </div>`;
+        return;
+    }
+
+    aprobadas.forEach(data => {
+        const card  = document.createElement('div');
+        card.className = 'muro-card';
+
+        const fecha = data.fecha ? new Date(data.fecha).toLocaleDateString('es-MX', {
+            day:'2-digit', month:'short', year:'numeric'
+        }) : '';
+
+        const tipoLabel = data.tipo === 'video/youtube' ? '▶️ YouTube' : '🎬 Video';
+
+        let mediaHTML = '';
+        if (data.tipo === 'video/youtube' && data.archivoURL) {
+            const embedUrl = getYouTubeEmbedUrl(data.archivoURL);
+            if (embedUrl) {
+                mediaHTML = `<div class="muro-yt-wrap">
+                    <iframe src="${embedUrl}" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                </div>`;
+            }
+        } else if (data.archivoURL && data.archivoURL.startsWith('data:video')) {
+            mediaHTML = `<div style="background:#000;padding:8px 0;">
+                <video src="${data.archivoURL}" controls style="width:100%;max-height:280px;"></video>
+            </div>`;
+        }
+
+        card.innerHTML = `
+            <div class="muro-card-header">
+                <div>
+                    <div class="muro-card-profesor">👤 ${data.profesorNombre || 'Creador'}</div>
+                    <div class="muro-card-fecha">${fecha}</div>
+                </div>
+                <span class="chip-type">${tipoLabel}</span>
+            </div>
+            <div class="muro-card-body">
+                ${mediaHTML}
+                ${data.titulo ? `<p style="font-weight:600;font-size:14px;margin-top:8px;">${data.titulo}</p>` : ''}
+                ${data.tipo === 'video/youtube' && data.archivoURL
+                    ? `<a href="${data.archivoURL}" target="_blank" style="font-size:12px;color:#2563eb;">🔗 Abrir en YouTube</a>`
+                    : ''}
+            </div>
+            <div class="muro-card-footer">
+                <span style="font-size:12px;color:#94a3b8;">ID: ${(data.id || '').slice(-6)}</span>
+                <button class="btn-delete-muro" onclick="confirmarEliminarMuro('${data.id}')">🗑️ Eliminar</button>
+            </div>`;
+        grid.appendChild(card);
+    });
+};
+
+// ── Eliminar del muro ─────────────────────────────────────────────
+let postToDelete = null;
+
+window.confirmarEliminarMuro = function(id) {
+    postToDelete = id;
+    document.getElementById('delete-muro-modal').classList.add('active');
+};
+
+const confirmDeleteMuroBtn = document.getElementById('confirm-delete-muro-btn');
+if (confirmDeleteMuroBtn) {
+    confirmDeleteMuroBtn.addEventListener('click', () => {
+        if (!postToDelete) return;
+        const todas    = getSolicitudes();
+        const filtradas = todas.filter(s => s.id !== postToDelete);
+        saveSolicitudes(filtradas);
+        postToDelete = null;
+        window.closeModals();
+        window.cargarMuro();
+        showToast('🗑️ Publicación eliminada del muro');
+    });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+function getYouTubeEmbedUrl(url) {
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+        /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+    ];
+    for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    return null;
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent  = msg;
+    t.className    = 'toast show';
+    setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+// ── Logout ────────────────────────────────────────────────────────
+const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+    logoutBtn.onclick = async () => {
+        if (confirm('¿Cerrar sesión?')) {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        }
+    };
 }
