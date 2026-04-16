@@ -278,7 +278,43 @@ const logs = JSON.parse(localStorage.getItem('logs_sesion') || '[]');
         console.error("Error al cargar datos del usuario:", error);
     } finally {
         if (loadingMessage) loadingMessage.classList.add('hidden');
+        aplicarTextosDinamicos();
     }
+    function aplicarTextosDinamicos() {
+    const config = JSON.parse(localStorage.getItem('contenido_app_config'));
+    if (!config) return;
+
+    for (let i = 1; i <= 4; i++) {
+        const levelCard = document.getElementById(`level-${i}`);
+        if (!levelCard) continue;
+
+        const nivelH3 = levelCard.querySelector('h3');
+        const nivelP  = levelCard.querySelector('p');
+
+        // Actualizar Título y Emoji
+        if (nivelH3 && config[`nivel${i}_titulo`]) {
+            const nuevoTitulo = config[`nivel${i}_titulo`];
+            const nuevoEmoji  = config[`nivel${i}_emoji`] || '';
+            
+            // Reconstruimos el HTML interno para asegurar que se vea el cambio
+            // Mantenemos la estructura "Nivel X: Nombre Emoji"
+            nivelH3.innerHTML = `Nivel ${i}: ${nuevoTitulo} ${nuevoEmoji}`;
+        }
+
+        // Actualizar Descripción
+        if (nivelP && config[`nivel${i}_desc`]) {
+            nivelP.textContent = config[`nivel${i}_desc`];
+        }
+    }
+
+    // Actualizar Modal de Información (Reglas)
+    const infoContainer = document.querySelector('#info-modal .space-y-6');
+    if (config['reglas_texto'] && infoContainer) {
+        infoContainer.innerHTML = config['reglas_texto'];
+    }
+}
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', aplicarTextosDinamicos);
 }
 const muroBtn = document.getElementById('btn-muro');
 if (muroBtn) muroBtn.addEventListener('click', function() { window.location.href = 'muro_comunidad.html'; });

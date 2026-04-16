@@ -421,7 +421,10 @@
             <div id="btn-nav-papelera" class="nav-item">🗑️ Papelera de Reciclaje</div>
             <div id="btn-nav-broadcast" class="nav-item">📢 Notificaciones Globales</div>
             <div id="btn-nav-logs" class="nav-item">📋 Logs de Sesión</div>
+            <div id="btn-nav-config" class="nav-item"><i class="ph-gear"></i> ⚙️ Editar Contenido
+</div>
             <div id="logout-btn" style="padding: 15px 25px; margin-top: auto; color: #f87171; cursor: pointer; font-weight: bold; font-size: 14px;">🚪 Cerrar Sesión</div>
+            
         </nav>
 
         <main class="content">
@@ -660,7 +663,357 @@
                     </table>
                 </div>
             </div>
+<div id="section-config" style="display:none;">
+    <div class="header">
+        <h1>⚙️ Configuración de Contenido</h1>
+        <p>Edita los nombres y descripciones de los niveles, y el texto de Reglas e Información que ven los usuarios.</p>
+    </div>
 
+    <!-- BLOQUE 1: NOMBRES DE NIVELES -->
+    <div class="table-container" style="margin-bottom:28px;">
+        <div class="table-header" style="border-bottom:2px solid #e2e8f0;">
+            <div>
+                <h3 style="font-size:17px;">🎓 Nombres y Descripciones de Niveles</h3>
+                <p style="font-size:13px;color:#94a3b8;margin-top:3px;">Elige el nivel que quieres editar y guárdalo de forma independiente.</p>
+            </div>
+        </div>
+        <div style="padding:25px;">
+            <!-- Selector de nivel con tabs visuales -->
+            <div id="nivel-tabs" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+                <button class="nivel-tab active" data-nivel="1" onclick="seleccionarNivelTab(1)">
+                    🧠 Nivel 1
+                </button>
+                <button class="nivel-tab" data-nivel="2" onclick="seleccionarNivelTab(2)">
+                    💬 Nivel 2
+                </button>
+                <button class="nivel-tab" data-nivel="3" onclick="seleccionarNivelTab(3)">
+                    🗓️ Nivel 3
+                </button>
+                <button class="nivel-tab" data-nivel="4" onclick="seleccionarNivelTab(4)">
+                    📅 Nivel 4
+                </button>
+            </div>
+
+            <!-- Paneles de cada nivel -->
+            <div id="panel-nivel-1" class="nivel-panel">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px;">
+        <div>
+            <label class="config-label">Nombre del nivel</label>
+            <input type="text" id="edit-nivel1-titulo" placeholder="Ej: El Abecedario" class="config-input">
+        </div>
+        <div>
+            <label class="config-label">Emoji / Ícono (opcional)</label>
+            <input type="text" id="edit-nivel1-emoji" placeholder="Ej: 🧠" class="config-input" maxlength="4">
+        </div>
+    </div>
+    <div style="margin-bottom:16px;">
+        <label class="config-label">Descripción corta</label>
+        <textarea id="edit-nivel1-desc" placeholder="Descripción visible en la tarjeta del nivel..." class="config-textarea" rows="3"></textarea>
+    </div>
+
+    <button class="btn" style="background:#64748b; color:white; margin-bottom:15px; width:100%; font-size:12px;" 
+            onclick="restaurarNivel(1, 'Nivel 1: El Abecedario', '🧠', 'Aprende las 26 letras básicas del alfabeto. ¡Fundamental!')">
+        🔄 Restaurar valores por defecto
+    </button>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+        <button class="btn btn-success config-save-btn" onclick="guardarNivelIndividual(1)">
+            💾 Guardar Nivel 1
+        </button>
+        <span id="saved-indicator-1" class="saved-indicator"></span>
+    </div>
+</div>
+
+<div id="panel-nivel-2" class="nivel-panel" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px;">
+        <div>
+            <label class="config-label">Nombre del nivel</label>
+            <input type="text" id="edit-nivel2-titulo" placeholder="Ej: Primeras Palabras" class="config-input">
+        </div>
+        <div>
+            <label class="config-label">Emoji / Ícono (opcional)</label>
+            <input type="text" id="edit-nivel2-emoji" placeholder="Ej: 💬" class="config-input" maxlength="4">
+        </div>
+    </div>
+    <div style="margin-bottom:16px;">
+        <label class="config-label">Descripción corta</label>
+        <textarea id="edit-nivel2-desc" placeholder="Descripción visible en la tarjeta del nivel..." class="config-textarea" rows="3"></textarea>
+    </div>
+
+    <button class="btn" style="background:#64748b; color:white; margin-bottom:15px; width:100%; font-size:12px;" 
+            onclick="restaurarNivel(2, 'Nivel 2: Primeras Palabras', '💬', 'Aprende señas para saludos, familia y comida.')">
+        🔄 Restaurar valores por defecto
+    </button>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+        <button class="btn btn-success config-save-btn" onclick="guardarNivelIndividual(2)">
+            💾 Guardar Nivel 2
+        </button>
+        <span id="saved-indicator-2" class="saved-indicator"></span>
+    </div>
+</div>
+
+<div id="panel-nivel-3" class="nivel-panel" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px;">
+        <div>
+            <label class="config-label">Nombre del nivel</label>
+            <input type="text" id="edit-nivel3-titulo" placeholder="Ej: Calendario y Tiempos" class="config-input">
+        </div>
+        <div>
+            <label class="config-label">Emoji / Ícono (opcional)</label>
+            <input type="text" id="edit-nivel3-emoji" placeholder="Ej: 🗓️" class="config-input" maxlength="4">
+        </div>
+    </div>
+    <div style="margin-bottom:16px;">
+        <label class="config-label">Descripción corta</label>
+        <textarea id="edit-nivel3-desc" placeholder="Descripción visible en la tarjeta del nivel..." class="config-textarea" rows="3"></textarea>
+    </div>
+
+    <button class="btn" style="background:#64748b; color:white; margin-bottom:15px; width:100%; font-size:12px;" 
+            onclick="restaurarNivel(3, 'Nivel 3: Calendario y Tiempos', '🗓️', 'Aprende señas de Días, Meses y Tiempos (Hoy, Ayer, Mañana).')">
+        🔄 Restaurar valores por defecto
+    </button>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+        <button class="btn btn-success config-save-btn" onclick="guardarNivelIndividual(3)">
+            💾 Guardar Nivel 3
+        </button>
+        <span id="saved-indicator-3" class="saved-indicator"></span>
+    </div>
+</div>
+
+<div id="panel-nivel-4" class="nivel-panel" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px;">
+        <div>
+            <label class="config-label">Nombre del nivel</label>
+            <input type="text" id="edit-nivel4-titulo" placeholder="Ej: Los Meses del Año" class="config-input">
+        </div>
+        <div>
+            <label class="config-label">Emoji / Ícono (opcional)</label>
+            <input type="text" id="edit-nivel4-emoji" placeholder="Ej: 📅" class="config-input" maxlength="4">
+        </div>
+    </div>
+    <div style="margin-bottom:16px;">
+        <label class="config-label">Descripción corta</label>
+        <textarea id="edit-nivel4-desc" placeholder="Descripción visible en la tarjeta del nivel..." class="config-textarea" rows="3"></textarea>
+    </div>
+
+    <button class="btn" style="background:#64748b; color:white; margin-bottom:15px; width:100%; font-size:12px;" 
+            onclick="restaurarNivel(4, 'Nivel 4: Los Meses del Año', '📅', 'Aprende señas para aprender los meses del año')">
+        🔄 Restaurar valores por defecto
+    </button>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+        <button class="btn btn-success config-save-btn" onclick="guardarNivelIndividual(4)">
+            💾 Guardar Nivel 4
+        </button>
+        <span id="saved-indicator-4" class="saved-indicator"></span>
+    </div>
+</div>
+
+    <!-- BLOQUE 2: REGLAS E INFORMACIÓN -->
+    <div class="table-container" style="margin-bottom:28px;">
+        <div class="table-header" style="border-bottom:2px solid #e2e8f0;">
+            <div>
+                <h3 style="font-size:17px;">📋 Reglas e Información</h3>
+                <p style="font-size:13px;color:#94a3b8;margin-top:3px;">Este texto aparece en el panel de bienvenida "Bienvenido: Reglas y Niveles". Puedes usar HTML básico.</p>
+            </div>
+        </div>
+        <div style="padding:25px;">
+            <!-- Barra de herramientas de formato rápido -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:10px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+                <span style="font-size:12px;color:#94a3b8;font-weight:600;align-self:center;margin-right:4px;">Insertar:</span>
+                <button class="fmt-btn" onclick="insertarFormato('titulo')" title="Título de nivel">🔠 Título</button>
+                <button class="fmt-btn" onclick="insertarFormato('parrafo')" title="Párrafo">📝 Párrafo</button>
+                <button class="fmt-btn" onclick="insertarFormato('negrita')" title="Negrita">B Negrita</button>
+                <button class="fmt-btn" onclick="insertarFormato('lista')" title="Lista">• Lista</button>
+                <button class="fmt-btn" onclick="insertarFormato('separador')" title="Línea separadora">— Separador</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <!-- Editor -->
+                <div>
+                    <label class="config-label">✏️ Editor de contenido (HTML permitido)</label>
+                    <textarea id="edit-reglas-texto" class="config-textarea" rows="16"
+                        placeholder="Escribe aquí el contenido de Reglas e Información...&#10;&#10;Puedes usar HTML básico:&#10;&lt;b&gt;texto en negrita&lt;/b&gt;&#10;&lt;p&gt;párrafo&lt;/p&gt;&#10;&lt;ul&gt;&lt;li&gt;elemento&lt;/li&gt;&lt;/ul&gt;"
+                        oninput="actualizarPreviewReglas()"></textarea>
+                </div>
+                <!-- Preview en vivo -->
+                <div>
+                    <label class="config-label">👁️ Vista previa en vivo</label>
+                    <div id="reglas-preview" style="
+                        min-height:250px;
+                        border:1px solid #e2e8f0;
+                        border-radius:8px;
+                        padding:16px;
+                        background:#fafafa;
+                        font-size:14px;
+                        line-height:1.7;
+                        color:#374151;
+                        overflow-y:auto;
+                        max-height:360px;
+                    ">
+                        <span style="color:#94a3b8;font-size:13px;">La vista previa aparecerá aquí mientras escribes...</span>
+                    </div>
+                </div>
+            </div>
+
+    <button class="btn" style="background:#475569; color:white; margin-top:10px; width:100%;" onclick="restaurarReglasPorDefecto()">
+        🔄 Regresar al texto original (Reset)
+    </button>
+</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-top:18px;">
+                <button class="btn btn-success config-save-btn" onclick="guardarReglas()">
+                    💾 Guardar Reglas e Información
+                </button>
+                <span id="saved-indicator-reglas" class="saved-indicator"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estilos internos para esta sección -->
+    <style>
+        .nivel-tab {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            transition: all .2s;
+        }
+        .nivel-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        .nivel-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102,126,234,.35);
+        }
+        .config-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 7px;
+        }
+        .config-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1e293b;
+            transition: border-color .2s;
+            background: white;
+        }
+        .config-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,.12);
+        }
+        .config-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1e293b;
+            resize: vertical;
+            font-family: 'Segoe UI', monospace;
+            transition: border-color .2s;
+            background: white;
+        }
+        .config-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,.12);
+        }
+        .config-save-btn {
+            padding: 11px 28px !important;
+            font-size: 14px !important;
+            border-radius: 10px !important;
+        }
+        .saved-indicator {
+            font-size: 13px;
+            font-weight: 600;
+            color: #10b981;
+            opacity: 0;
+            transition: opacity .4s;
+        }
+        .saved-indicator.visible {
+            opacity: 1;
+        }
+        .fmt-btn {
+            padding: 5px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .fmt-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+
+    <script>
+        // ── Tabs de niveles ────────────────────────────────────────
+        window.seleccionarNivelTab = function(num) {
+            // Ocultar todos los paneles
+            document.querySelectorAll('.nivel-panel').forEach(p => p.style.display = 'none');
+            // Desactivar todos los tabs
+            document.querySelectorAll('.nivel-tab').forEach(t => t.classList.remove('active'));
+            // Mostrar panel seleccionado
+            document.getElementById('panel-nivel-' + num).style.display = 'block';
+            // Activar tab seleccionado
+            document.querySelector(`.nivel-tab[data-nivel="${num}"]`).classList.add('active');
+        };
+
+        // ── Vista previa en vivo de Reglas ─────────────────────────
+        window.actualizarPreviewReglas = function() {
+            const texto = document.getElementById('edit-reglas-texto')?.value || '';
+            const preview = document.getElementById('reglas-preview');
+            if (preview) preview.innerHTML = texto || '<span style="color:#94a3b8;font-size:13px;">La vista previa aparecerá aquí mientras escribes...</span>';
+        };
+
+        // ── Insertar snippets de formato ───────────────────────────
+        window.insertarFormato = function(tipo) {
+            const ta = document.getElementById('edit-reglas-texto');
+            if (!ta) return;
+            const snippets = {
+                titulo:    '<h3 style="color:#667eea; margin-bottom:6px;">Título aquí</h3>\n',
+                parrafo:   '<p style="margin-bottom:8px;">Escribe tu párrafo aquí.</p>\n',
+                negrita:   '<b>texto en negrita</b>',
+                lista:     '<ul style="margin-left:16px; margin-bottom:8px;">\n  <li>Elemento 1</li>\n  <li>Elemento 2</li>\n</ul>\n',
+                separador: '<hr style="border:none; border-top:1px solid #e2e8f0; margin:12px 0;">\n'
+            };
+            const start = ta.selectionStart;
+            const val   = ta.value;
+            ta.value    = val.slice(0, start) + snippets[tipo] + val.slice(ta.selectionEnd);
+            ta.focus();
+            actualizarPreviewReglas();
+        };
+
+        // ── Indicador visual de guardado ───────────────────────────
+        function mostrarGuardado(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = '✅ ¡Guardado exitosamente!';
+            el.classList.add('visible');
+            setTimeout(() => el.classList.remove('visible'), 3000);
+        }
+    </script>
+</div>  
     <!-- MODALES -->
     <div id="view-modal" class="modal-overlay">
         <div class="modal-content">
@@ -724,7 +1077,8 @@
             roles:        'section-roles',
             papelera:     'section-papelera',
             broadcast:    'section-broadcast',
-            logs:         'section-logs'
+            logs:         'section-logs',
+            config:        'section-config'
         };
         const navBtns = {
             usuarios:     'btn-nav-usuarios',
@@ -737,11 +1091,20 @@
         };
 
         function switchSection(key) {
-            Object.keys(sections).forEach(k => {
-                document.getElementById(sections[k]).style.display = k === key ? 'block' : 'none';
-                document.getElementById(navBtns[k]).classList.toggle('active', k === key);
-            });
+    // Este bucle oculta TODAS las secciones definidas en el objeto arriba
+    Object.keys(sections).forEach(k => {
+        const sectionEl = document.getElementById(sections[k]);
+        if (sectionEl) {
+            sectionEl.style.display = (k === key) ? 'block' : 'none';
         }
+        
+        // También actualiza el estado visual de los botones del menú
+        const btnEl = document.getElementById('btn-nav-' + k);
+        if (btnEl) {
+            btnEl.classList.toggle('active', k === key);
+        }
+    });
+}
 
         document.getElementById('btn-nav-usuarios').addEventListener('click', () => {
             switchSection('usuarios');

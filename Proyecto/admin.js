@@ -143,20 +143,22 @@ window.confirmarEliminar = function(id) {
     document.getElementById('delete-modal').classList.add('active');
 };
 
-const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-if (confirmDeleteBtn) {
-    confirmDeleteBtn.addEventListener('click', async () => {
-        if (!currentUserIdToDelete) return;
-        try {
-            await deleteDoc(doc(db, 'perfiles', currentUserIdToDelete));
-            currentUserIdToDelete = null;
-            window.closeModals();
-            loadAdminData();
-        } catch (e) {
-            alert('Error al eliminar usuario.');
-        }
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', async () => {
+            if (!currentUserIdToDelete) return;
+            try {
+                await deleteDoc(doc(db, 'perfiles', currentUserIdToDelete));
+                currentUserIdToDelete = null;
+                window.closeModals();
+                loadAdminData();
+            } catch (e) {
+                alert('Error al eliminar usuario.');
+            }
+        });
+    }
+});
 
 // ════════════════════════════════════════════════════════════════
 // EMAIL JS
@@ -164,7 +166,7 @@ if (confirmDeleteBtn) {
 let selectedUserEmail = null;
 let selectedUserName  = null;
 
-emailjs.init('Au9kUY26dgMboudTk');
+window.emailjs?.init('Au9kUY26dgMboudTk');
 
 window.abrirMenuEmail = function(id) {
     const user = cachedUsers[id];
@@ -183,7 +185,7 @@ window.enviarAvisoPorTipo = async function(tipo) {
         progreso:    'template_bvfb1je'
     };
     try {
-        await emailjs.send('service_khetf14', templateIDs[tipo], {
+        await window.emailjs.send('service_khetf14', templateIDs[tipo], {
             to_name:  selectedUserName,
             to_email: selectedUserEmail,
             message:  tipo === 'inactividad' ? 'Te extrañamos en el curso.' : '¡Sigue así, ya casi terminas!'
@@ -385,15 +387,6 @@ window.cargarMuro = function() {
     });
 };
 
-// El botón confirm-delete-muro-btn es gestionado por el bloque
-// de Papelera de Reciclaje (soft-delete) más abajo.
-let postToDelete = null;
-
-window.confirmarEliminarMuro = function(id) {
-    postToDelete = id;
-    document.getElementById('delete-muro-modal').classList.add('active');
-};
-
 // ── Helpers ───────────────────────────────────────────────────────
 function getYouTubeEmbedUrl(url) {
     const patterns = [
@@ -558,27 +551,104 @@ window.eliminarDefinitivo = function (id) {
 // El confirm-delete-muro-btn original usa hard-delete.
 // Lo reemplazamos por soft-delete (mover a papelera).
 // ─ El bloque original en línea ya no se usa; este lo sobreescribe.
-const _muroSoftBtn = document.getElementById('confirm-delete-muro-btn');
-if (_muroSoftBtn) {
-    // Clonar nodo para eliminar listeners previos
-    const clone = _muroSoftBtn.cloneNode(true);
-    _muroSoftBtn.parentNode.replaceChild(clone, _muroSoftBtn);
-    clone.addEventListener('click', () => {
-        if (!postToDelete) return;
-        const todas = getSolicitudes();
-        const idx   = todas.findIndex(s => s.id === postToDelete);
-        if (idx !== -1) {
-            todas[idx].eliminado      = true;
-            todas[idx].fechaEliminado = new Date().toISOString();
+let postToDelete = null;
+
+// Función que abre el modal (se llama desde el botón de la tarjeta)
+window.confirmarEliminarMuro = function(id) {
+    postToDelete = id;
+    const modal = document.getElementById('delete-muro-modal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+};
+
+// Configuración del botón de confirmación dentro del modal
+document.addEventListener('DOMContentLoaded', () => {
+    const btnMuro = document.getElementById('confirm-delete-muro-btn');
+    if (btnMuro) {
+        btnMuro.onclick = () => {
+            if (!postToDelete) return;
+            const todas = getSolicitudes();
+            const idx = todas.findIndex(s => s.id === postToDelete);
+            if (idx !== -1) {
+                todas[idx].eliminado = true;
+                todas[idx].fechaEliminado = new Date().toISOString();
+                saveSolicitudes(todas);
+                showToast('🗑️ Publicación movida a la papelera');
+                postToDelete = null;
+                window.closeModals();
+                if (typeof window.cargarMuro === 'function') window.cargarMuro();
+                if (typeof window.cargarPapelera === 'function') window.cargarPapelera();
+            }
+        };
+    }
+});
+// ── GESTIÓN DE USUARIOS (FIREBASE) ──
+
+// 1. Ver detalles del usuario
+window.verUsuario = async function(id) {
+    try {
+        const docRef = doc(db, "users", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const u = docSnap.data();
+            
+            // Llenar los campos del modal
+            document.getElementById('view-u-nombre').textContent = u.username || 'Sin nombre';
+            document.getElementById('view-u-email').textContent  = u.email    || 'Sin correo';
+            document.getElementById('view-u-rol').textContent    = u.role     || 'user';
+            document.getElementById('view-u-id').textContent     = id;
+            
+            // Mostrar fecha de registro si existe
+            const fecha = u.createdAt ? new Date(u.createdAt).toLocaleString() : 'No disponible';
+            document.getElementById('view-u-fecha').textContent = fecha;
+
+            // Abrir el modal
+            const modal = document.getElementById('view-user-modal');
+            if (modal) modal.classList.add('active');
+        } else {
+            showToast('❌ No se encontró el usuario');
         }
-        saveSolicitudes(todas);
-        postToDelete = null;
-        window.closeModals();
-        window.cargarMuro();
-        showToast('🗑️ Publicación movida a la papelera');
-    });
+    } catch (error) {
+        console.error("Error al ver usuario:", error);
+        showToast('❌ Error al cargar datos');
+    }
+};
+
+// 2. Confirmar eliminación (Llama a la función de Firebase)
+window.confirmarEliminar = function(id) {
+    if (confirm("⚠️ ¿Estás seguro de eliminar a este usuario permanentemente? Esta acción no se puede deshacer.")) {
+        eliminarUsuarioFirestore(id);
+    }
+};
+
+// 3. Función interna que borra de la base de datos
+async function eliminarUsuarioFirestore(id) {
+    try {
+        await deleteDoc(doc(db, "users", id));
+        showToast('🗑️ Usuario eliminado con éxito');
+        
+        // Recargar la tabla de usuarios automáticamente
+        if (typeof window.cargarUsuarios === 'function') {
+            window.cargarUsuarios();
+        }
+    } catch (error) {
+        console.error("Error al eliminar:", error);
+        showToast('❌ Error al eliminar de la base de datos');
+    }
 }
 
+// 4. Función para abrir el modal de correo (Asegúrate que se llame así en el botón)
+window.openEmailModal = function(email) {
+    const modal = document.getElementById('email-modal');
+    const inputEmail = document.getElementById('email-to');
+    
+    if (modal && inputEmail) {
+        inputEmail.value = email;
+        modal.classList.add('active');
+    }
+};
 // ════════════════════════════════════════════════════════════════
 // NOTIFICACIONES GLOBALES (BROADCAST)  —  localStorage
 // ════════════════════════════════════════════════════════════════
@@ -775,12 +845,37 @@ window.cargarLogs = function () {
     });
 };
 
-// Filtrado en tiempo real por rol
 document.addEventListener('DOMContentLoaded', () => {
-    const filtroEl = document.getElementById('logs-filter-rol');
-    if (filtroEl) filtroEl.addEventListener('change', () => {
-        if (typeof window.cargarLogs === 'function') window.cargarLogs();
-    });
+    const btnConfig = document.getElementById('btn-nav-config');
+    const sectionConfig = document.getElementById('section-config');
+    
+    // Referencias a las otras secciones para poder ocultarlas
+    const sectionUsuarios = document.getElementById('section-usuarios');
+    const sectionLogs = document.getElementById('section-logs');
+    const sectionMuro = document.getElementById('section-publicaciones');
+
+    if (btnConfig) {
+        btnConfig.addEventListener('click', () => {
+            // 1. Ocultar todas las secciones
+            [sectionUsuarios, sectionLogs, sectionMuro].forEach(s => {
+                if(s) s.style.display = 'none';
+            });
+
+            // 2. Mostrar la sección de configuración
+            if(sectionConfig) {
+                sectionConfig.style.display = 'block';
+            }
+
+            // 3. Quitar clase 'active' de otros botones y ponerla en este
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            btnConfig.classList.add('active');
+
+            // 4. Cargar los datos actuales de localStorage a los inputs
+            if (typeof window.cargarConfiguracionContenido === 'function') {
+                window.cargarConfiguracionContenido();
+            }
+        });
+    }
 });
 
 window.limpiarLogs = function () {
@@ -800,3 +895,177 @@ if (logoutBtn) {
         }
     };
 }
+// ── GESTIÓN DE CONTENIDO DINÁMICO (Niveles e Info) ────────────────
+const CONTENIDO_APP_KEY = 'contenido_app_config';
+window.openEmailModal = function(email) {
+    const modal = document.getElementById('email-modal');
+    const inputEmail = document.getElementById('email-to');
+    if (modal && inputEmail) {
+        inputEmail.value = email;
+        modal.classList.add('active');
+    }
+};
+// Cargar datos actuales en los inputs del admin
+window.cargarConfiguracionContenido = function() {
+    const config = JSON.parse(localStorage.getItem(CONTENIDO_APP_KEY)) || {};
+
+    // Poblar campos de niveles (título, emoji y descripción)
+    for (let i = 1; i <= 4; i++) {
+        const titulo = document.getElementById(`edit-nivel${i}-titulo`);
+        const emoji  = document.getElementById(`edit-nivel${i}-emoji`);
+        const desc   = document.getElementById(`edit-nivel${i}-desc`);
+        if (titulo) titulo.value = config[`nivel${i}_titulo`] || '';
+        if (emoji)  emoji.value  = config[`nivel${i}_emoji`]  || '';
+        if (desc)   desc.value   = config[`nivel${i}_desc`]   || '';
+    }
+
+    // Poblar campo de Reglas
+    const reglasInput = document.getElementById('edit-reglas-texto');
+    if (reglasInput) {
+        reglasInput.value = config['reglas_texto'] || '';
+        // Actualizar preview si la función ya existe
+        if (typeof window.actualizarPreviewReglas === 'function') {
+            window.actualizarPreviewReglas();
+        }
+    }
+};
+
+// Guardar un nivel de forma independiente
+window.guardarNivelIndividual = function(num) {
+    const config = JSON.parse(localStorage.getItem(CONTENIDO_APP_KEY)) || {};
+
+    const tituloEl = document.getElementById(`edit-nivel${num}-titulo`);
+    const emojiEl  = document.getElementById(`edit-nivel${num}-emoji`);
+    const descEl   = document.getElementById(`edit-nivel${num}-desc`);
+
+    if (tituloEl) config[`nivel${num}_titulo`] = tituloEl.value.trim();
+    if (emojiEl)  config[`nivel${num}_emoji`]  = emojiEl.value.trim();
+    if (descEl)   config[`nivel${num}_desc`]   = descEl.value.trim();
+
+    localStorage.setItem(CONTENIDO_APP_KEY, JSON.stringify(config));
+    showToast(`✅ Nivel ${num} guardado correctamente`);
+
+    // Mostrar indicador visual junto al botón
+    if (typeof window.mostrarGuardado === 'function') {
+        window.mostrarGuardado(`saved-indicator-${num}`);
+    }
+};
+
+// Guardar solo las Reglas e Información de forma independiente
+window.guardarReglas = function() {
+    const config      = JSON.parse(localStorage.getItem(CONTENIDO_APP_KEY)) || {};
+    const reglasInput = document.getElementById('edit-reglas-texto');
+
+    if (reglasInput) config['reglas_texto'] = reglasInput.value;
+
+    localStorage.setItem(CONTENIDO_APP_KEY, JSON.stringify(config));
+    showToast('✅ Reglas e Información guardadas correctamente');
+
+    if (typeof window.mostrarGuardado === 'function') {
+        window.mostrarGuardado('saved-indicator-reglas');
+    }
+};
+
+// Mantener compatibilidad con llamadas antiguas a guardarConfiguracionContenido
+window.guardarConfiguracionContenido = function() {
+    const config = JSON.parse(localStorage.getItem(CONTENIDO_APP_KEY)) || {};
+
+    for (let i = 1; i <= 4; i++) {
+        const t = document.getElementById(`edit-nivel${i}-titulo`);
+        const e = document.getElementById(`edit-nivel${i}-emoji`);
+        const d = document.getElementById(`edit-nivel${i}-desc`);
+        if (t) config[`nivel${i}_titulo`] = t.value.trim();
+        if (e) config[`nivel${i}_emoji`]  = e.value.trim();
+        if (d) config[`nivel${i}_desc`]   = d.value.trim();
+    }
+
+    const reglasInput = document.getElementById('edit-reglas-texto');
+    if (reglasInput) config['reglas_texto'] = reglasInput.value;
+
+    localStorage.setItem(CONTENIDO_APP_KEY, JSON.stringify(config));
+    showToast('✅ Contenido de la app actualizado exitosamente');
+};
+// Función para restaurar los valores originales de un nivel
+window.restaurarNivel = function(num, titulo, emoji, desc) {
+    if (confirm(`¿Quieres restaurar el Nivel ${num} a sus valores originales?`)) {
+        // 1. Rellenar los inputs visualmente con los valores que mandamos desde el botón
+        const inputTitulo = document.getElementById(`edit-nivel${num}-titulo`);
+        const inputEmoji  = document.getElementById(`edit-nivel${num}-emoji`);
+        const inputDesc   = document.getElementById(`edit-nivel${num}-desc`);
+
+        if (inputTitulo) inputTitulo.value = titulo;
+        if (inputEmoji)  inputEmoji.value  = emoji;
+        if (inputDesc)   inputDesc.value   = desc;
+
+        // 2. Llamar a tu función existente para que guarde estos cambios en localStorage
+        // Asegúrate de que esta función exista en tu admin.js
+        if (typeof window.guardarNivelIndividual === 'function') {
+            window.guardarNivelIndividual(num);
+        } else {
+            // Si no usas guardar individual, usamos la general
+            window.guardarConfiguracionContenido();
+        }
+        
+        // Mensaje de confirmación rápida
+        if (typeof showToast === 'function') {
+            showToast(`✅ Nivel ${num} restaurado correctamente`);
+        }
+    }
+};
+window.restaurarReglasPorDefecto = function() {
+    // Este es el HTML original que tenía tu modal
+    const textoOriginal = `
+<div class="space-y-6 text-gray-700">
+                <p class="text-lg font-semibold text-indigo-600">
+                    ¡Gracias por unirte! Aquí tienes un resumen de lo que aprenderás en la Lengua de Señas Mexicana (LSM).
+                </p>
+
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="text-xl font-bold text-blue-700 mb-1">Nivel 1: El Abecedario 🧠</h4>
+                        <p>Aprende el dactilológico completo (26 letras). Fundamental para deletrear nombres y conceptos nuevos.</p>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-yellow-700 mb-1">Nivel 2: Primeras Palabras 💬</h4>
+                        <p>Dominarás vocabulario clave: saludos, emociones, familia y alimentos básicos.</p>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                        <h4 class="text-xl font-bold text-purple-700 mb-1">Nivel 3: Calendario y Tiempos 📅</h4>
+                        <p>Aprenderás a comunicarte sobre la semana, días específicos y referencias de tiempo (hoy, mañana, etc.).</p>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
+                        <h4 class="text-xl font-bold text-indigo-700 mb-1">Nivel 4: Los Meses del Año 🗓️</h4>
+                        <p>Vocabulario sobre los doce meses y las cuatro estaciones para citas y planificación.</p>
+                    </div>
+                </div>
+
+                <p class="text-sm font-semibold text-gray-500 pt-2">
+                    *Toda la información de las señas está basada en el contexto de la Lengua de Señas Mexicana (LSM).
+                </p>
+
+                <p class="text-center mt-4">
+                    ¿Deseas descargar el **Diccionario de LSM completo**?
+                    <a href="https://educacionespecial.sep.gob.mx/storage/recursos/2023/05/xzrfl019nV-4Diccionario_lengua_%20Senas.pdf" download="Diccionario_LSM_SEP_Completo.pdf" target="_blank" class="font-bold text-indigo-600 hover:text-indigo-800 underline transition duration-200 cursor-pointer block mt-1">
+                        Haz clic aquí para visitar la página y descargarlo.
+                    </a>
+                </p>
+            </div>`.trim();
+
+    if (confirm("¿Quieres eliminar los cambios y regresar al texto original?")) {
+        const campo = document.getElementById('edit-reglas-texto');
+        if (campo) {
+            // Ponemos el texto original en el cuadro
+            campo.value = textoOriginal;
+            
+            // Forzamos el guardado inmediato
+            const config = JSON.parse(localStorage.getItem('contenido_app_config')) || {};
+            config['reglas_texto'] = textoOriginal;
+            localStorage.setItem('contenido_app_config', JSON.stringify(config));
+            
+            alert("✅ Se ha restaurado el texto original. Ya puedes ver el Dashboard.");
+        }
+    }
+};
