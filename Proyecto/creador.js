@@ -40,6 +40,18 @@ onAuthStateChanged(auth, (user) => {
             email:    user.email,
             initials: (user.displayName || user.email || 'C')[0].toUpperCase()
         };
+        const logs = JSON.parse(localStorage.getItem('logs_sesion') || '[]');
+    logs.unshift({
+        id: 'log_' + Date.now(),
+        uid: currentUser.uid,
+        username: currentUser.name,
+        email: currentUser.email,
+        rol: 'creador',
+        fecha: new Date().toISOString(),
+        agente: navigator.userAgent.substring(0, 120)
+    });
+    if (logs.length > 500) logs.splice(500);
+    localStorage.setItem('logs_sesion', JSON.stringify(logs));
         // Guardar nombre en localStorage para que el muro lo pueda leer
         localStorage.setItem('profesorNombre', currentUser.name);
         localStorage.setItem('profesorUid',    currentUser.uid);

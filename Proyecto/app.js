@@ -5,10 +5,9 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    onAuthStateChanged,
+    sendPasswordResetEmail,
     sendEmailVerification,
-    signOut,
-    sendPasswordResetEmail
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {
     getFirestore,
@@ -18,13 +17,11 @@ import {
     collection,
     query,
     where,
-    getDocs,
-    addDoc,           // <--- MOVIDO AQUÍ
-    serverTimestamp
+    getDocs
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 
-// 🚨 2. TUS CREDENCIALES REALES 🚨
+// 2. CREDENCIALES DE FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyC7zx9CreT58V1AWTq7pMoS_ps65mXf-9Y",
     authDomain: "mis-manos-hablaran-44e17.firebaseapp.com",
@@ -65,6 +62,7 @@ if (showLoginLink) {
 
 // --- FUNCIONES DE AUTENTICACIÓN ---
 
+// Acepta correo o nombre de usuario y devuelve el email
 async function resolveInputToEmail(input) {
     if (input.includes('@')) return input;
     try {
@@ -72,12 +70,33 @@ async function resolveInputToEmail(input) {
         const querySnapshot = await getDocs(q);
         return !querySnapshot.empty ? querySnapshot.docs[0].data().email : null;
     } catch (error) {
+        console.error("resolveInputToEmail:", error);
         return null;
     }
 }
+
+// Mensajes de error de Firebase en español
+function traducirErrorFirebase(code) {
+    const errores = {
+        'auth/user-not-found':         'No existe una cuenta con ese correo o usuario.',
+        'auth/wrong-password':         'Contraseña incorrecta.',
+        'auth/invalid-credential':     'Correo o contraseña incorrectos.',
+        'auth/invalid-email':          'El correo no tiene un formato válido.',
+        'auth/user-disabled':          'Esta cuenta ha sido deshabilitada.',
+        'auth/too-many-requests':      'Demasiados intentos. Espera un momento e intenta de nuevo.',
+        'auth/email-already-in-use':   'Este correo ya está registrado. Intenta iniciar sesión.',
+        'auth/weak-password':          'La contraseña es muy débil. Usa al menos 6 caracteres.',
+        'auth/network-request-failed': 'Error de red. Revisa tu conexión a internet.',
+        'auth/operation-not-allowed':  'Este método de registro no está habilitado.',
+    };
+    return errores[code] || 'Ocurrió un error inesperado. Intenta de nuevo.';
+}
+
 async function handleSignIn(input, password) {
-    const email = await resolveInputToEmail(input);
-    if (!email) return { success: false, message: 'Usuario no encontrado.' };
+    const email = await resolveInputToEmail(input.trim());
+    if (!email) {
+        return { success: false, message: 'No se encontró una cuenta con ese usuario o correo.' };
+    }
 
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -92,21 +111,17 @@ async function handleSignIn(input, password) {
 
         const userData = userDoc.data();
 
-        // ✅ REGISTRO LOCAL DEL LOG (Justo después de obtener userData)
-        await addDoc(collection(db, 'logs_acceso'), {
-            nombre: userData.username || 'Usuario',
-            email: user.email,
-            rol: userData.rol || 'estudiante',
-            fecha: serverTimestamp()
-        });
-
-        // Continuación de tu lógica de roles...
+        // Verificar correo solo para rol "usuario"
         if (userData.rol === "usuario" && !user.emailVerified) {
             await sendEmailVerification(user);
             await signOut(auth);
-            return { success: false, message: "Debes verificar tu correo 📩" };
+            return {
+                success: false,
+                message: "Debes verificar tu correo antes de iniciar sesión. Te reenviamos el correo de verificación 📩"
+            };
         }
 
+        // Redirección según rol
         if (userData.rol === "admin") {
             window.location.href = 'admin-dashboard.html';
         } else if (userData.rol === 'creador') {
@@ -118,191 +133,118 @@ async function handleSignIn(input, password) {
         return { success: true };
 
     } catch (error) {
-        console.error(error);
-        return { success: false, message: 'Correo o contraseña incorrectos.' };
+        console.error("handleSignIn:", error.code, error.message);
+        return { success: false, message: traducirErrorFirebase(error.code) };
     }
 }
+
 async function handleSignUp(email, password, username) {
+    if (!username || username.trim().length < 3) {
+        return { success: false, message: 'El nombre de usuario debe tener al menos 3 caracteres.' };
+    }
+
+    // Verificar si el username ya existe
+    try {
+        const q = query(collection(db, "perfiles"), where("username", "==", username.trim()));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+            return { success: false, message: 'Ese nombre de usuario ya está en uso. Elige otro.' };
+        }
+    } catch (e) {
+        console.error("Verificación username:", e);
+    }
+
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // 🔥 Enviar correo de verificación
         await sendEmailVerification(user);
 
-        // Guardar en Firestore
         await setDoc(doc(db, "perfiles", user.uid), {
-            username: username,
-            email: email,
+            username: username.trim(),
+            email: user.email,
             rol: "usuario",
             nivel_actual: 1,
             created_at: new Date()
         });
 
+        await signOut(auth);
+
         return {
             success: true,
-            message: "✅ Registro exitoso. Revisa tu correo para verificar tu cuenta (también en SPAM)."
+            message: '✅ Registro exitoso. Revisa tu correo para verificar tu cuenta antes de iniciar sesión.'
         };
-
     } catch (error) {
-        console.error(error);
-
-        if (error.code === 'auth/email-already-in-use') {
-            return { success: false, message: 'Este correo ya está registrado.' };
-        }
-
-        if (error.code === 'auth/weak-password') {
-            return { success: false, message: 'La contraseña es muy débil.' };
-        }
-
-        return { success: false, message: 'Error: ' + error.message };
+        console.error("handleSignUp:", error.code, error.message);
+        return { success: false, message: traducirErrorFirebase(error.code) };
     }
 }
 
 // --- EVENTOS DE FORMULARIO ---
-const loginForm = document.getElementById('login-form');
 
-if (loginForm) {
-    loginForm.addEventListener('submit', async(e) => {
-        e.preventDefault();
-        const input = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        const messageEl = document.getElementById('login-message');
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input     = document.getElementById('login-email').value.trim();
+    const password  = document.getElementById('login-password').value;
+    const messageEl = document.getElementById('login-message');
 
-        messageEl.textContent = 'Verificando credenciales...';
-        const result = await handleSignIn(input, password);
+    messageEl.textContent = 'Verificando credenciales...';
+    messageEl.style.color = '#6b7280';
 
-        if (!result.success) {
-            messageEl.textContent = result.message;
-            messageEl.style.color = 'red';
-        }
-    });
-}
-
-const registerForm = document.getElementById('register-form');
-
-if (registerForm) {
-    registerForm.addEventListener('submit', async (e) => {
-
-        e.preventDefault(); // 🔥 ESTO ES CLAVE
-
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        const username = document.getElementById('register-username').value;
-        const messageEl = document.getElementById('register-message');
-
-        // 🔐 VALIDACIÓN DE CONTRASEÑA
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
-
-        if (!regex.test(password)) {
-            messageEl.textContent = "La contraseña debe tener mínimo 8 caracteres, incluir letra, número y símbolo.";
-            messageEl.style.color = "red";
-            return;
-        }
-
-        const result = await handleSignUp(email, password, username);
-
+    const result = await handleSignIn(input, password);
+    if (!result.success) {
         messageEl.textContent = result.message;
-        messageEl.style.color = result.success ? 'green' : 'red';
-    });
-}
-document.addEventListener("DOMContentLoaded", () => {
-    const btnNiveles = document.getElementById('btn-niveles');
-    const btnLoginNav = document.getElementById('btn-login-nav');
-
-    onAuthStateChanged(auth, (user) => {
-        if (btnNiveles && btnLoginNav) {
-            if (user) {
-                btnNiveles.classList.remove('hidden');
-                btnLoginNav.classList.add('hidden');
-            } else {
-                btnNiveles.classList.add('hidden');
-                btnLoginNav.classList.remove('hidden');
-            }
-        }
-        
-    });
-    
-}); 
-const resendBtn = document.getElementById('resend-verification');
-
-if (resendBtn) {
-    resendBtn.addEventListener('click', async () => {
-        const user = auth.currentUser;
-
-        if (user) {
-            await sendEmailVerification(user);
-            alert("📩 Correo reenviado. Revisa tu bandeja.");
-        } else {
-            alert("Inicia sesión primero.");
-        }
-    });
-}
-
-// --- FUNCIÓN: OLVIDÉ MI CONTRASEÑA ---
-async function handlePasswordReset(email) {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        return { success: true, message: '✅ Correo enviado. Revisa tu bandeja de entrada, si no encuentras el correo, revisa tu correo de SPAM' };
-    } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-            return { success: false, message: 'No existe una cuenta con ese correo.' };
-        }
-        if (error.code === 'auth/invalid-email') {
-            return { success: false, message: 'El correo ingresado no es válido.' };
-        }
-        return { success: false, message: 'Error al enviar el correo. Intenta de nuevo.' };
-    }
-}
-document.getElementById('send-reset-btn').addEventListener('click', async() => {
-    const email = document.getElementById('forgot-email').value.trim();
-    const messageEl = document.getElementById('forgot-message');
-
-    if (!email) {
-        messageEl.textContent = 'Por favor ingresa tu correo.';
         messageEl.style.color = 'red';
-        return;
     }
+});
 
-    messageEl.textContent = 'Enviando...';
-    messageEl.style.color = '#4b5563';
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email     = document.getElementById('register-email').value.trim();
+    const password  = document.getElementById('register-password').value;
+    const username  = document.getElementById('register-username').value.trim();
+    const messageEl = document.getElementById('register-message');
 
-    const result = await handlePasswordReset(email);
+    messageEl.textContent = 'Creando cuenta...';
+    messageEl.style.color = '#6b7280';
+
+    const result = await handleSignUp(email, password, username);
     messageEl.textContent = result.message;
     messageEl.style.color = result.success ? 'green' : 'red';
 });
 
-// async function crearAdminEspecifico() {
-//     const uid = "gCPMY0mwBSSXCOjnnAw8KRFDZIv1";
-    
-//     // Usamos "perfiles" porque es la colección que ya usas en handleSignIn y handleSignUp
-//     const userRef = doc(db, "perfiles", uid);
+// --- RECUPERAR CONTRASEÑA (acepta correo o nombre de usuario) ---
+const sendResetBtn = document.getElementById('send-reset-btn');
+if (sendResetBtn) {
+    sendResetBtn.addEventListener('click', async () => {
+        const input  = document.getElementById('forgot-email').value.trim();
+        const msgEl  = document.getElementById('forgot-message');
 
-//     try {
-//         await setDoc(userRef, {
-//             username: "AdminLeo", // Agregué username porque tu función handleSignIn lo busca
-//             email: "leochavezro17@gmail.com",
-//             hasSeenWelcomeModal: true,
-//             nivel3_completado: false,
-//             nivel4_completado: false,
-//             nivel_actual: 1,
-//             photoURL: "https://placehold.co/120x120/d1d5db/4b5563?text=👤",
-//             progreso_dias_completados: 0,
-//             progreso_meses_completados: 0,
-//             rol: "admin",
-//             created_at: new Date()
-//         });
-        
-//         console.log("✅ Documento de Admin creado con éxito en la colección 'perfiles'");
-//         alert("¡Admin creado con éxito!");
-//     } catch (error) {
-//         console.error("❌ Error al crear el documento:", error);
-//         alert("Error al crear admin: " + error.message);
-//     }
-// }
+        if (!input) {
+            msgEl.textContent = 'Ingresa tu correo o nombre de usuario.';
+            msgEl.style.color = 'red';
+            return;
+        }
 
-// // Para ejecutarlo automáticamente una vez al cargar la página:
-// // crearAdminEspecifico(); 
+        msgEl.textContent = 'Buscando cuenta...';
+        msgEl.style.color = '#6b7280';
 
-// // O mejor aún, pégalo en la consola del navegador cuando la página esté abierta.
-// window.crearAdminEspecifico = crearAdminEspecifico
+        const email = await resolveInputToEmail(input);
+
+        if (!email) {
+            msgEl.textContent = 'No se encontró una cuenta con ese usuario o correo.';
+            msgEl.style.color = 'red';
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            msgEl.textContent = '✅ Correo de recuperación enviado. Revisa tu bandeja (y spam).';
+            msgEl.style.color = 'green';
+        } catch (error) {
+            console.error('sendPasswordResetEmail:', error.code, error.message);
+            msgEl.textContent = traducirErrorFirebase(error.code);
+            msgEl.style.color = 'red';
+        }
+    });
+}

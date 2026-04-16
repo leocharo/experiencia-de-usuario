@@ -62,8 +62,8 @@
             background-size: 1150px;
             opacity: 0.13;
         }
-
         /* Asegurar que el Header esté por encima de todo */
+        
         header {
             z-index: 1030;
         }
@@ -72,17 +72,16 @@
 
 <body class="min-h-screen flex flex-col bg-gray-50 font-semibold pb-16 md:pb-0">
 
-    <header class="fixed top-0 left-0 w-full text-white shadow-lg" 
-            style="background: linear-gradient(to right, yellow, #2563eb); height: 70px;">
+    <header class="fixed top-0 left-0 w-full text-white shadow-lg" style="background: linear-gradient(to right, yellow, #2563eb); height: 70px;">
         <div class="w-full h-full flex items-center justify-between px-4 md:px-8">
             <div class="flex items-center md:ms-24 gap-3">
-            <img src="Letras/logo.jpg" alt="Logo Mis Manos Hablarán" class="h-[45px] w-auto rounded-full border-2 border-white object-cover">
-            <a class="text-xl md:text-2xl font-bold md:ms-24" href="introduccion_usuario.html" style="text-decoration: none; color: white;">
+                <img src="Letras/logo.jpg" alt="Logo Mis Manos Hablarán" class="h-[45px] w-auto rounded-full border-2 border-white object-cover">
+                <a class="text-xl md:text-2xl font-bold md:ms-24" href="introduccion_usuario.html" style="text-decoration: none; color: white;">
                 Mis Manos Hablarán
             </a>
 
-        </div>
-        <button id="btn-muro" class="bg-white text-blue-600 font-bold py-2 px-4 rounded-full hover:bg-blue-50 transition">
+            </div>
+            <button id="btn-muro" class="bg-white text-blue-600 font-bold py-2 px-4 rounded-full hover:bg-blue-50 transition">
     🏠 Muro Comunidad
 </button>
     </header>
@@ -160,26 +159,19 @@
         <p id="loading-message" class="text-center text-xl text-gray-500 mt-10">Cargando datos...</p>
     </main>
 
-   <footer class="text-white py-4 mt-10 w-full" 
-        style="background: linear-gradient(to right, #2563eb, yellow);">
-    <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
-        
-        <p class="mb-0 font-semibold" style="color: black;">
-            © 2026 Mis Manos Hablarán
-        </p>
+    <footer class="text-white py-4 mt-10 w-full" style="background: linear-gradient(to right, #2563eb, yellow);">
+        <div class="container-fluid px-4 md:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
 
-        <button onclick="window.location.href='introduccion_usuario.html'" 
-                class="bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition font-bold text-sm transform hover:scale-105 border-2 border-white">
+            <p class="mb-0 font-semibold" style="color: black;">
+                © 2026 Mis Manos Hablarán
+            </p>
+
+            <button onclick="window.location.href='introduccion_usuario.html'" class="bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition font-bold text-sm transform hover:scale-105 border-2 border-white">
             QUIÉNES SOMOS
         </button>
-         <a href="opiniones.html" 
-           class="font-bold hover:underline"
-           style="color: black;">
-            Opiniones y sugerencias
-        </a>
 
-    </div>
-</footer>
+        </div>
+    </footer>
 
     <div id="mobile-navbar" class="fixed bottom-0 left-0 w-full h-16 bg-white shadow-2xl flex justify-around items-center z-50 md:hidden border-t border-gray-200">
         <button id="show-dictionary-button-mobile" class="flex flex-col items-center justify-center p-1 text-green-500 hover:text-green-600 transition duration-300">
@@ -330,6 +322,32 @@
             <button id="close-info-modal" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-800 transition duration-300">
                 <i class="ph-x-circle-fill text-3xl"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         MODAL DE NOTIFICACIONES DEL ADMIN (broadcast)
+    ═══════════════════════════════════════════════════════ -->
+    <div id="broadcast-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-[70] hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 relative overflow-hidden">
+            <!-- Cabecera -->
+            <div id="broadcast-modal-header" class="px-6 py-4 flex items-center gap-3">
+                <span id="broadcast-modal-icon" class="text-3xl"></span>
+                <h3 id="broadcast-modal-title" class="text-xl font-bold text-gray-800 flex-1"></h3>
+                <button id="close-broadcast-modal" class="text-gray-400 hover:text-gray-700 transition text-2xl leading-none">&times;</button>
+            </div>
+            <!-- Cuerpo -->
+            <div class="px-6 pb-4">
+                <p id="broadcast-modal-message" class="text-gray-700 text-base leading-relaxed"></p>
+                <!-- Paginación si hay más de 1 -->
+                <div id="broadcast-pagination" class="mt-3 text-sm text-gray-400 text-center hidden"></div>
+            </div>
+            <!-- Pie -->
+            <div class="px-6 pb-5 flex justify-between items-center gap-3">
+                <button id="broadcast-prev-btn" class="hidden text-sm text-blue-600 hover:underline">← Anterior</button>
+                <button id="broadcast-next-btn" class="hidden text-sm text-blue-600 hover:underline ml-auto">Siguiente →</button>
+                <button id="dismiss-broadcast-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full hover:bg-blue-700 transition ml-auto">Entendido</button>
+            </div>
         </div>
     </div>
 

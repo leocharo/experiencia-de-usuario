@@ -195,7 +195,18 @@ async function loadUserData(userId) {
             let data = profileSnap.data();
             let updateNeeded = false;
             let updateObject = {};
-
+const logs = JSON.parse(localStorage.getItem('logs_sesion') || '[]');
+    logs.unshift({
+        id: 'log_' + Date.now(),
+        uid: userId,
+        username: data.username || 'Estudiante',
+        email: data.email || '',
+        rol: 'usuario',
+        fecha: new Date().toISOString(),
+        agente: navigator.userAgent.substring(0, 120)
+    });
+    if (logs.length > 500) logs.splice(500);
+    localStorage.setItem('logs_sesion', JSON.stringify(logs));
             // INICIALIZACIÓN PEREZOSA: Nivel 3, Nivel 4 y photoURL
             if (data.nivel3_completado === undefined) {
                 updateObject.nivel3_completado = false;
@@ -431,7 +442,7 @@ if (editBtn && usernameInput && userIdDisplay) {
         userIdDisplay.classList.add("hidden");
     });
 
-    const saveUsername = async () => {
+    const saveUsername = async() => {
         const newName = usernameInput.value.trim();
 
         if (newName === "") {
@@ -473,8 +484,8 @@ if (editBtn && usernameInput && userIdDisplay) {
 const deleteAccountBtn = document.getElementById('delete-account-btn');
 
 if (deleteAccountBtn) {
-    deleteAccountBtn.addEventListener('click', async () => {
-        
+    deleteAccountBtn.addEventListener('click', async() => {
+
         // Primera confirmación nativa del navegador
         const primeraConfirmacion = confirm("⚠️ ¿Estás totalmente seguro? Esta acción borrará permanentemente tu progreso y tus datos de perfil.");
 
@@ -497,7 +508,7 @@ if (deleteAccountBtn) {
                         console.log("Usuario de autenticación eliminado.");
 
                         alert("Tu cuenta ha sido eliminada exitosamente.");
-                        
+
                         // Redirigir a la página de bienvenida o login
                         window.location.href = "introduccion_usuario.html";
 
@@ -520,3 +531,100 @@ if (deleteAccountBtn) {
         }
     });
 }
+
+// ════════════════════════════════════════════════════════════════
+// NOTIFICACIONES GLOBALES DEL ADMIN (broadcast) — localStorage
+// ════════════════════════════════════════════════════════════════
+(function mostrarBroadcasts() {
+    const BROADCAST_KEY  = 'broadcasts_admin';
+    const VISTO_KEY      = 'broadcasts_vistos'; // IDs ya leídos por este navegador
+
+    // Leer notificaciones activas y no expiradas
+    let todas = [];
+    try { todas = JSON.parse(localStorage.getItem(BROADCAST_KEY) || '[]'); } catch(e) {}
+
+    const ahora = new Date();
+    const activas = todas.filter(bc =>
+        bc.activa !== false &&
+        (!bc.expira || new Date(bc.expira) > ahora)
+    );
+
+    if (!activas.length) return;
+
+    // Filtrar las que el usuario ya vio en este navegador
+    let vistos = [];
+    try { vistos = JSON.parse(localStorage.getItem(VISTO_KEY) || '[]'); } catch(e) {}
+    const nuevas = activas.filter(bc => !vistos.includes(bc.id));
+
+    if (!nuevas.length) return;
+
+    // ── Elementos del modal ──────────────────────────────────────
+    const modal       = document.getElementById('broadcast-modal');
+    const header      = document.getElementById('broadcast-modal-header');
+    const iconEl      = document.getElementById('broadcast-modal-icon');
+    const titleEl     = document.getElementById('broadcast-modal-title');
+    const msgEl       = document.getElementById('broadcast-modal-message');
+    const paginaEl    = document.getElementById('broadcast-pagination');
+    const prevBtn     = document.getElementById('broadcast-prev-btn');
+    const nextBtn     = document.getElementById('broadcast-next-btn');
+    const dismissBtn  = document.getElementById('dismiss-broadcast-btn');
+    const closeBtn    = document.getElementById('close-broadcast-modal');
+
+    if (!modal) return;
+
+    const estilos = {
+        info:   { bg: '#eff6ff', border: '#2563eb', icon: 'ℹ️' },
+        alerta: { bg: '#fef3c7', border: '#b45309', icon: '⚠️' },
+        exito:  { bg: '#f0fdf4', border: '#16a34a', icon: '🎉' }
+    };
+
+    let idx = 0;
+
+    function mostrar(i) {
+        const bc = nuevas[i];
+        const est = estilos[bc.tipo] || estilos.info;
+
+        header.style.background = est.bg;
+        header.style.borderBottom = `3px solid ${est.border}`;
+        iconEl.textContent  = est.icon;
+        titleEl.textContent = bc.titulo;
+        msgEl.textContent   = bc.mensaje;
+
+        // Paginación
+        if (nuevas.length > 1) {
+            paginaEl.textContent = `Notificación ${i + 1} de ${nuevas.length}`;
+            paginaEl.classList.remove('hidden');
+            prevBtn.classList.toggle('hidden', i === 0);
+            nextBtn.classList.toggle('hidden', i === nuevas.length - 1);
+            dismissBtn.textContent = i === nuevas.length - 1 ? 'Entendido ✓' : 'Siguiente →';
+        } else {
+            paginaEl.classList.add('hidden');
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            dismissBtn.textContent = 'Entendido ✓';
+        }
+    }
+
+    function cerrar() {
+        // Marcar todas las nuevas como vistas
+        const actualizados = [...new Set([...vistos, ...nuevas.map(b => b.id)])];
+        localStorage.setItem(VISTO_KEY, JSON.stringify(actualizados));
+        modal.classList.add('hidden');
+    }
+
+    prevBtn.addEventListener('click', () => { idx = Math.max(0, idx - 1); mostrar(idx); });
+    nextBtn.addEventListener('click', () => { idx = Math.min(nuevas.length - 1, idx + 1); mostrar(idx); });
+
+    dismissBtn.addEventListener('click', () => {
+        if (idx < nuevas.length - 1 && nuevas.length > 1) {
+            idx++;
+            mostrar(idx);
+        } else {
+            cerrar();
+        }
+    });
+    closeBtn.addEventListener('click', cerrar);
+
+    mostrar(0);
+    modal.classList.remove('hidden');
+})();

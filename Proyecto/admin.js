@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════════
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc, query, orderBy, limit}
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc }
     from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut }
     from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
@@ -40,8 +40,15 @@ onAuthStateChanged(auth, async (user) => {
         if (userDoc.exists() && userDoc.data().rol === 'admin') {
             if (loadingEl) loadingEl.style.display = 'none';
             if (contentEl) contentEl.style.display = 'flex';
+            // Registrar inicio de sesión del admin en los logs
+            const adminData = userDoc.data();
+            window.registrarLoginLog({
+                uid:      user.uid,
+                username: adminData.username || 'Admin',
+                email:    user.email || adminData.email || '',
+                rol:      'admin'
+            });
             loadAdminData();
-            loadLoginLogs();
         } else {
             window.location.href = 'index.html';
         }
@@ -305,7 +312,8 @@ window.cargarMuro = function() {
     if (!grid) return;
 
     const todas     = getSolicitudes();
-    const aprobadas = todas.filter(s => s.estado === 'aceptado');
+    // Solo mostrar aprobadas que NO estén en la papelera (soft-delete)
+    const aprobadas = todas.filter(s => s.estado === 'aceptado' && !s.eliminado);
 
     // Stats
     if (statsBar) {
@@ -377,27 +385,14 @@ window.cargarMuro = function() {
     });
 };
 
-// ── Eliminar del muro ─────────────────────────────────────────────
+// El botón confirm-delete-muro-btn es gestionado por el bloque
+// de Papelera de Reciclaje (soft-delete) más abajo.
 let postToDelete = null;
 
 window.confirmarEliminarMuro = function(id) {
     postToDelete = id;
     document.getElementById('delete-muro-modal').classList.add('active');
 };
-
-const confirmDeleteMuroBtn = document.getElementById('confirm-delete-muro-btn');
-if (confirmDeleteMuroBtn) {
-    confirmDeleteMuroBtn.addEventListener('click', () => {
-        if (!postToDelete) return;
-        const todas    = getSolicitudes();
-        const filtradas = todas.filter(s => s.id !== postToDelete);
-        saveSolicitudes(filtradas);
-        postToDelete = null;
-        window.closeModals();
-        window.cargarMuro();
-        showToast('🗑️ Publicación eliminada del muro');
-    });
-}
 
 // ── Helpers ───────────────────────────────────────────────────────
 function getYouTubeEmbedUrl(url) {
@@ -420,6 +415,381 @@ function showToast(msg) {
     setTimeout(() => { t.className = 'toast'; }, 3500);
 }
 
+// ════════════════════════════════════════════════════════════════
+// GESTIÓN DE ROLES  —  Firestore
+// Solo existen dos roles de usuario: "usuario" y "creador"
+// ════════════════════════════════════════════════════════════════
+
+window.cargarTablaRoles = async function () {
+    const tbody = document.getElementById('roles-list');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#94a3b8;">Cargando...</td></tr>';
+
+    try {
+        const { getDocs: _getDocs, collection: _col } = await import(
+            'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js'
+        );
+        const snap = await _getDocs(_col(db, 'perfiles'));
+        tbody.innerHTML = '';
+
+        snap.forEach(docSnap => {
+            const u   = docSnap.data();
+            const uid = docSnap.id;
+            if (u.rol === 'admin') return;
+
+            const rolEfectivo = u.rol || 'usuario';
+            const rolLabel = rolEfectivo === 'creador'
+                ? '<span class="badge" style="background:#f0fdf4;color:#16a34a;">🎨 Creador</span>'
+                : '<span class="badge" style="background:#eff6ff;color:#2563eb;">👤 Usuario</span>';
+
+            const esCreador = rolEfectivo === 'creador';
+
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-uid', uid);
+            tr.innerHTML = `
+                <td><strong>${u.username || 'Sin nombre'}</strong></td>
+                <td style="font-size:13px;color:#64748b;">${u.email || ''}</td>
+                <td>${rolLabel}</td>
+                <td>
+                    <button class="btn" style="background:${esCreador ? '#fef2f2' : '#f0fdf4'};color:${esCreador ? '#dc2626' : '#16a34a'};border:1px solid ${esCreador ? '#fecaca' : '#bbf7d0'};"
+                        onclick="cambiarRol('${uid}','${esCreador ? 'usuario' : 'creador'}')">
+                        ${esCreador ? '❌ Quitar Creador' : '✅ Dar Creador'}
+                    </button>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+
+        // Búsqueda local
+        const searchInput = document.getElementById('roles-search');
+        if (searchInput) {
+            searchInput.oninput = function () {
+                const term = this.value.toLowerCase();
+                tbody.querySelectorAll('tr').forEach(row => {
+                    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
+            };
+        }
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#ef4444;">Error al cargar usuarios.</td></tr>';
+        console.error('cargarTablaRoles:', e);
+    }
+};
+
+window.cambiarRol = async function (uid, nuevoRol) {
+    try {
+        const { doc: _doc, updateDoc } = await import(
+            'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js'
+        );
+        await updateDoc(_doc(db, 'perfiles', uid), { rol: nuevoRol });
+        showToast(`✅ Rol actualizado a "${nuevoRol}"`);
+        window.cargarTablaRoles();
+    } catch (e) {
+        console.error('cambiarRol:', e);
+        showToast('❌ Error al actualizar el rol. Revisa la consola.');
+    }
+};
+
+// ════════════════════════════════════════════════════════════════
+// PAPELERA DE RECICLAJE  —  localStorage (soft delete)
+// El admin puede marcar publicaciones como eliminadas y recuperarlas.
+// ════════════════════════════════════════════════════════════════
+
+window.cargarPapelera = function () {
+    const tbody = document.getElementById('papelera-list');
+    if (!tbody) return;
+
+    const todas     = getSolicitudes();
+    const eliminadas = todas.filter(s => s.eliminado === true);
+
+    if (!eliminadas.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">
+            ✅ La papelera está vacía.
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    eliminadas.forEach(data => {
+        const tipoLabel = data.tipo === 'video/youtube' ? '▶️ YouTube' :
+                          data.tipo && data.tipo.indexOf('image') === 0 ? '🖼️ Imagen' : '🎬 Video';
+        const fechaEliminado = data.fechaEliminado
+            ? new Date(data.fechaEliminado).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' })
+            : '—';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <strong>${data.profesorNombre || 'Creador'}</strong>
+                <div style="font-size:11px;color:#94a3b8;">${data.profesorEmail || ''}</div>
+            </td>
+            <td style="font-size:13px;color:#475569;max-width:200px;">${data.titulo || data.texto || '—'}</td>
+            <td><span class="badge">${tipoLabel}</span></td>
+            <td style="font-size:12px;color:#94a3b8;">${fechaEliminado}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="restaurarPublicacion('${data.id}')">♻️ Restaurar</button>
+                <button class="btn btn-danger" onclick="eliminarDefinitivo('${data.id}')">🗑️ Borrar</button>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+};
+
+window.restaurarPublicacion = function (id) {
+    const todas = getSolicitudes();
+    const idx   = todas.findIndex(s => s.id === id);
+    if (idx === -1) return;
+    delete todas[idx].eliminado;
+    delete todas[idx].fechaEliminado;
+    todas[idx].estado = 'aceptado';
+    saveSolicitudes(todas);
+    showToast('♻️ Publicación restaurada al muro');
+    window.cargarPapelera();
+    window.cargarMuro();
+};
+
+window.eliminarDefinitivo = function (id) {
+    if (!confirm('⚠️ ¿Borrar permanentemente? Esta acción no se puede deshacer.')) return;
+    const todas    = getSolicitudes();
+    const filtradas = todas.filter(s => s.id !== id);
+    saveSolicitudes(filtradas);
+    showToast('🗑️ Publicación eliminada permanentemente');
+    window.cargarPapelera();
+};
+
+// El confirm-delete-muro-btn original usa hard-delete.
+// Lo reemplazamos por soft-delete (mover a papelera).
+// ─ El bloque original en línea ya no se usa; este lo sobreescribe.
+const _muroSoftBtn = document.getElementById('confirm-delete-muro-btn');
+if (_muroSoftBtn) {
+    // Clonar nodo para eliminar listeners previos
+    const clone = _muroSoftBtn.cloneNode(true);
+    _muroSoftBtn.parentNode.replaceChild(clone, _muroSoftBtn);
+    clone.addEventListener('click', () => {
+        if (!postToDelete) return;
+        const todas = getSolicitudes();
+        const idx   = todas.findIndex(s => s.id === postToDelete);
+        if (idx !== -1) {
+            todas[idx].eliminado      = true;
+            todas[idx].fechaEliminado = new Date().toISOString();
+        }
+        saveSolicitudes(todas);
+        postToDelete = null;
+        window.closeModals();
+        window.cargarMuro();
+        showToast('🗑️ Publicación movida a la papelera');
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// NOTIFICACIONES GLOBALES (BROADCAST)  —  localStorage
+// ════════════════════════════════════════════════════════════════
+const BROADCAST_KEY = 'broadcasts_admin';
+
+function getBroadcasts() {
+    try { return JSON.parse(localStorage.getItem(BROADCAST_KEY) || '[]'); }
+    catch (e) { return []; }
+}
+function saveBroadcasts(arr) {
+    localStorage.setItem(BROADCAST_KEY, JSON.stringify(arr));
+}
+
+window.publicarBroadcast = function () {
+    const titulo  = (document.getElementById('broadcast-titulo')?.value || '').trim();
+    const mensaje = (document.getElementById('broadcast-mensaje')?.value || '').trim();
+    const tipo    = document.getElementById('broadcast-tipo')?.value || 'info';
+    const expira  = document.getElementById('broadcast-expira')?.value || '';
+
+    if (!titulo || !mensaje) {
+        showToast('⚠️ Completa el título y el mensaje');
+        return;
+    }
+
+    const nueva = {
+        id:        'bc_' + Date.now(),
+        titulo,
+        mensaje,
+        tipo,
+        expira:    expira ? new Date(expira).toISOString() : null,
+        publicado: new Date().toISOString(),
+        activa:    true
+    };
+
+    const todas = getBroadcasts();
+    todas.unshift(nueva);
+    saveBroadcasts(todas);
+
+    // Limpiar formulario
+    document.getElementById('broadcast-titulo').value  = '';
+    document.getElementById('broadcast-mensaje').value = '';
+    document.getElementById('broadcast-expira').value  = '';
+
+    showToast('📢 Notificación publicada');
+    window.cargarBroadcasts();
+};
+
+window.cargarBroadcasts = function () {
+    const tbody = document.getElementById('broadcast-list');
+    if (!tbody) return;
+
+    const todas = getBroadcasts();
+
+    if (!todas.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">
+            📭 No hay notificaciones publicadas.
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    const tipoEstilo = {
+        info:   { bg: '#eff6ff', color: '#2563eb', label: 'ℹ️ Info' },
+        alerta: { bg: '#fef3c7', color: '#b45309', label: '⚠️ Alerta' },
+        exito:  { bg: '#f0fdf4', color: '#16a34a', label: '🎉 Celebración' }
+    };
+
+    todas.forEach(bc => {
+        const estilo    = tipoEstilo[bc.tipo] || tipoEstilo.info;
+        const publicado = new Date(bc.publicado).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        const expiraStr = bc.expira
+            ? new Date(bc.expira).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' })
+            : '<span style="color:#94a3b8;">Sin límite</span>';
+
+        const expirada = bc.expira && new Date(bc.expira) < new Date();
+
+        const tr = document.createElement('tr');
+        tr.style.opacity = expirada ? '0.5' : '1';
+        tr.innerHTML = `
+            <td><strong>${bc.titulo}</strong>${expirada ? ' <span style="font-size:11px;color:#ef4444;">(expirada)</span>' : ''}</td>
+            <td style="font-size:13px;color:#475569;max-width:220px;">${bc.mensaje}</td>
+            <td><span class="badge" style="background:${estilo.bg};color:${estilo.color};">${estilo.label}</span></td>
+            <td style="font-size:12px;color:#64748b;">${publicado}</td>
+            <td style="font-size:12px;color:#64748b;">${expiraStr}</td>
+            <td>
+                <button class="btn btn-danger" onclick="eliminarBroadcast('${bc.id}')">🗑️ Eliminar</button>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+};
+
+window.eliminarBroadcast = function (id) {
+    const todas    = getBroadcasts();
+    const filtradas = todas.filter(b => b.id !== id);
+    saveBroadcasts(filtradas);
+    showToast('🗑️ Notificación eliminada');
+    window.cargarBroadcasts();
+};
+
+// ════════════════════════════════════════════════════════════════
+// LOGS DE INICIO DE SESIÓN  —  localStorage
+// Registra cada inicio de sesión con usuario, rol, fecha y agente.
+// ════════════════════════════════════════════════════════════════
+const LOGS_KEY = 'logs_sesion';
+
+function getLogs() {
+    try { return JSON.parse(localStorage.getItem(LOGS_KEY) || '[]'); }
+    catch (e) { return []; }
+}
+function saveLogs(arr) {
+    localStorage.setItem(LOGS_KEY, JSON.stringify(arr));
+}
+
+/** Llamar desde cualquier página al detectar inicio de sesión exitoso */
+window.registrarLoginLog = function (userData) {
+    // userData: { uid, username, email, rol }
+    const logs = getLogs();
+    logs.unshift({
+        id:        'log_' + Date.now(),
+        uid:       userData.uid        || '',
+        username:  userData.username   || userData.email || 'Desconocido',
+        email:     userData.email      || '',
+        rol:       userData.rol        || 'usuario',
+        fecha:     new Date().toISOString(),
+        agente:    navigator.userAgent.substring(0, 120)
+    });
+    // Guardar máximo 500 registros para no saturar localStorage
+    if (logs.length > 500) logs.splice(500);
+    saveLogs(logs);
+};
+
+/**
+ * INTEGRACIÓN EN OTRAS PÁGINAS (usuarios y creadores):
+ * En el onAuthStateChanged de cada página, tras confirmar el rol, llama:
+ *
+ *   const pendingLog = { uid, username, email, rol, fecha: new Date().toISOString(),
+ *                        agente: navigator.userAgent.substring(0,120) };
+ *   const logs = JSON.parse(localStorage.getItem('logs_sesion') || '[]');
+ *   logs.unshift({ id: 'log_' + Date.now(), ...pendingLog });
+ *   if (logs.length > 500) logs.splice(500);
+ *   localStorage.setItem('logs_sesion', JSON.stringify(logs));
+ */
+
+window.cargarLogs = function () {
+    const tbody    = document.getElementById('logs-list');
+    const countEl  = document.getElementById('logs-count');
+    const filtroRol = (document.getElementById('logs-filter-rol')?.value || '').trim();
+    if (!tbody) return;
+
+    let logs = getLogs();
+
+    // Aplicar filtro de rol si se seleccionó uno
+    if (filtroRol) {
+        logs = logs.filter(l => l.rol === filtroRol);
+    }
+
+    if (countEl) countEl.textContent = logs.length + ' registros';
+
+    if (!logs.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">
+            📭 No hay registros de sesión aún.
+        </td></tr>`;
+        return;
+    }
+
+    const rolEstilo = {
+        admin:   { bg: '#fdf4ff', color: '#7c3aed', label: '🛡️ Admin' },
+        creador: { bg: '#f0fdf4', color: '#16a34a', label: '🎨 Creador' },
+        usuario: { bg: '#eff6ff', color: '#2563eb', label: '👤 Usuario' }
+    };
+
+    tbody.innerHTML = '';
+    logs.forEach((log, idx) => {
+        const estilo   = rolEstilo[log.rol] || rolEstilo.usuario;
+        const fechaStr = new Date(log.fecha).toLocaleDateString('es-MX', {
+            day:'2-digit', month:'short', year:'numeric',
+            hour:'2-digit', minute:'2-digit', second:'2-digit'
+        });
+        // Detectar tipo de dispositivo desde el agente
+        let dispositivo = '💻 Escritorio';
+        if (/Android/i.test(log.agente))       dispositivo = '📱 Android';
+        else if (/iPhone|iPad/i.test(log.agente)) dispositivo = '📱 iOS';
+        else if (/Mobile/i.test(log.agente))   dispositivo = '📱 Móvil';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-size:12px;color:#94a3b8;font-weight:600;">${idx + 1}</td>
+            <td><strong>${log.username}</strong></td>
+            <td style="font-size:13px;color:#64748b;">${log.email}</td>
+            <td><span class="badge" style="background:${estilo.bg};color:${estilo.color};">${estilo.label}</span></td>
+            <td style="font-size:13px;color:#475569;">${fechaStr}</td>
+            <td style="font-size:12px;color:#94a3b8;">${dispositivo}</td>`;
+        tbody.appendChild(tr);
+    });
+};
+
+// Filtrado en tiempo real por rol
+document.addEventListener('DOMContentLoaded', () => {
+    const filtroEl = document.getElementById('logs-filter-rol');
+    if (filtroEl) filtroEl.addEventListener('change', () => {
+        if (typeof window.cargarLogs === 'function') window.cargarLogs();
+    });
+});
+
+window.limpiarLogs = function () {
+    if (!confirm('⚠️ ¿Eliminar todos los registros de sesión? Esta acción no se puede deshacer.')) return;
+    saveLogs([]);
+    showToast('🗑️ Logs de sesión eliminados');
+    window.cargarLogs();
+};
+
 // ── Logout ────────────────────────────────────────────────────────
 const logoutBtn = document.getElementById('logout-btn');
 if (logoutBtn) {
@@ -430,40 +800,3 @@ if (logoutBtn) {
         }
     };
 }
-// ── CARGAR LOGS DE INICIO DE SESIÓN ──────────────────────────────
-window.loadLoginLogs = async function() {
-    const logBody = document.getElementById('logs-list');
-    if (!logBody) return;
-
-    try {
-        // Consulta los últimos 30 inicios de sesión ordenados por fecha
-        const q = query(collection(db, 'logs_acceso'), orderBy('fecha', 'desc'), limit(30));
-        const querySnapshot = await getDocs(q);
-        
-        logBody.innerHTML = '';
-
-        if (querySnapshot.empty) {
-            logBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;">No hay registros de acceso.</td></tr>';
-            return;
-        }
-
-        querySnapshot.forEach((docSnap) => {
-            const log = docSnap.data();
-            const fecha = log.fecha ? new Date(log.fecha.seconds * 1000).toLocaleString('es-MX') : '—';
-            
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>
-                    <strong>${log.nombre || 'Usuario'}</strong>
-                    <br><span style="font-size:10px; color:#6366f1; text-transform:uppercase; font-weight:bold;">${log.rol || 'estudiante'}</span>
-                </td>
-                <td>${log.email || '—'}</td>
-                <td>${fecha}</td>
-                <td style="font-family:monospace; font-size:11px; color:#94a3b8;">${docSnap.id.slice(0,8)}</td>
-            `;
-            logBody.appendChild(tr);
-        });
-    } catch (e) {
-        console.error('Error cargando logs:', e);
-    }
-};

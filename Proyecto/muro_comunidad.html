@@ -409,7 +409,8 @@
         function cargarMuro() {
             const contenedor = document.getElementById('contenedor-muro');
             const todas = getSolicitudes();
-            const aprobadas = todas.filter(s => s.estado === 'aceptado');
+            // Solo mostrar aprobadas que NO estén marcadas como eliminadas (soft-delete del admin)
+            const aprobadas = todas.filter(s => s.estado === 'aceptado' && !s.eliminado);
 
             contenedor.innerHTML = '';
 

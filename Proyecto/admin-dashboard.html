@@ -416,6 +416,11 @@
             <div id="btn-nav-usuarios" class="nav-item active">👥 Usuarios</div>
             <div id="btn-nav-publicaciones" class="nav-item">🕒 Pubs. Pendientes <span id="badge-solicitudes" style="display:none;background:#ef4444;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;">0</span></div>
             <div id="btn-nav-muro" class="nav-item">🌐 Ver Muro</div>
+            <div style="padding: 20px 25px 8px; color: #94a3b8; font-size: 12px; font-weight: bold; letter-spacing: 1px;">CONTROL</div>
+            <div id="btn-nav-roles" class="nav-item">🛡️ Roles y Permisos</div>
+            <div id="btn-nav-papelera" class="nav-item">🗑️ Papelera de Reciclaje</div>
+            <div id="btn-nav-broadcast" class="nav-item">📢 Notificaciones Globales</div>
+            <div id="btn-nav-logs" class="nav-item">📋 Logs de Sesión</div>
             <div id="logout-btn" style="padding: 15px 25px; margin-top: auto; color: #f87171; cursor: pointer; font-weight: bold; font-size: 14px;">🚪 Cerrar Sesión</div>
         </nav>
 
@@ -461,25 +466,7 @@
                     </table>
                 </div>
             </div>
-<div class="table-container" style="margin-top: 40px;">
-    <div class="table-header">
-        <h3>Historial de Accesos (Logs)</h3>
-        <button class="btn btn-refresh" onclick="loadLoginLogs()">🔄 Actualizar Logs</button>
-    </div>
-    <table class="user-table">
-        <thead>
-            <tr>
-                <th>Usuario / Rol</th>
-                <th>Correo</th>
-                <th>Fecha y Hora</th>
-                <th>ID Sesión</th>
-            </tr>
-        </thead>
-        <tbody id="logs-list">
-            <tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8;">Cargando historial...</td></tr>
-        </tbody>
-    </table>
-</div>
+
             <!-- SECCIÓN PUBLICACIONES PENDIENTES -->
             <div id="section-publicaciones" style="display:none;">
                 <div class="header">
@@ -517,8 +504,162 @@
                 <div class="muro-stats-bar" id="muro-stats-bar"></div>
                 <div id="muro-grid" class="muro-grid"></div>
             </div>
-        </main>
-    </div>
+
+            <!-- SECCIÓN ROLES Y PERMISOS -->
+            <div id="section-roles" style="display:none;">
+                <div class="header">
+                    <h1>🛡️ Gestión de Roles y Permisos</h1>
+                    <p>Asigna o revoca el privilegio de "Creador de Contenido" a cualquier usuario.</p>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Lista de Usuarios</h3>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <input type="text" id="roles-search" style="padding:10px; border:1px solid #e2e8f0; border-radius:8px;" placeholder="Buscar usuario...">
+                            <button class="btn btn-refresh" onclick="cargarTablaRoles()">🔄 Actualizar</button>
+                        </div>
+                    </div>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Correo</th>
+                                <th>Rol Actual</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roles-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECCIÓN PAPELERA DE RECICLAJE -->
+            <div id="section-papelera" style="display:none;">
+                <div class="header">
+                    <h1>🗑️ Papelera de Reciclaje</h1>
+                    <p>Recupera publicaciones eliminadas antes de que se pierdan para siempre.</p>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Publicaciones Eliminadas</h3>
+                        <button class="btn btn-refresh" onclick="cargarPapelera()">🔄 Actualizar</button>
+                    </div>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Creador</th>
+                                <th>Contenido</th>
+                                <th>Tipo</th>
+                                <th>Eliminado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="papelera-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECCIÓN NOTIFICACIONES GLOBALES (BROADCAST) -->
+            <div id="section-broadcast" style="display:none;">
+                <div class="header">
+                    <h1>📢 Notificaciones Globales</h1>
+                    <p>Redacta y programa mensajes que todos los usuarios verán al iniciar sesión.</p>
+                </div>
+                <div class="table-container" style="padding:25px;">
+                    <h3 style="margin-bottom:18px;">Nueva Notificación</h3>
+                    <div style="display:flex; flex-direction:column; gap:14px; max-width:600px;">
+                        <div>
+                            <label style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:6px;">Título del mensaje</label>
+                            <input type="text" id="broadcast-titulo" maxlength="80"
+                                style="width:100%; padding:10px 14px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px;"
+                                placeholder="Ej: ¡Nuevo vocabulario disponible!">
+                        </div>
+                        <div>
+                            <label style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:6px;">Mensaje</label>
+                            <textarea id="broadcast-mensaje" rows="3" maxlength="300"
+                                style="width:100%; padding:10px 14px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px; resize:vertical;"
+                                placeholder="Ej: Mantenimiento programado el viernes a las 10pm."></textarea>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                            <div>
+                                <label style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:6px;">Tipo</label>
+                                <select id="broadcast-tipo"
+                                    style="padding:10px 14px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px;">
+                                    <option value="info">ℹ️ Información</option>
+                                    <option value="alerta">⚠️ Alerta</option>
+                                    <option value="exito">🎉 Celebración</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size:13px; font-weight:600; color:#475569; display:block; margin-bottom:6px;">Expira (opcional)</label>
+                                <input type="datetime-local" id="broadcast-expira"
+                                    style="padding:10px 14px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px;">
+                            </div>
+                        </div>
+                        <button class="btn btn-success" style="max-width:220px;" onclick="publicarBroadcast()">
+                            📢 Publicar Notificación
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container" style="margin-top:24px;">
+                    <div class="table-header">
+                        <h3>Notificaciones Activas</h3>
+                        <button class="btn btn-refresh" onclick="cargarBroadcasts()">🔄 Actualizar</button>
+                    </div>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Mensaje</th>
+                                <th>Tipo</th>
+                                <th>Publicado</th>
+                                <th>Expira</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="broadcast-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECCIÓN LOGS DE SESIÓN -->
+            <div id="section-logs" style="display:none;">
+                <div class="header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h1>📋 Logs de Inicio de Sesión</h1>
+                        <p>Registro de todos los accesos al sistema por rol.</p>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <select id="logs-filter-rol" style="padding:10px; border:1px solid #e2e8f0; border-radius:8px; font-size:13px;">
+                            <option value="">Todos los roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="creador">Creador</option>
+                            <option value="usuario">Usuario</option>
+                        </select>
+                        <button class="btn btn-refresh" onclick="cargarLogs()">🔄 Actualizar</button>
+                        <button class="btn btn-danger" onclick="limpiarLogs()">🗑️ Limpiar logs</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Historial de Accesos</h3>
+                        <span id="logs-count" style="font-size:13px; color:#94a3b8;"></span>
+                    </div>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Usuario</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Fecha y Hora</th>
+                                <th>Dispositivo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-list"></tbody>
+                    </table>
+                </div>
+            </div>
 
     <!-- MODALES -->
     <div id="view-modal" class="modal-overlay">
@@ -544,7 +685,7 @@
         <div class="modal-content">
             <div style="font-size:2.5rem; margin-bottom:12px;">🗑️</div>
             <h3>¿Eliminar esta publicación?</h3>
-            <p style="color:#64748b; margin-top:8px; font-size:14px;">Se eliminará del muro y no podrá recuperarse.</p>
+            <p style="color:#64748b; margin-top:8px; font-size:14px;">La publicación desaparecerá del muro de usuarios y se moverá a la papelera. Podrás recuperarla desde ahí.</p>
             <div style="display:flex; gap:10px; margin-top:20px;">
                 <button class="btn btn-view" style="flex:1" onclick="closeModals()">Cancelar</button>
                 <button id="confirm-delete-muro-btn" class="btn btn-reject" style="flex:1">Sí, eliminar</button>
@@ -579,12 +720,20 @@
         const sections = {
             usuarios:     'section-usuarios',
             publicaciones:'section-publicaciones',
-            muro:         'section-muro'
+            muro:         'section-muro',
+            roles:        'section-roles',
+            papelera:     'section-papelera',
+            broadcast:    'section-broadcast',
+            logs:         'section-logs'
         };
         const navBtns = {
             usuarios:     'btn-nav-usuarios',
             publicaciones:'btn-nav-publicaciones',
-            muro:         'btn-nav-muro'
+            muro:         'btn-nav-muro',
+            roles:        'btn-nav-roles',
+            papelera:     'btn-nav-papelera',
+            broadcast:    'btn-nav-broadcast',
+            logs:         'btn-nav-logs'
         };
 
         function switchSection(key) {
@@ -605,6 +754,26 @@
         document.getElementById('btn-nav-muro').addEventListener('click', () => {
             switchSection('muro');
             if (typeof cargarMuro === 'function') cargarMuro();
+        });
+
+        document.getElementById('btn-nav-roles').addEventListener('click', () => {
+            switchSection('roles');
+            if (typeof cargarTablaRoles === 'function') cargarTablaRoles();
+        });
+
+        document.getElementById('btn-nav-papelera').addEventListener('click', () => {
+            switchSection('papelera');
+            if (typeof cargarPapelera === 'function') cargarPapelera();
+        });
+
+        document.getElementById('btn-nav-broadcast').addEventListener('click', () => {
+            switchSection('broadcast');
+            if (typeof cargarBroadcasts === 'function') cargarBroadcasts();
+        });
+
+        document.getElementById('btn-nav-logs').addEventListener('click', () => {
+            switchSection('logs');
+            if (typeof cargarLogs === 'function') cargarLogs();
         });
 
         window.closeModals = function() {
