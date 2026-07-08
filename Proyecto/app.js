@@ -32,6 +32,9 @@ const firebaseConfig = {
     measurementId: "G-5E2QC1Z09F"
 };
 
+// Site Key de reCAPTCHA v2 (pública, sí puede ir en el frontend).
+// Se usa solo como referencia aquí: el widget real vive en el HTML
+// mediante el div con class="g-recaptcha", que ya trae la sitekey.
 // 3. INICIALIZACIÓN
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -188,6 +191,24 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const password  = document.getElementById('login-password').value;
     const messageEl = document.getElementById('login-message');
 
+    // reCAPTCHA v2: el usuario debe haber marcado el checkbox "No soy un robot".
+    // grecaptcha.getResponse() devuelve el token si ya lo marcó, o "" si no.
+    const recaptchaToken = grecaptcha.getResponse();
+
+    if (!recaptchaToken) {
+        messageEl.textContent = 'Por favor confirma que no eres un robot.';
+        messageEl.style.color = 'red';
+        return;
+    }
+
+    // NOTA (limitación documentada del proyecto): validar el token contra la
+    // API de Google (siteverify) requiere la Secret Key, la cual nunca debe
+    // exponerse en el frontend. Como el proyecto se aloja en GitHub Pages sin
+    // servidor propio, esa verificación queda fuera del alcance actual (ver
+    // sección 2.6 "Limitaciones del Proyecto") y se considera trabajo futuro,
+    // junto con el panel de administración. Aquí solo confirmamos que el
+    // usuario completó el checkbox antes de continuar.
+
     messageEl.textContent = 'Verificando credenciales...';
     messageEl.style.color = '#6b7280';
 
@@ -195,6 +216,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     if (!result.success) {
         messageEl.textContent = result.message;
         messageEl.style.color = 'red';
+        grecaptcha.reset(); // para que el usuario vuelva a marcar el checkbox si falló el login
     }
 });
 
