@@ -3,1068 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SeñasApp · Panel Interno LSM</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Mis Manos Hablarán · Creador de Contenido</title>
+<link rel="icon" type="image/png" href="Letras/logo_sin_fondo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/phosphor-icons"></script>
 <style>
-:root {
-  --bg: #080b11;
-  --surface: #0f1520;
-  --surface2: #161d2e;
-  --surface3: #1c2540;
-  --border: #1e2a45;
-  --border2: #263455;
-  --accent: #3DFFC0;
-  --accent-dim: rgba(61,255,192,0.12);
-  --accent2: #7B6FFF;
-  --accent2-dim: rgba(123,111,255,0.12);
-  --accent3: #FF6B6B;
-  --accent3-dim: rgba(255,107,107,0.12);
-  --warn: #FFBE47;
-  --warn-dim: rgba(255,190,71,0.12);
-  --text: #E2E8F8;
-  --text2: #9BA8C4;
-  --muted: #4D5C80;
-  --sidebar-w: 248px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 85% 0%,rgba(61,255,192,0.05) 0%,transparent 55%),radial-gradient(ellipse 50% 60% at 5% 90%,rgba(123,111,255,0.06) 0%,transparent 55%);pointer-events:none;z-index:0}
-
-/* ═══════════════════════════════ SIDEBAR ═══════════════════════════════ */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;transition:transform .3s}
-.logo-wrap{padding:22px 20px 20px;border-bottom:1px solid var(--border)}
-.logo-inner{display:flex;align-items:center;gap:12px}
-.logo-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.logo-title{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:-.5px}
-.logo-sub{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:2px}
-nav{flex:1;padding:16px 10px;overflow-y:auto}
-.nav-section{margin-bottom:20px}
-.nav-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);padding:0 10px;margin-bottom:6px;font-family:'DM Mono',monospace}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);transition:all .18s;margin-bottom:2px;border:1px solid transparent;position:relative}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{background:linear-gradient(135deg,rgba(61,255,192,0.1),rgba(123,111,255,0.07));color:var(--accent);border-color:rgba(61,255,192,0.18)}
-.nav-icon{font-size:15px;width:22px;text-align:center;flex-shrink:0}
-.nav-badge{margin-left:auto;background:var(--accent3);color:#fff;font-size:9px;padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace;font-weight:600}
-.nav-badge.green{background:var(--accent);color:#041f12}
-.sidebar-user{padding:14px;margin:0 10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s}
-.sidebar-user:hover{border-color:var(--border2)}
-.s-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
-.s-name{font-size:12px;font-weight:700}
-.s-role{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
-.s-dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
-
-/* ═══════════════════════════════ MAIN ═══════════════════════════════ */
-.main{margin-left:var(--sidebar-w);position:relative;z-index:1;min-height:100vh}
-
-/* ═══════════════════════════════ TOPBAR ═══════════════════════════════ */
-.topbar{display:flex;align-items:center;padding:20px 36px;border-bottom:1px solid var(--border);background:rgba(8,11,17,0.8);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;gap:16px}
-.topbar-left{flex:1}
-.page-heading{font-family:'DM Serif Display',serif;font-size:26px;letter-spacing:-.8px}
-.page-heading span{color:var(--accent);font-style:italic}
-.page-crumb{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.search-bar{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 14px;gap:8px;width:220px;transition:border-color .2s}
-.search-bar:focus-within{border-color:var(--accent)}
-.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Syne',sans-serif;font-size:12px;width:100%}
-.search-bar input::placeholder{color:var(--muted)}
-.search-icon{color:var(--muted);font-size:13px}
-.notif-btn{width:36px;height:36px;background:var(--surface);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;transition:border-color .2s}
-.notif-btn:hover{border-color:var(--border2)}
-.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--accent3);border:1.5px solid var(--bg)}
-
-/* ═══════════════════════════════ SECTIONS ═══════════════════════════════ */
-.section{display:none;padding:28px 36px;animation:fadeUp .3s ease}
-.section.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* ═══════════════════════════════ BUTTONS ═══════════════════════════════ */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;letter-spacing:.3px}
-.btn-primary{background:linear-gradient(135deg,var(--accent),#28e8a8);color:#041f12}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(61,255,192,0.3)}
-.btn-primary:active{transform:translateY(0)}
-.btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
-.btn-danger{background:var(--accent3-dim);color:var(--accent3);border:1px solid rgba(255,107,107,0.25)}
-.btn-danger:hover{background:rgba(255,107,107,0.2)}
-.btn-warn{background:var(--warn-dim);color:var(--warn);border:1px solid rgba(255,190,71,0.25)}
-.btn-sm{padding:6px 12px;font-size:11px}
-.btn-icon{width:32px;height:32px;padding:0;justify-content:center}
-
-/* ═══════════════════════════════ STATS GRID ═══════════════════════════════ */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s;cursor:default}
-.stat-card:hover{transform:translateY(-2px);border-color:var(--border2)}
-.stat-glow{position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;opacity:.08}
-.stat-icon{font-size:20px;margin-bottom:12px}
-.stat-val{font-family:'DM Serif Display',serif;font-size:36px;line-height:1;letter-spacing:-1.5px}
-.stat-lbl{font-size:11px;color:var(--text2);margin-top:5px;letter-spacing:.3px}
-.stat-delta{margin-top:10px;display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:20px}
-.d-up{background:var(--accent-dim);color:var(--accent)}
-.d-down{background:var(--accent3-dim);color:var(--accent3)}
-.d-warn{background:var(--warn-dim);color:var(--warn)}
-
-/* ═══════════════════════════════ CARDS ═══════════════════════════════ */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
-.card-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:.3px}
-.c-dot{width:7px;height:7px;border-radius:50%}
-.card-body{padding:20px 22px}
-
-/* ═══════════════════════════════ TABLE ═══════════════════════════════ */
-.tbl-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.tbl-search{flex:1;min-width:180px;display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;gap:8px;transition:border-color .2s}
-.tbl-search:focus-within{border-color:var(--accent)}
-.tbl-search input{background:none;border:none;outline:none;color:var(--text);font-family:'Syne',sans-serif;font-size:12px;width:100%}
-.tbl-search input::placeholder{color:var(--muted)}
-select.filter{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text2);font-family:'Syne',sans-serif;font-size:12px;outline:none;cursor:pointer}
-select.filter:focus{border-color:var(--accent)}
-table{width:100%;border-collapse:collapse}
-thead th{text-align:left;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 10px;font-family:'DM Mono',monospace;font-weight:500;white-space:nowrap}
-th.sortable{cursor:pointer;user-select:none}
-th.sortable:hover{color:var(--text2)}
-tbody tr{border-top:1px solid var(--border);transition:background .15s;cursor:pointer}
-tbody tr:hover{background:var(--surface2)}
-tbody td{padding:13px 10px;font-size:12px;vertical-align:middle}
-.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-msg{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:6px}
-.empty-sub{font-size:12px}
-
-/* ═══════════════════════════════ TAGS ═══════════════════════════════ */
-.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px;white-space:nowrap}
-.tag-published{background:var(--accent-dim);color:var(--accent)}
-.tag-draft{background:var(--warn-dim);color:var(--warn)}
-.tag-review{background:var(--accent2-dim);color:var(--accent2)}
-.tag-rejected{background:var(--accent3-dim);color:var(--accent3)}
-.tag-video{background:rgba(123,111,255,0.15);color:var(--accent2)}
-.tag-image{background:rgba(61,255,192,0.1);color:var(--accent)}
-.tag-pdf{background:rgba(255,107,107,0.12);color:var(--accent3)}
-
-/* ═══════════════════════════════ PROGRESS ═══════════════════════════════ */
-.pbar-wrap{width:90px}
-.pbar-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
-.pbar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .5s}
-.pbar-pct{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;text-align:right}
-
-/* ═══════════════════════════════ MODAL ═══════════════════════════════ */
-.overlay{position:fixed;inset:0;background:rgba(4,7,14,0.88);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
-.overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:modalIn .28s cubic-bezier(.175,.885,.32,1.2)}
-.modal-lg{max-width:720px}
-@keyframes modalIn{from{transform:scale(.93) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.modal-head{padding:26px 28px 0;position:sticky;top:0;background:var(--surface);z-index:1;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.modal-title{font-family:'DM Serif Display',serif;font-size:24px;letter-spacing:-.7px}
-.modal-sub{font-size:12px;color:var(--muted);margin-top:5px}
-.modal-body{padding:24px 28px}
-.modal-foot{padding:18px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--surface)}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.fg-full{grid-column:1/-1}
-.form-group{display:flex;flex-direction:column;gap:6px}
-label.lbl{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace}
-.form-input,.form-select,.form-textarea{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;outline:none;transition:border-color .2s;width:100%}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
-.form-input::placeholder,.form-textarea::placeholder{color:var(--muted)}
-.form-select option{background:var(--surface)}
-.form-textarea{resize:vertical;min-height:80px;line-height:1.6}
-.form-input.error,.form-select.error{border-color:var(--accent3)}
-.field-error{font-size:10px;color:var(--accent3);font-family:'DM Mono',monospace;margin-top:2px}
-
-/* ═══════════════════════════════ TOAST ═══════════════════════════════ */
-.toast-container{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-.toast{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:13px 18px;display:flex;align-items:center;gap:12px;max-width:340px;pointer-events:all;transform:translateX(120%);opacity:0;transition:all .35s cubic-bezier(.175,.885,.32,1.2);font-size:13px}
-.toast.show{transform:translateX(0);opacity:1}
-.toast.success{border-left:3px solid var(--accent)}
-.toast.error{border-left:3px solid var(--accent3)}
-.toast.warn{border-left:3px solid var(--warn)}
-.toast.info{border-left:3px solid var(--accent2)}
-.toast-icon{font-size:18px;flex-shrink:0}
-.toast-close{margin-left:auto;cursor:pointer;color:var(--muted);font-size:16px}
-
-/* ═══════════════════════════════ CONFIRM DIALOG ═══════════════════════════════ */
-.confirm-box{background:var(--surface);border:1px solid var(--accent3);border-radius:16px;padding:28px;max-width:400px;width:100%;animation:modalIn .25s ease}
-.confirm-icon{font-size:36px;margin-bottom:14px}
-.confirm-title{font-size:17px;font-weight:700;margin-bottom:8px}
-.confirm-msg{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.6}
-.confirm-actions{display:flex;gap:10px;justify-content:flex-end}
-
-/* ═══════════════════════════════ DETAIL PANEL (slide-over) ═══════════════════════════════ */
-.detail-panel{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--surface);border-left:1px solid var(--border2);z-index:300;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
-.detail-panel.open{transform:translateX(0)}
-.dp-head{padding:24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1;display:flex;align-items:flex-start;justify-content:space-between}
-.dp-close{cursor:pointer;width:32px;height:32px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--border);transition:border-color .2s}
-.dp-close:hover{border-color:var(--border2)}
-.dp-body{padding:22px}
-.dp-section{margin-bottom:22px}
-.dp-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px}
-.dp-value{font-size:13px;line-height:1.6}
-
-/* ═══════════════════════════════ UPLOAD ZONE ═══════════════════════════════ */
-.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
-.upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:var(--accent-dim)}
-.uz-icon{font-size:36px;margin-bottom:12px}
-.uz-title{font-size:13px;font-weight:700;margin-bottom:5px}
-.uz-sub{font-size:11px;color:var(--muted)}
-.upload-list{margin-top:16px;display:flex;flex-direction:column;gap:8px}
-.upload-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px}
-.ui-icon{font-size:20px;flex-shrink:0}
-.ui-name{font-size:12px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ui-meta{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
-.ui-prog{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
-.ui-prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
-
-/* ═══════════════════════════════ MEDIA CARD ═══════════════════════════════ */
-.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-.media-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s}
-.media-card:hover{border-color:var(--border2);transform:translateY(-2px)}
-.mc-thumb{height:110px;display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--surface2);position:relative}
-.mc-type{position:absolute;top:8px;right:8px}
-.mc-info{padding:12px}
-.mc-name{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:4px}
-.mc-meta{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
-.mc-actions{display:flex;gap:6px;margin-top:10px}
-
-/* ═══════════════════════════════ USER PROGRESS CARD ═══════════════════════════════ */
-.user-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.user-row:last-child{border-bottom:none}
-.u-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.u-name{font-size:12px;font-weight:600;flex:1}
-.u-stats{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
-
-/* ═══════════════════════════════ ACTIVITY FEED ═══════════════════════════════ */
-.activity-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
-.activity-item:last-child{border-bottom:none}
-.a-line{display:flex;flex-direction:column;align-items:center;gap:4px}
-.a-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.a-tail{width:1px;flex:1;background:var(--border);min-height:16px}
-.a-content{flex:1;padding-bottom:4px}
-.a-msg{font-size:12px;line-height:1.5;margin-bottom:4px}
-.a-time{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
-
-/* ═══════════════════════════════ CHART AREA ═══════════════════════════════ */
-.chart-wrap{position:relative;height:160px;display:flex;align-items:flex-end;gap:8px;padding-top:20px}
-.chart-bar{flex:1;background:linear-gradient(to top,rgba(61,255,192,0.6),rgba(61,255,192,0.15));border-radius:6px 6px 0 0;position:relative;transition:all .5s;cursor:pointer;min-width:28px}
-.chart-bar:hover{background:linear-gradient(to top,var(--accent),rgba(61,255,192,0.4))}
-.chart-bar-val{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:9px;font-family:'DM Mono',monospace;color:var(--text2);white-space:nowrap}
-.chart-bar-lbl{text-align:center;font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:5px}
-.chart-wrap-outer{padding:0 4px}
-
-/* ═══════════════════════════════ TABS ═══════════════════════════════ */
-.tab-bar{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px}
-.tab-item{padding:10px 18px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
-.tab-item:hover{color:var(--text)}
-.tab-item.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-/* ═══════════════════════════════ IMPROVEMENT CARD ═══════════════════════════════ */
-.improve-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:border-color .2s;cursor:default}
-.improve-card:hover{border-color:var(--border2)}
-.ic-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.ic-title{font-size:13px;font-weight:700}
-.ic-status{font-size:10px;font-family:'DM Mono',monospace}
-.ic-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px}
-.ic-actions{display:flex;gap:8px}
-.priority-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2);margin-top:6px}
-.priority-dots{display:flex;gap:3px}
-.p-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
-.p-dot.filled{background:var(--accent3)}
-.p-dot.filled.warn{background:var(--warn)}
-.p-dot.filled.ok{background:var(--accent)}
-
-/* ═══════════════════════════════ CALENDAR / DATES ═══════════════════════════════ */
-.review-item{display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:border-color .2s}
-.review-item:hover{border-color:var(--border2)}
-.ri-left{display:flex;flex-direction:column;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;min-width:54px}
-.ri-day{font-family:'DM Serif Display',serif;font-size:22px;line-height:1;color:var(--accent)}
-.ri-mon{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase}
-.ri-body{flex:1}
-.ri-title{font-size:13px;font-weight:700;margin-bottom:4px}
-.ri-meta{font-size:11px;color:var(--text2)}
-.ri-note{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic}
-
-/* ═══════════════════════════════ REPORT / ANALYTICS ═══════════════════════════════ */
-.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.metric-block{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px}
-.mb-title{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
-.mb-val{font-family:'DM Serif Display',serif;font-size:32px;letter-spacing:-1px}
-.mb-sub{font-size:11px;color:var(--text2);margin-top:4px}
-
-/* ═══════════════════════════════ DONUT CHART ═══════════════════════════════ */
-.donut-wrap{display:flex;align-items:center;gap:20px}
-svg.donut{transform:rotate(-90deg)}
-.donut-legend{display:flex;flex-direction:column;gap:8px;flex:1}
-.dl-item{display:flex;align-items:center;gap:8px;font-size:12px}
-.dl-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--muted)}
-
-/* ═══════════════════════════════ RESPONSIVE ═══════════════════════════════ */
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .analytics-grid{grid-template-columns:1fr}
-}
-
-/* ═══════════════════════════════ MISC ═══════════════════════════════ */
-.divider{height:1px;background:var(--border);margin:16px 0}
-.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}
-.mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-5{margin-top:20px}.mt-6{margin-top:24px}
-.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-5{margin-bottom:20px}
-.text-muted{color:var(--muted)}.text-accent{color:var(--accent)}.text-sm{font-size:12px}.text-xs{font-size:10px}
-.mono{font-family:'DM Mono',monospace}
-.fw-bold{font-weight:700}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.spin{animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+  body { font-family: 'Segoe UI', sans-serif; background: #f7f7f7; }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url('Letras/logo.jpg');
+    background-position: center; background-repeat: no-repeat;
+    background-size: 1150px; opacity: 0.06; z-index: -1;
+  }
+  .sidebar { width: 260px; min-height: 100vh; background: #fff;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+    display: flex; flex-direction: column; position: sticky; top: 0; }
+  .nav-item { display: flex; align-items: center; gap: 10px;
+    padding: 11px 18px; border-radius: 10px; cursor: pointer;
+    font-size: 14px; font-weight: 600; color: #4b5563;
+    transition: all .2s; margin-bottom: 3px; }
+  .nav-item:hover { background: #eff6ff; color: #2563eb; }
+  .nav-item.active { background: #eff6ff; color: #2563eb;
+    border-left: 3px solid #2563eb; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .stat-card { background: #fff; border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 22px; }
+  .badge-pendiente  { background: #fef3c7; color: #92400e; }
+  .badge-aprobado   { background: #dcfce7; color: #16a34a; border:1px solid #16a34a; }
+  .badge-rechazado  { background: #fee2e2; color: #dc2626; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .content-card { background: #fff; border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 22px;
+    margin-bottom: 16px; border-left: 4px solid #e5e7eb; }
+  .content-card.pendiente  { border-left-color: #fbbf24; }
+  .content-card.aprobado   { border-left-color: #22c55e; }
+  .content-card.rechazado  { border-left-color: #ef4444; }
+  input, select, textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #e5e7eb;
+    border-radius: 9px; font-size: 14px; outline: none;
+    transition: border-color .2s; background: #f9fafb; }
+  input:focus, select:focus, textarea:focus { border-color: #3b82f6; background: #fff; }
+  .btn-primary { background: #3b82f6; color: #fff; padding: 11px 28px;
+    border-radius: 9px; font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer; transition: background .2s; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-secondary { background: #f3f4f6; color: #374151; padding: 10px 20px;
+    border-radius: 9px; font-weight: 600; font-size: 13px;
+    border: none; cursor: pointer; transition: background .2s; }
+  .btn-secondary:hover { background: #e5e7eb; }
+  .toast { position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+    padding: 14px 22px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15); transform: translateX(120%);
+    transition: transform .35s; display: flex; align-items: center; gap: 10px; }
+  .toast.show { transform: translateX(0); }
+  .toast.success { background: #dcfce7; color: #15803d; border:1px solid #22c55e; }
+  .toast.error   { background: #fee2e2; color: #dc2626; border:1px solid #ef4444; }
+  .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .section.active { animation: fadeUp .3s ease; }
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body>
+<body class="flex min-h-screen bg-gray-50">
 
-<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
-<aside class="sidebar" id="sidebar">
-  <div class="logo-wrap">
-    <div class="logo-inner">
-      <div class="logo-mark">🤟</div>
+<!-- ══════ SIDEBAR ══════ -->
+<aside class="sidebar flex flex-col">
+  <div class="p-6 border-b border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+        <i class="ph-hand-waving-fill text-blue-600 text-xl"></i>
+      </div>
       <div>
-        <div class="logo-title">SeñasApp</div>
-        <div class="logo-sub">Panel Interno</div>
+        <div class="font-bold text-gray-800 text-base">Mis Manos Hablarán</div>
+        <div class="text-xs text-gray-400 font-medium">Creador de Contenido</div>
       </div>
     </div>
   </div>
-  <nav>
-    <div class="nav-section">
-      <div class="nav-label">Principal</div>
-      <div class="nav-item active" data-section="dashboard" onclick="navigate('dashboard',this)">
-        <span class="nav-icon">📊</span> Dashboard
-      </div>
+
+  <nav class="flex-1 p-4">
+    <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest px-2 mb-3">Principal</p>
+    <div class="nav-item active" onclick="showSection('dashboard',this)">
+      <i class="ph-chart-bar-fill text-lg"></i> Dashboard
     </div>
-    <div class="nav-section">
-      <div class="nav-label">Contenido</div>
-      <div class="nav-item" data-section="lecciones" onclick="navigate('lecciones',this)">
-        <span class="nav-icon">📚</span> Lecciones LSM
-      </div>
-      <div class="nav-item" data-section="multimedia" onclick="navigate('multimedia',this)">
-        <span class="nav-icon">🎬</span> Multimedia
-      </div>
+
+    <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest px-2 mb-3 mt-5">Contenido</p>
+    <div class="nav-item" onclick="showSection('enviar',this)">
+      <i class="ph-paper-plane-tilt-fill text-lg"></i> Enviar Contenido
     </div>
-    <div class="nav-section">
-      <div class="nav-label">Calidad</div>
-      <div class="nav-item" data-section="revision" onclick="navigate('revision',this)">
-        <span class="nav-icon">✅</span> Revisión
-        <span class="nav-badge" id="badge-revision">0</span>
-      </div>
-      <div class="nav-item" data-section="mejoras" onclick="navigate('mejoras',this)">
-        <span class="nav-icon">💡</span> Mejoras
-      </div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Análisis</div>
-      <div class="nav-item" data-section="progreso" onclick="navigate('progreso',this)">
-        <span class="nav-icon">📈</span> Progreso Usuarios
-      </div>
-      <div class="nav-item" data-section="reportes" onclick="navigate('reportes',this)">
-        <span class="nav-icon">📋</span> Reportes
-      </div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Sistema</div>
-      <div class="nav-item" data-section="actividad" onclick="navigate('actividad',this)">
-        <span class="nav-icon">🕑</span> Historial
-      </div>
+    <div class="nav-item" onclick="showSection('mis-envios',this)">
+      <i class="ph-list-checks-fill text-lg"></i> Mis Envíos
+      <span id="badge-pendientes" class="ml-auto bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded-full hidden"></span>
     </div>
   </nav>
-  <div class="sidebar-user" onclick="navigate('perfil',document.querySelector('[data-section=perfil]'))">
-    <div class="s-avatar">EI</div>
-    <div>
-      <div class="s-name">Empleado Interno</div>
-      <div class="s-role">Gestor LSM · Activo</div>
+
+  <!-- Usuario info -->
+  <div class="p-4 border-t border-gray-100">
+    <div class="bg-gray-50 rounded-xl p-3 flex items-center gap-3 mb-3">
+      <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">JR</div>
+      <div>
+        <div class="text-sm font-bold text-gray-800">JesusRUTP</div>
+        <div class="text-xs text-gray-400">Creador · Activo</div>
+      </div>
+      <div class="w-2 h-2 rounded-full bg-green-400 ml-auto"></div>
     </div>
-    <div class="s-dot"></div>
+    <button onclick="window.location.href='pagina_inicio.html'"
+      class="btn-secondary w-full flex items-center justify-center gap-2">
+      <i class="ph-arrow-left-fill"></i> Volver al Menú
+    </button>
   </div>
 </aside>
 
-<!-- ═══════════════════ MAIN ═══════════════════ -->
-<main class="main">
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="topbar-left">
-      <div class="page-heading" id="page-heading">Panel de <span>Control</span></div>
-      <div class="page-crumb mono text-xs text-muted" id="page-crumb">Lengua de Señas Mexicana · <span id="fecha-hoy"></span></div>
-    </div>
-    <div class="topbar-right">
-      <div class="search-bar">
-        <span class="search-icon">🔍</span>
-        <input id="global-search" placeholder="Buscar lecciones, usuarios..." oninput="globalSearch(this.value)">
-      </div>
-      <div class="notif-btn" id="notif-btn" onclick="navigate('actividad',document.querySelector('[data-section=actividad]'))">
-        🔔<div class="notif-dot" id="notif-dot"></div>
-      </div>
-      <a href="pagina_inicio.html" class="btn btn-ghost btn-sm" title="Regresar al menú principal">↩️ Menú Principal</a>
-      <button class="btn btn-primary btn-sm" onclick="openModal('modal-leccion')">+ Nueva Lección</button>
-    </div>
-  </header>
+<!-- ══════ CONTENIDO PRINCIPAL ══════ -->
+<main class="flex-1 p-8 overflow-y-auto">
 
-  <!-- ════════════════════════════════════════════════════
-       SECTION: DASHBOARD
-  ════════════════════════════════════════════════════ -->
-  <section class="section active" id="section-dashboard">
-    <div class="stats-grid" id="stats-grid"></div>
+  <!-- ── DASHBOARD ── -->
+  <section id="sec-dashboard" class="section active">
+    <h1 class="text-2xl font-bold text-gray-800 mb-1">Mi Panel de Creador</h1>
+    <p class="text-gray-400 mb-7 text-sm">Aquí puedes enviar contenido nuevo y ver el estado de tus envíos.</p>
 
-    <div class="grid-2" style="gap:18px">
-      <!-- Lecciones recientes -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--accent)"></span>Últimas Lecciones</div>
-          <button class="btn btn-ghost btn-sm" onclick="navigate('lecciones',document.querySelector('[data-section=lecciones]'))">Ver todas →</button>
-        </div>
-        <div class="card-body" id="dash-lecciones-list"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      <div class="stat-card">
+        <i class="ph-paper-plane-tilt-fill text-blue-500 text-2xl"></i>
+        <p class="text-3xl font-bold text-gray-800 mt-2" id="stat-total">0</p>
+        <p class="text-sm text-gray-400 mt-1">Total enviados</p>
       </div>
-
-      <!-- Actividad + chart -->
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><span class="c-dot" style="background:var(--accent2)"></span>Actividad Semanal</div>
-          </div>
-          <div class="card-body">
-            <div class="chart-wrap-outer">
-              <div class="chart-wrap" id="weekly-chart"></div>
-              <div style="display:flex;gap:8px" id="weekly-labels"></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><span class="c-dot" style="background:var(--warn)"></span>Acciones Rápidas</div>
-          </div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openModal('modal-leccion')">📚 Registrar nueva lección</button>
-            <button class="btn btn-ghost" style="justify-content:flex-start" onclick="navigate('multimedia',document.querySelector('[data-section=multimedia]'));setTimeout(()=>openModal('modal-upload'),100)">🎬 Subir material multimedia</button>
-            <button class="btn btn-ghost" style="justify-content:flex-start" onclick="navigate('revision',document.querySelector('[data-section=revision]'))">✅ Revisar contenido pendiente</button>
-            <button class="btn btn-ghost" style="justify-content:flex-start" onclick="navigate('reportes',document.querySelector('[data-section=reportes]'))">📋 Generar reporte</button>
-            <button class="btn btn-ghost" style="justify-content:flex-start" onclick="navigate('mejoras',document.querySelector('[data-section=mejoras]'))">💡 Proponer mejora</button>
-          </div>
-        </div>
+      <div class="stat-card">
+        <i class="ph-check-circle-fill text-green-500 text-2xl"></i>
+        <p class="text-3xl font-bold text-gray-800 mt-2" id="stat-aprobados">0</p>
+        <p class="text-sm text-gray-400 mt-1">Aprobados</p>
+      </div>
+      <div class="stat-card">
+        <i class="ph-clock-fill text-yellow-500 text-2xl"></i>
+        <p class="text-3xl font-bold text-gray-800 mt-2" id="stat-pendientes">0</p>
+        <p class="text-sm text-gray-400 mt-1">Pendientes de revisión</p>
       </div>
     </div>
 
-    <!-- Bottom row -->
-    <div class="grid-2 mt-5" style="gap:18px">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--accent3)"></span>Top Usuarios Esta Semana</div>
-          <button class="btn btn-ghost btn-sm" onclick="navigate('progreso',document.querySelector('[data-section=progreso]'))">Ver reporte →</button>
-        </div>
-        <div class="card-body" id="dash-top-users"></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--accent2)"></span>Distribución por Estado</div>
-        </div>
-        <div class="card-body" id="dash-donut"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════════════
-       SECTION: LECCIONES
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-lecciones">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading">Gestión de <span>Lecciones</span></div>
-        <div class="text-xs mono text-muted mt-1">Registro, actualización y mantenimiento de contenido LSM</div>
-      </div>
-      <button class="btn btn-primary" onclick="openModal('modal-leccion')">+ Registrar Lección</button>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span class="c-dot" style="background:var(--accent)"></span>Catálogo de Lecciones</div>
-        <div class="flex gap-2">
-          <button class="btn btn-ghost btn-sm" onclick="exportLecciones()">↗ Exportar CSV</button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="tbl-controls">
-          <div class="tbl-search">
-            <span>🔍</span>
-            <input id="search-lecciones" placeholder="Buscar por nombre o tema..." oninput="renderLeccionesTable()">
-          </div>
-          <select class="filter" id="filter-nivel" onchange="renderLeccionesTable()">
-            <option value="">Todos los niveles</option>
-            <option>Nivel 1 · Básico</option>
-            <option>Nivel 2 · Intermedio</option>
-            <option>Nivel 3 · Avanzado</option>
-          </select>
-          <select class="filter" id="filter-estado" onchange="renderLeccionesTable()">
-            <option value="">Todos los estados</option>
-            <option>Publicada</option>
-            <option>Borrador</option>
-            <option>En revisión</option>
-            <option>Rechazada</option>
-          </select>
-          <select class="filter" id="sort-lecciones" onchange="renderLeccionesTable()">
-            <option value="fecha-desc">Más reciente</option>
-            <option value="fecha-asc">Más antiguo</option>
-            <option value="nombre-asc">A-Z</option>
-            <option value="completado-desc">Mayor completado</option>
-          </select>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Lección</th>
-              <th>Nivel</th>
-              <th>Estado</th>
-              <th>Multimedia</th>
-              <th>Completado</th>
-              <th>Última actualización</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-lecciones"></tbody>
-        </table>
-        <div id="empty-lecciones" class="empty-state" style="display:none">
-          <div class="empty-icon">📚</div>
-          <div class="empty-msg">No se encontraron lecciones</div>
-          <div class="empty-sub">Intenta cambiar los filtros o registra una nueva lección</div>
-        </div>
-        <div class="flex justify-between items-center mt-4" style="font-size:12px;color:var(--muted)">
-          <span id="lecciones-count" class="mono"></span>
-          <div class="flex gap-2">
-            <button class="btn btn-ghost btn-sm" id="btn-prev-lec" onclick="changePage('lecciones',-1)">← Anterior</button>
-            <span id="lecciones-page" class="btn btn-ghost btn-sm mono">1 / 1</span>
-            <button class="btn btn-ghost btn-sm" id="btn-next-lec" onclick="changePage('lecciones',1)">Siguiente →</button>
-          </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+      <h2 class="text-base font-bold text-gray-700 mb-4">Últimos envíos</h2>
+      <div id="dashboard-list">
+        <div class="empty-state">
+          <i class="ph-tray-fill text-5xl block mb-3 opacity-30"></i>
+          <p class="font-semibold text-gray-500">Aún no has enviado contenido</p>
+          <p class="text-sm mt-1">Ve a "Enviar Contenido" para empezar</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════════════
-       SECTION: MULTIMEDIA
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-multimedia">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading">Material <span>Multimedia</span></div>
-        <div class="text-xs mono text-muted mt-1">Carga y administración de videos, imágenes y recursos educativos</div>
-      </div>
-      <button class="btn btn-primary" onclick="openModal('modal-upload')">↑ Subir Archivo</button>
-    </div>
+  <!-- ── ENVIAR CONTENIDO ── -->
+  <section id="sec-enviar" class="section">
+    <h1 class="text-2xl font-bold text-gray-800 mb-1">Enviar Contenido</h1>
+    <p class="text-gray-400 mb-7 text-sm">Completa el formulario y el administrador recibirá tu solicitud para revisión.</p>
 
-    <div class="grid-2 mb-4" style="gap:14px">
-      <div class="card">
-        <div class="card-body" style="text-align:center">
-          <div style="font-size:28px;margin-bottom:8px">🎬</div>
-          <div style="font-size:28px;font-family:'DM Serif Display',serif" id="mm-videos-count">0</div>
-          <div class="text-sm text-muted mt-1">Videos</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body" style="text-align:center">
-          <div style="font-size:28px;margin-bottom:8px">🖼</div>
-          <div style="font-size:28px;font-family:'DM Serif Display',serif" id="mm-images-count">0</div>
-          <div class="text-sm text-muted mt-1">Imágenes / PDFs</div>
-        </div>
-      </div>
-    </div>
+    <div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 max-w-2xl">
+      <form id="form-contenido" onsubmit="enviarContenido(event)">
 
-    <div class="card mb-4">
-      <div class="card-header">
-        <div class="card-title"><span class="c-dot" style="background:var(--accent2)"></span>Subir nuevo archivo</div>
-      </div>
-      <div class="card-body">
-        <div class="upload-zone" id="drop-zone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)" onclick="document.getElementById('file-input').click()">
-          <input type="file" id="file-input" multiple accept="video/*,image/*,.pdf" style="display:none" onchange="handleFileSelect(event)">
-          <div class="uz-icon">☁️</div>
-          <div class="uz-title">Arrastra archivos aquí o haz clic para seleccionar</div>
-          <div class="uz-sub">Soporta: MP4, MOV, AVI, PNG, JPG, GIF, PDF · Máx. 500MB por archivo</div>
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            Título del contenido *
+          </label>
+          <input type="text" id="inp-titulo" placeholder="Ej: Seña para 'Buenos días'" required>
         </div>
-        <div class="upload-list" id="upload-queue"></div>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span class="c-dot" style="background:var(--accent)"></span>Biblioteca de Archivos</div>
-        <div class="flex gap-2">
-          <select class="filter" id="filter-mm-tipo" onchange="renderMediaGrid()">
-            <option value="">Todos los tipos</option>
-            <option value="video">Videos</option>
-            <option value="imagen">Imágenes</option>
-            <option value="pdf">PDFs</option>
-          </select>
-          <select class="filter" id="filter-mm-estado" onchange="renderMediaGrid()">
-            <option value="">Todos los estados</option>
-            <option value="Aprobado">Aprobados</option>
-            <option value="En revisión">En revisión</option>
-            <option value="Rechazado">Rechazados</option>
-          </select>
-          <div class="tbl-search" style="flex:none;width:180px">
-            <span>🔍</span>
-            <input id="search-media" placeholder="Buscar..." oninput="renderMediaGrid()">
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Tipo *
+            </label>
+            <select id="inp-tipo" required>
+              <option value="">Selecciona...</option>
+              <option value="video">🎥 Video</option>
+              <option value="imagen">🖼️ Imagen</option>
+              <option value="enlace">🔗 Enlace externo</option>
+              <option value="documento">📄 Documento</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Nivel al que aplica *
+            </label>
+            <select id="inp-nivel" required>
+              <option value="">Selecciona...</option>
+              <option value="Nivel 1">Nivel 1 · Abecedario</option>
+              <option value="Nivel 2">Nivel 2 · Primeras Palabras</option>
+              <option value="Nivel 3">Nivel 3 · Calendario</option>
+              <option value="Nivel 4">Nivel 4 · Meses</option>
+              <option value="General">General</option>
+            </select>
           </div>
         </div>
-      </div>
-      <div class="card-body">
-        <div class="media-grid" id="media-grid"></div>
-        <div id="empty-media" class="empty-state" style="display:none">
-          <div class="empty-icon">🎬</div>
-          <div class="empty-msg">No hay archivos multimedia</div>
-          <div class="empty-sub">Sube tu primer archivo usando el área de arriba</div>
+
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            URL o enlace del contenido *
+          </label>
+          <input type="url" id="inp-url" placeholder="https://..." required>
+          <p class="text-xs text-gray-400 mt-1">Puede ser un enlace de YouTube, Drive, Dropbox, etc.</p>
         </div>
-      </div>
+
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            Descripción *
+          </label>
+          <textarea id="inp-descripcion" rows="4"
+            placeholder="Describe el contenido: qué enseña, cómo se usa, para qué sirve..."
+            required></textarea>
+        </div>
+
+        <div class="flex gap-3">
+          <button type="submit" class="btn-primary flex items-center gap-2">
+            <i class="ph-paper-plane-tilt-fill"></i> Enviar al Administrador
+          </button>
+          <button type="reset" class="btn-secondary">Limpiar</button>
+        </div>
+        <p id="form-msg" class="text-sm mt-4 font-semibold hidden"></p>
+      </form>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════════════
-       SECTION: REVISIÓN
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-revision">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading">Revisión y <span>Validación</span></div>
-        <div class="text-xs mono text-muted mt-1">Revisión del contenido didáctico antes y después de su publicación</div>
-      </div>
+  <!-- ── MIS ENVÍOS ── -->
+  <section id="sec-mis-envios" class="section">
+    <div class="flex items-center justify-between mb-1">
+      <h1 class="text-2xl font-bold text-gray-800">Mis Envíos</h1>
+      <button onclick="cargarMisEnvios()" class="btn-secondary flex items-center gap-2 text-sm">
+        <i class="ph-arrows-clockwise-fill"></i> Actualizar
+      </button>
+    </div>
+    <p class="text-gray-400 mb-7 text-sm">Revisa el estado de todo el contenido que has enviado.</p>
+
+    <!-- Filtros -->
+    <div class="flex gap-2 mb-5 flex-wrap">
+      <button onclick="filtrarEnvios('todos',this)"
+        class="tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-blue-500 text-white">Todos</button>
+      <button onclick="filtrarEnvios('pendiente',this)"
+        class="tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">⏳ Pendientes</button>
+      <button onclick="filtrarEnvios('aprobado',this)"
+        class="tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">✅ Aprobados</button>
+      <button onclick="filtrarEnvios('rechazado',this)"
+        class="tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">❌ Rechazados</button>
     </div>
 
-    <div class="tab-bar">
-      <div class="tab-item active" onclick="switchTab('revision','pendiente',this)">⏳ Pendientes (<span id="cnt-pendiente">0</span>)</div>
-      <div class="tab-item" onclick="switchTab('revision','aprobadas',this)">✅ Aprobadas (<span id="cnt-aprobadas">0</span>)</div>
-      <div class="tab-item" onclick="switchTab('revision','rechazadas',this)">❌ Rechazadas (<span id="cnt-rechazadas">0</span>)</div>
-    </div>
-
-    <div class="tab-panel active" id="tab-revision-pendiente" data-tab="revision"></div>
-    <div class="tab-panel" id="tab-revision-aprobadas" data-tab="revision"></div>
-    <div class="tab-panel" id="tab-revision-rechazadas" data-tab="revision"></div>
-  </section>
-
-  <!-- ════════════════════════════════════════════════════
-       SECTION: MEJORAS
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-mejoras">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading">Mejora <span>Continua</span></div>
-        <div class="text-xs mono text-muted mt-1">Propuestas de mejora basadas en el desempeño de usuarios</div>
+    <div id="envios-list">
+      <div class="empty-state">
+        <i class="ph-spinner-fill text-5xl block mb-3 opacity-30"></i>
+        <p class="font-semibold text-gray-500">Cargando...</p>
       </div>
-      <button class="btn btn-primary" onclick="openModal('modal-mejora')">+ Proponer Mejora</button>
-    </div>
-    <div id="mejoras-list"></div>
-  </section>
-
-  <!-- ════════════════════════════════════════════════════
-       SECTION: PROGRESO USUARIOS
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-progreso">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading">Progreso de <span>Usuarios</span></div>
-        <div class="text-xs mono text-muted mt-1">Seguimiento del avance en la plataforma LSM</div>
-      </div>
-      <div class="flex gap-2">
-        <select class="filter" id="filter-usuario-nivel" onchange="renderUsuarios()">
-          <option value="">Todos los niveles</option>
-          <option>Nivel 1 · Básico</option>
-          <option>Nivel 2 · Intermedio</option>
-          <option>Nivel 3 · Avanzado</option>
-        </select>
-        <button class="btn btn-ghost btn-sm" onclick="exportUsuarios()">↗ Exportar CSV</button>
-      </div>
-    </div>
-
-    <!-- Summary row -->
-    <div class="grid-3 mb-5" id="usuario-summary"></div>
-
-    <div class="grid-2" style="gap:18px">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--warn)"></span>Ranking de Usuarios</div>
-        </div>
-        <div class="card-body" id="usuarios-ranking"></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--accent3)"></span>Lecciones con Mayor Abandono</div>
-        </div>
-        <div class="card-body" id="abandono-list"></div>
-      </div>
-    </div>
-
-    <div class="card mt-5">
-      <div class="card-header">
-        <div class="card-title"><span class="c-dot" style="background:var(--accent)"></span>Tabla Completa de Usuarios</div>
-        <div class="tbl-search" style="width:200px">
-          <span>🔍</span>
-          <input id="search-usuarios" placeholder="Buscar usuario..." oninput="renderUsuarios()">
-        </div>
-      </div>
-      <div class="card-body">
-        <table>
-          <thead>
-            <tr>
-              <th>Usuario</th>
-              <th>Nivel</th>
-              <th>Lecciones completadas</th>
-              <th>Progreso global</th>
-              <th>Último acceso</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-usuarios"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════════════
-       SECTION: REPORTES
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-reportes">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading"><span>Reportes</span> y Análisis</div>
-        <div class="text-xs mono text-muted mt-1">Métricas y estadísticas del contenido educativo LSM</div>
-      </div>
-      <button class="btn btn-primary" onclick="generateReport()">📋 Generar Reporte PDF</button>
-    </div>
-    <div class="analytics-grid mb-5" id="analytics-metrics"></div>
-    <div class="grid-2" style="gap:18px">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--accent)"></span>Progreso por Nivel</div>
-        </div>
-        <div class="card-body" id="nivel-progress"></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="c-dot" style="background:var(--accent2)"></span>Tendencia Mensual</div>
-        </div>
-        <div class="card-body" id="trend-chart"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════════════
-       SECTION: HISTORIAL / ACTIVIDAD
-  ════════════════════════════════════════════════════ -->
-  <section class="section" id="section-actividad">
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <div class="page-heading">Historial de <span>Actividad</span></div>
-        <div class="text-xs mono text-muted mt-1">Registro completo de acciones realizadas en el sistema</div>
-      </div>
-      <div class="flex gap-2">
-        <select class="filter" id="filter-actividad" onchange="renderActividad()">
-          <option value="">Todas las acciones</option>
-          <option value="leccion">Lecciones</option>
-          <option value="multimedia">Multimedia</option>
-          <option value="revision">Revisión</option>
-          <option value="mejora">Mejoras</option>
-        </select>
-        <button class="btn btn-danger btn-sm" onclick="clearActividad()">🗑 Limpiar historial</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-body" id="actividad-feed"></div>
     </div>
   </section>
 
 </main>
 
-<!-- ═══════════════════════════════════════════════════════════
-     MODALS
-═══════════════════════════════════════════════════════════ -->
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
 
-<!-- Modal: Nueva/Editar Lección -->
-<div class="overlay" id="modal-leccion">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title" id="modal-leccion-title">Nueva Lección LSM</div>
-      <div class="modal-sub">Completa todos los campos para registrar el contenido en el sistema.</div>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="lec-edit-id">
-      <div class="form-grid">
-        <div class="form-group fg-full">
-          <label class="lbl">Nombre de la lección *</label>
-          <input class="form-input" id="lec-nombre" placeholder="ej. Verbos de Acción — Nivel 2">
-          <div class="field-error" id="err-nombre"></div>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Nivel *</label>
-          <select class="form-select" id="lec-nivel">
-            <option value="">— Selecciona —</option>
-            <option>Nivel 1 · Básico</option>
-            <option>Nivel 2 · Intermedio</option>
-            <option>Nivel 3 · Avanzado</option>
-          </select>
-          <div class="field-error" id="err-nivel"></div>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Categoría *</label>
-          <select class="form-select" id="lec-categoria">
-            <option value="">— Selecciona —</option>
-            <option>Comunicación</option>
-            <option>Vocabulario</option>
-            <option>Gramática LSM</option>
-            <option>Expresión</option>
-            <option>Cultura Sorda</option>
-            <option>Matemáticas</option>
-            <option>Tiempo y Fecha</option>
-            <option>Social</option>
-            <option>Visual</option>
-          </select>
-          <div class="field-error" id="err-categoria"></div>
-        </div>
-        <div class="form-group fg-full">
-          <label class="lbl">Objetivo educativo *</label>
-          <textarea class="form-textarea" id="lec-objetivo" placeholder="Describe qué aprenderá el usuario al completar esta lección..." style="min-height:90px"></textarea>
-          <div class="field-error" id="err-objetivo"></div>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Duración estimada</label>
-          <input class="form-input" id="lec-duracion" placeholder="ej. 25 minutos">
-        </div>
-        <div class="form-group">
-          <label class="lbl">Estado inicial</label>
-          <select class="form-select" id="lec-estado">
-            <option>Borrador</option>
-            <option>En revisión</option>
-            <option>Publicada</option>
-          </select>
-        </div>
-        <div class="form-group fg-full">
-          <label class="lbl">Notas adicionales</label>
-          <textarea class="form-textarea" id="lec-notas" placeholder="Referencias, recursos externos, notas para el equipo..."></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-leccion')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveLeccion()">Guardar lección →</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: Subir Multimedia -->
-<div class="overlay" id="modal-upload">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">Subir Archivo Multimedia</div>
-      <div class="modal-sub">Agrega videos, imágenes o PDFs a la biblioteca educativa.</div>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group fg-full">
-          <label class="lbl">Nombre del archivo *</label>
-          <input class="form-input" id="mm-nombre" placeholder="ej. saludos_introduccion_v3">
-          <div class="field-error" id="err-mm-nombre"></div>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Tipo de archivo *</label>
-          <select class="form-select" id="mm-tipo">
-            <option value="">— Selecciona —</option>
-            <option value="video">🎬 Video</option>
-            <option value="imagen">🖼 Imagen</option>
-            <option value="pdf">📄 PDF</option>
-          </select>
-          <div class="field-error" id="err-mm-tipo"></div>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Lección asociada</label>
-          <select class="form-select" id="mm-leccion">
-            <option value="">Sin asociar</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Duración / Dimensiones</label>
-          <input class="form-input" id="mm-duracion" placeholder="ej. 3:24 min o 1920×1080">
-        </div>
-        <div class="form-group">
-          <label class="lbl">Tamaño del archivo</label>
-          <input class="form-input" id="mm-size" placeholder="ej. 48 MB">
-        </div>
-        <div class="form-group fg-full">
-          <label class="lbl">Descripción</label>
-          <textarea class="form-textarea" id="mm-desc" placeholder="Describe el contenido del archivo..."></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-upload')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveMultimedia()">Registrar archivo →</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: Proponer Mejora -->
-<div class="overlay" id="modal-mejora">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">Proponer Mejora</div>
-      <div class="modal-sub">Registra una propuesta de mejora basada en el análisis de desempeño.</div>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="mejora-edit-id">
-      <div class="form-grid">
-        <div class="form-group fg-full">
-          <label class="lbl">Título de la mejora *</label>
-          <input class="form-input" id="mej-titulo" placeholder="ej. Agregar subtítulos a videos de Emociones">
-          <div class="field-error" id="err-mej-titulo"></div>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Lección afectada</label>
-          <select class="form-select" id="mej-leccion">
-            <option value="">General / Sin lección específica</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="lbl">Prioridad *</label>
-          <select class="form-select" id="mej-prioridad">
-            <option value="">— Selecciona —</option>
-            <option value="alta">🔴 Alta</option>
-            <option value="media">🟡 Media</option>
-            <option value="baja">🟢 Baja</option>
-          </select>
-          <div class="field-error" id="err-mej-prioridad"></div>
-        </div>
-        <div class="form-group fg-full">
-          <label class="lbl">Descripción detallada *</label>
-          <textarea class="form-textarea" id="mej-desc" placeholder="Describe la mejora propuesta, el problema observado y el impacto esperado..." style="min-height:100px"></textarea>
-          <div class="field-error" id="err-mej-desc"></div>
-        </div>
-        <div class="form-group fg-full">
-          <label class="lbl">Evidencia / Dato de soporte</label>
-          <textarea class="form-textarea" id="mej-evidencia" placeholder="ej. 45% de los usuarios abandonan en el paso 3..."></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-mejora')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveMejora()">Registrar propuesta →</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: Detalle / Revisión Lección -->
-<div class="overlay" id="modal-revision">
-  <div class="modal modal-lg">
-    <div class="modal-head">
-      <div class="modal-title" id="rev-modal-title">Revisar Lección</div>
-      <div class="modal-sub">Valida el contenido antes de aprobar o rechazar la publicación.</div>
-    </div>
-    <div class="modal-body" id="rev-modal-body"></div>
-    <div class="modal-foot" id="rev-modal-foot"></div>
-  </div>
-</div>
-
-<!-- Modal: Ver detalle de media -->
-<div class="overlay" id="modal-media-detail">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title" id="media-detail-title">Detalle de Archivo</div>
-    </div>
-    <div class="modal-body" id="media-detail-body"></div>
-    <div class="modal-foot" id="media-detail-foot"></div>
-  </div>
-</div>
-
-<!-- Confirm Dialog -->
-<div class="overlay" id="overlay-confirm">
-  <div class="confirm-box">
-    <div class="confirm-icon" id="confirm-icon">⚠️</div>
-    <div class="confirm-title" id="confirm-title">¿Confirmar acción?</div>
-    <div class="confirm-msg" id="confirm-msg"></div>
-    <div class="confirm-actions">
-      <button class="btn btn-ghost" onclick="closeModal('overlay-confirm')">Cancelar</button>
-      <button class="btn btn-danger" id="confirm-ok-btn">Confirmar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast Container -->
-<div class="toast-container" id="toast-container"></div>
-
-<!-- Detail Slide Panel -->
-<div class="detail-panel" id="detail-panel">
-  <div class="dp-head">
-    <div>
-      <div style="font-family:'DM Serif Display',serif;font-size:20px" id="dp-title">Detalle</div>
-      <div class="text-xs mono text-muted mt-1" id="dp-sub"></div>
-    </div>
-    <div class="dp-close" onclick="closeDetailPanel()">✕</div>
-  </div>
-  <div class="dp-body" id="dp-body"></div>
-</div>
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  DATA STORE — persisted in localStorage
-// ═══════════════════════════════════════════════════════
-const STORE_KEY = 'lsm_data_v2';
-
-function defaultData() {
-  const now = new Date();
-  const d = (offset=0) => {
-    const d2 = new Date(now);
-    d2.setDate(d2.getDate() - offset);
-    return d2.toISOString();
-  };
-  return {
-    lecciones: [
-      {id:'l1',nombre:'Saludos Básicos',nivel:'Nivel 1 · Básico',categoria:'Comunicación',objetivo:'El usuario aprenderá los saludos más comunes en LSM: hola, adiós, buenos días, buenas tardes.',duracion:'20 minutos',estado:'Publicada',notas:'Verificar con intérprete certificado.',completado:88,multimedia:3,creado:d(12),actualizado:d(0)},
-      {id:'l2',nombre:'Números 1–20',nivel:'Nivel 1 · Básico',categoria:'Matemáticas',objetivo:'El usuario podrá expresar números del 1 al 20 usando la dactilología y el sistema de numeración LSM.',duracion:'25 minutos',estado:'Publicada',notas:'',completado:73,multimedia:5,creado:d(20),actualizado:d(1)},
-      {id:'l3',nombre:'Emociones y Sentimientos',nivel:'Nivel 2 · Intermedio',categoria:'Expresión',objetivo:'El usuario identificará y expresará emociones básicas como alegría, tristeza, enojo, miedo y sorpresa.',duracion:'30 minutos',estado:'En revisión',notas:'Pendiente validación pedagógica.',completado:45,multimedia:6,creado:d(8),actualizado:d(3)},
-      {id:'l4',nombre:'Familia y Relaciones',nivel:'Nivel 2 · Intermedio',categoria:'Social',objetivo:'El usuario aprenderá los términos de parentesco y relaciones familiares en LSM.',duracion:'35 minutos',estado:'Borrador',notas:'Falta agregar video de mamá y papá.',completado:20,multimedia:2,creado:d(5),actualizado:d(5)},
-      {id:'l5',nombre:'Colores y Formas',nivel:'Nivel 1 · Básico',categoria:'Visual',objetivo:'El usuario reconocerá y expresará los colores primarios y secundarios, así como figuras geométricas básicas.',duracion:'20 minutos',estado:'Publicada',notas:'',completado:92,multimedia:8,creado:d(30),actualizado:d(6)},
-      {id:'l6',nombre:'Días de la Semana',nivel:'Nivel 1 · Básico',categoria:'Tiempo y Fecha',objetivo:'El usuario expresará los siete días de la semana y navegará conceptos de tiempo básicos.',duracion:'15 minutos',estado:'En revisión',notas:'',completado:61,multimedia:3,creado:d(15),actualizado:d(7)},
-      {id:'l7',nombre:'Verbos de Acción',nivel:'Nivel 2 · Intermedio',categoria:'Gramática LSM',objetivo:'El usuario utilizará los principales verbos de acción en construcciones básicas de oraciones.',duracion:'40 minutos',estado:'Borrador',notas:'Primera versión, necesita revisión.',completado:10,multimedia:1,creado:d(2),actualizado:d(2)},
-      {id:'l8',nombre:'Cultura Sorda Mexicana',nivel:'Nivel 3 · Avanzado',categoria:'Cultura Sorda',objetivo:'El usuario comprenderá la historia, valores e identidad de la comunidad Sorda en México.',duracion:'50 minutos',estado:'Publicada',notas:'',completado:55,multimedia:4,creado:d(45),actualizado:d(14)},
-    ],
-    multimedia: [
-      {id:'m1',nombre:'saludos_intro_v2.mp4',tipo:'video',leccion:'l1',duracion:'2:34 min',size:'48 MB',desc:'Video introductorio de saludos con intérprete certificada.',estado:'Aprobado',creado:d(10)},
-      {id:'m2',nombre:'numeros_chart.png',tipo:'imagen',leccion:'l2',duracion:'1920×1080',size:'1.2 MB',desc:'Infografía numeración LSM 1-20.',estado:'Aprobado',creado:d(18)},
-      {id:'m3',nombre:'emociones_demo.mp4',tipo:'video',leccion:'l3',duracion:'5:10 min',size:'112 MB',desc:'Demostración expresión de emociones.',estado:'En revisión',creado:d(6)},
-      {id:'m4',nombre:'colores_guia.pdf',tipo:'pdf',leccion:'l5',duracion:'12 páginas',size:'3.4 MB',desc:'Guía de estudio de colores en LSM.',estado:'Aprobado',creado:d(25)},
-      {id:'m5',nombre:'familia_abuela.mp4',tipo:'video',leccion:'l4',duracion:'1:45 min',size:'35 MB',desc:'Señas de familiares: abuelos.',estado:'Rechazado',creado:d(4)},
-      {id:'m6',nombre:'numeros_practica.mp4',tipo:'video',leccion:'l2',duracion:'4:00 min',size:'90 MB',desc:'Ejercicios prácticos de numeración.',estado:'Aprobado',creado:d(17)},
-    ],
-    usuarios: [
-      {id:'u1',nombre:'María Alvarado',email:'maria@ejemplo.com',nivel:'Nivel 2 · Intermedio',completadas:12,totalLec:16,progreso:75,ultimoAcceso:d(0),activo:true,color:'#7B6FFF'},
-      {id:'u2',nombre:'Jorge López',email:'jorge@ejemplo.com',nivel:'Nivel 1 · Básico',completadas:7,totalLec:8,progreso:88,ultimoAcceso:d(1),activo:true,color:'#FF6B6B'},
-      {id:'u3',nombre:'Sara Pérez',email:'sara@ejemplo.com',nivel:'Nivel 1 · Básico',completadas:5,totalLec:8,progreso:63,ultimoAcceso:d(0),activo:true,color:'#FFBE47'},
-      {id:'u4',nombre:'Carlos Ruiz',email:'carlos@ejemplo.com',nivel:'Nivel 2 · Intermedio',completadas:8,totalLec:16,progreso:50,ultimoAcceso:d(3),activo:false,color:'#3DFFC0'},
-      {id:'u5',nombre:'Laura González',email:'laura@ejemplo.com',nivel:'Nivel 3 · Avanzado',completadas:18,totalLec:24,progreso:75,ultimoAcceso:d(1),activo:true,color:'#a78bff'},
-      {id:'u6',nombre:'Andrés Martínez',email:'andres@ejemplo.com',nivel:'Nivel 1 · Básico',completadas:3,totalLec:8,progreso:38,ultimoAcceso:d(5),activo:false,color:'#4DF0B8'},
-      {id:'u7',nombre:'Daniela Torres',email:'daniela@ejemplo.com',nivel:'Nivel 2 · Intermedio',completadas:10,totalLec:16,progreso:63,ultimoAcceso:d(2),activo:true,color:'#FF8E8E'},
-    ],
-    mejoras: [
-      {id:'mj1',titulo:'Agregar subtítulos a videos de Emociones',leccion:'l3',prioridad:'alta',desc:'El 45% de usuarios abandona la lección de emociones. Se recomienda añadir subtítulos y más ejemplos contextualizados.',evidencia:'45% de abandono en paso 3 (video principal).',estado:'Pendiente',creado:d(3)},
-      {id:'mj2',titulo:'Incluir ejercicios interactivos en Números',leccion:'l2',prioridad:'media',desc:'Los usuarios con progreso bajo en Números se beneficiarían de ejercicios de práctica adicionales.',evidencia:'23% de usuarios completa menos del 50%.',estado:'En proceso',creado:d(8)},
-      {id:'mj3',titulo:'Añadir glosario descargable por lección',leccion:'',prioridad:'baja',desc:'Proporcionar un glosario descargable en cada lección para refuerzo fuera de la plataforma.',evidencia:'Solicitud recurrente en retroalimentación.',estado:'Pendiente',creado:d(12)},
-    ],
-    actividad: [],
-    paginas: { lecciones: 1 },
-    weeklyData: [14,9,18,22,15,27,12],
-    monthlyTrend: [38,42,55,48,60,71,65,82,77,90,88,95],
-  };
-}
-
-let DB = {};
-// FIREBASE CONFIG: usa tu mismo proyecto si cambias de credenciales
+// ── Firebase ────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyC7zx9CreT58V1AWTq7pMoS_ps65mXf-9Y",
   authDomain: "mis-manos-hablaran-44e17.firebaseapp.com",
@@ -1073,1163 +272,232 @@ const firebaseConfig = {
   messagingSenderId: "637462888639",
   appId: "1:637462888639:web:c4070137237c211dbd460a"
 };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const COL = 'solicitudes_contenido';
 
-// Inicializa Firebase (compatibilidad sin módulo)
-if (!window.firebase) {
-  console.error('Firebase no está cargado. Agrega los scripts de Firebase en el <head>.');
+// Verificar que es usuario interno
+const mmhRole = localStorage.getItem('MMH_role');
+const mmhUid  = localStorage.getItem('MMH_uid');
+if (mmhRole !== 'empleado' && mmhUid !== 'JesusRUTP') {
+  window.location.href = 'index.html';
 }
-if (window.firebase && !window.firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-const dbFS = window.firebase ? firebase.firestore() : null;
-const adminDocRef = dbFS ? dbFS.collection('admin_panel').doc('global') : null;
 
-async function loadDB() {
-  if (!dbFS) {
-    try {
-      const raw = localStorage.getItem(STORE_KEY);
-      DB = raw ? JSON.parse(raw) : defaultData();
-      if (!DB.mejoras) DB.mejoras = defaultData().mejoras;
-      if (!DB.actividad) DB.actividad = [];
-      if (!DB.paginas) DB.paginas = {lecciones:1};
-      if (!DB.weeklyData) DB.weeklyData = defaultData().weeklyData;
-      if (!DB.monthlyTrend) DB.monthlyTrend = defaultData().monthlyTrend;
-    } catch(e) { DB = defaultData(); }
-    return;
-  }
+let todosLosEnvios = [];
+
+// ── NAVEGACIÓN ───────────────────────────────────────────────────
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'mis-envios') cargarMisEnvios();
+  if (id === 'dashboard')  cargarDashboard();
+}
+
+// ── TOAST ────────────────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── ENVIAR CONTENIDO ─────────────────────────────────────────────
+async function enviarContenido(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const data = {
+    titulo:         document.getElementById('inp-titulo').value.trim(),
+    tipo:           document.getElementById('inp-tipo').value,
+    nivel:          document.getElementById('inp-nivel').value,
+    url:            document.getElementById('inp-url').value.trim(),
+    descripcion:    document.getElementById('inp-descripcion').value.trim(),
+    estado:         'pendiente',
+    creado_por:     mmhUid || 'JesusRUTP',
+    nombre_creador: 'JesusRUTP',
+    fecha_envio:    firebase.firestore.FieldValue.serverTimestamp(),
+    comentario_admin: ''
+  };
 
   try {
-    const docSnap = await adminDocRef.get();
-    if (docSnap.exists()) {
-      DB = docSnap.data();
-      if (!DB.lecciones) DB.lecciones = defaultData().lecciones;
-      if (!DB.multimedia) DB.multimedia = defaultData().multimedia;
-      if (!DB.usuarios) DB.usuarios = defaultData().usuarios;
-      if (!DB.mejoras) DB.mejoras = defaultData().mejoras;
-      if (!DB.actividad) DB.actividad = [];
-      if (!DB.paginas) DB.paginas = {lecciones:1};
-      if (!DB.weeklyData) DB.weeklyData = defaultData().weeklyData;
-      if (!DB.monthlyTrend) DB.monthlyTrend = defaultData().monthlyTrend;
+    await db.collection(COL).add(data);
+    showToast('Contenido enviado. El administrador lo revisará pronto.');
+    e.target.reset();
+    // Recargar stats del dashboard y también mis envíos si están cargados
+    cargarDashboard();
+    if (todosLosEnvios.length >= 0) cargarMisEnvios();
+  } catch (err) {
+    console.error(err);
+    showToast('Error al enviar. Intenta de nuevo.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ph-paper-plane-tilt-fill"></i> Enviar al Administrador';
+  }
+}
+
+// ── CARGAR DASHBOARD ─────────────────────────────────────────────
+async function cargarDashboard() {
+  try {
+    const snap = await db.collection(COL)
+      .where('creado_por', '==', mmhUid || 'JesusRUTP')
+      .get();
+
+    // Ordenar en JS para evitar necesidad de índice compuesto en Firestore
+    const docs = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const ta = a.fecha_envio?.toDate?.() || new Date(0);
+        const tb = b.fecha_envio?.toDate?.() || new Date(0);
+        return tb - ta;
+      });
+    const total      = docs.length;
+    const aprobados  = docs.filter(d => d.estado === 'aprobado').length;
+    const pendientes = docs.filter(d => d.estado === 'pendiente').length;
+
+    document.getElementById('stat-total').textContent      = total;
+    document.getElementById('stat-aprobados').textContent  = aprobados;
+    document.getElementById('stat-pendientes').textContent = pendientes;
+
+    // Badge sidebar
+    const badge = document.getElementById('badge-pendientes');
+    if (pendientes > 0) {
+      badge.textContent = pendientes;
+      badge.classList.remove('hidden');
     } else {
-      DB = defaultData();
-      await adminDocRef.set(DB);
+      badge.classList.add('hidden');
     }
-  } catch (e) {
-    console.error('Error cargando DB de Firestore, usando localStorage:', e);
-    try {
-      const raw = localStorage.getItem(STORE_KEY);
-      DB = raw ? JSON.parse(raw) : defaultData();
-    } catch(ex) { DB = defaultData(); }
-  }
-}
 
-async function saveDB() {
-  if (dbFS) {
-    try {
-      await adminDocRef.set(DB);
-    } catch (e) {
-      console.error('Error guardando DB en Firestore:', e);
-    }
-  }
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(DB)); } catch(e) {}
-}
-
-// ═══════════════════════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════════════════════
-function uid() { return 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
-function fmtDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = Math.floor((now - d) / 86400000);
-  if (diff === 0) return 'Hoy';
-  if (diff === 1) return 'Ayer';
-  if (diff < 7) return `Hace ${diff} días`;
-  return d.toLocaleDateString('es-MX',{day:'numeric',month:'short'});
-}
-function fmtDateFull(iso) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
-}
-function avatarColor(name) {
-  const colors = ['#7B6FFF','#3DFFC0','#FF6B6B','#FFBE47','#a78bff','#FF8E8E','#4DF0B8'];
-  let h = 0; for(let c of name) h = (h*31 + c.charCodeAt(0)) % colors.length;
-  return colors[h];
-}
-function initials(name) {
-  return name.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
-}
-function statusTag(estado) {
-  const map = {
-    'Publicada':'tag-published','Borrador':'tag-draft','En revisión':'tag-review','Rechazada':'tag-rejected',
-    'Aprobado':'tag-published','Rechazado':'tag-rejected',
-    'Pendiente':'tag-draft','En proceso':'tag-review','Completada':'tag-published'
-  };
-  return `<span class="tag ${map[estado]||'tag-draft'}">${estado}</span>`;
-}
-
-// ═══════════════════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════════════════
-function toast(msg, type='success') {
-  const icons = {success:'✅',error:'❌',warn:'⚠️',info:'ℹ️'};
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.innerHTML = `<div class="toast-icon">${icons[type]||'📌'}</div><div style="flex:1">${msg}</div><div class="toast-close" onclick="this.parentElement.remove()">✕</div>`;
-  document.getElementById('toast-container').appendChild(el);
-  requestAnimationFrame(()=>{ setTimeout(()=>el.classList.add('show'),10); });
-  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),400); },4000);
-}
-
-// ═══════════════════════════════════════════════════════
-//  MODAL
-// ═══════════════════════════════════════════════════════
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-document.querySelectorAll('.overlay').forEach(o=>{
-  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); });
-});
-
-// ═══════════════════════════════════════════════════════
-//  CONFIRM DIALOG
-// ═══════════════════════════════════════════════════════
-function confirm2(title, msg, onOk, icon='⚠️') {
-  document.getElementById('confirm-icon').textContent = icon;
-  document.getElementById('confirm-title').textContent = title;
-  document.getElementById('confirm-msg').textContent = msg;
-  const btn = document.getElementById('confirm-ok-btn');
-  btn.onclick = ()=>{ closeModal('overlay-confirm'); onOk(); };
-  openModal('overlay-confirm');
-}
-
-// ═══════════════════════════════════════════════════════
-//  DETAIL PANEL
-// ═══════════════════════════════════════════════════════
-function openDetailPanel(title, sub, html) {
-  document.getElementById('dp-title').textContent = title;
-  document.getElementById('dp-sub').textContent = sub;
-  document.getElementById('dp-body').innerHTML = html;
-  document.getElementById('detail-panel').classList.add('open');
-}
-function closeDetailPanel() {
-  document.getElementById('detail-panel').classList.remove('open');
-}
-
-// ═══════════════════════════════════════════════════════
-//  NAVIGATION
-// ═══════════════════════════════════════════════════════
-const headings = {
-  dashboard:['Panel de <span>Control</span>','Dashboard general LSM'],
-  lecciones:['Gestión de <span>Lecciones</span>','Registro y mantenimiento de contenido'],
-  multimedia:['Material <span>Multimedia</span>','Carga y administración de recursos'],
-  revision:['Revisión y <span>Validación</span>','Control de calidad del contenido'],
-  mejoras:['Mejora <span>Continua</span>','Propuestas basadas en desempeño'],
-  progreso:['Progreso de <span>Usuarios</span>','Seguimiento y análisis de avance'],
-  reportes:['<span>Reportes</span> y Análisis','Métricas y estadísticas del sistema'],
-  actividad:['Historial de <span>Actividad</span>','Registro de acciones del sistema'],
-};
-
-function navigate(sectionId, el) {
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const sec = document.getElementById('section-' + sectionId);
-  if (sec) sec.classList.add('active');
-  if (el) el.classList.add('active');
-  const h = headings[sectionId];
-  if (h) {
-    document.getElementById('page-heading').innerHTML = h[0];
-    document.getElementById('page-crumb').textContent = h[1];
-  }
-  // Render section
-  const renders = {
-    dashboard: renderDashboard,
-    lecciones: renderLeccionesTable,
-    multimedia: renderMediaGrid,
-    revision: renderRevision,
-    mejoras: renderMejoras,
-    progreso: renderUsuarios,
-    reportes: renderReportes,
-    actividad: renderActividad,
-  };
-  if (renders[sectionId]) renders[sectionId]();
-}
-
-// ═══════════════════════════════════════════════════════
-//  ACTIVITY LOG
-// ═══════════════════════════════════════════════════════
-const actColors = {leccion:'var(--accent)',multimedia:'var(--accent2)',revision:'var(--warn)',mejora:'var(--accent3)',sistema:'var(--muted)'};
-function logActivity(tipo, msg) {
-  DB.actividad.unshift({id:uid(),tipo,msg,ts:new Date().toISOString()});
-  if (DB.actividad.length > 100) DB.actividad.pop();
-  document.getElementById('notif-dot').style.display = 'block';
-  saveDB();
-}
-
-// ═══════════════════════════════════════════════════════
-//  DASHBOARD
-// ═══════════════════════════════════════════════════════
-function renderDashboard() {
-  const lec = DB.lecciones;
-  const pub = lec.filter(l=>l.estado==='Publicada').length;
-  const rev = lec.filter(l=>l.estado==='En revisión').length;
-  const mm = DB.multimedia.length;
-  const users = DB.usuarios.filter(u=>u.activo).length;
-
-  document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card"><div class="stat-glow" style="background:var(--accent)"></div><div class="stat-icon">📚</div><div class="stat-val" style="color:var(--accent)">${lec.length}</div><div class="stat-lbl">Lecciones totales</div><div class="stat-delta d-up">↑ ${pub} publicadas</div></div>
-    <div class="stat-card"><div class="stat-glow" style="background:var(--accent2)"></div><div class="stat-icon">🎬</div><div class="stat-val" style="color:var(--accent2)">${mm}</div><div class="stat-lbl">Recursos multimedia</div><div class="stat-delta d-up">↑ ${DB.multimedia.filter(m=>m.estado==='Aprobado').length} aprobados</div></div>
-    <div class="stat-card"><div class="stat-glow" style="background:var(--warn)"></div><div class="stat-icon">⏳</div><div class="stat-val" style="color:var(--warn)">${rev}</div><div class="stat-lbl">En revisión</div><div class="stat-delta ${rev>0?'d-warn':'d-up'}">${rev>0?'↓ requieren atención':'✓ al día'}</div></div>
-    <div class="stat-card"><div class="stat-glow" style="background:var(--accent3)"></div><div class="stat-icon">👤</div><div class="stat-val" style="color:var(--accent3)">${DB.usuarios.length}</div><div class="stat-lbl">Usuarios registrados</div><div class="stat-delta d-up">↑ ${users} activos</div></div>
-  `;
-
-  // Recent lessons
-  const recent = [...lec].sort((a,b)=>new Date(b.actualizado)-new Date(a.actualizado)).slice(0,5);
-  document.getElementById('dash-lecciones-list').innerHTML = recent.map(l=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openDetailLeccion('${l.id}')">
-      <div style="width:38px;height:38px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📚</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.nombre}</div>
-        <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${l.nivel} · ${fmtDate(l.actualizado)}</div>
-      </div>
-      ${statusTag(l.estado)}
-    </div>
-  `).join('');
-
-  // Weekly chart
-  const labels = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  const max = Math.max(...DB.weeklyData);
-  document.getElementById('weekly-chart').innerHTML = DB.weeklyData.map((v,i)=>`
-    <div style="display:flex;flex-direction:column;align-items:center;flex:1">
-      <div class="chart-bar" style="height:${(v/max)*140}px" title="${v} acciones">
-        <div class="chart-bar-val">${v}</div>
-      </div>
-    </div>
-  `).join('');
-  document.getElementById('weekly-labels').innerHTML = labels.map(l=>`<div class="chart-bar-lbl" style="flex:1">${l}</div>`).join('');
-
-  // Top users
-  const topUsers = [...DB.usuarios].sort((a,b)=>b.progreso-a.progreso).slice(0,5);
-  document.getElementById('dash-top-users').innerHTML = topUsers.map((u,i)=>`
-    <div class="user-row">
-      <div style="font-size:13px;font-weight:700;color:var(--muted);width:18px;font-family:'DM Mono',monospace">${i+1}</div>
-      <div class="u-avatar" style="background:${u.color||avatarColor(u.nombre)}">${initials(u.nombre)}</div>
-      <div style="flex:1"><div class="u-name">${u.nombre}</div><div class="u-stats">${u.completadas} lecciones · ${u.nivel.split('·')[0].trim()}</div></div>
-      <div>
-        <div class="pbar-wrap"><div class="pbar-track"><div class="pbar-fill" style="width:${u.progreso}%;background:${u.color||'var(--accent)'}"></div></div></div>
-        <div class="pbar-pct">${u.progreso}%</div>
-      </div>
-    </div>
-  `).join('');
-
-  // Donut
-  const estados = [{l:'Publicada',c:'var(--accent)',v:pub},{l:'En revisión',c:'var(--warn)',v:rev},{l:'Borrador',c:'var(--muted)',v:lec.filter(l=>l.estado==='Borrador').length},{l:'Rechazada',c:'var(--accent3)',v:lec.filter(l=>l.estado==='Rechazada').length}];
-  const total = estados.reduce((s,e)=>s+e.v,0)||1;
-  let offset = 0;
-  const circles = estados.map(e=>{
-    const pct = e.v/total;
-    const dash = pct * 283;
-    const c = `<circle cx="50" cy="50" r="45" fill="none" stroke="${e.c}" stroke-width="10" stroke-dasharray="${dash} ${283-dash}" stroke-dashoffset="${-offset}" stroke-linecap="round"/>`;
-    offset += dash;
-    return c;
-  }).join('');
-  document.getElementById('dash-donut').innerHTML = `
-    <div class="donut-wrap">
-      <svg class="donut" width="120" height="120" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--border)" stroke-width="10"/>
-        ${circles}
-      </svg>
-      <div class="donut-legend">
-        ${estados.map(e=>`<div class="dl-item"><div class="dl-dot" style="background:${e.c}"></div><span>${e.l}</span><span class="mono text-muted" style="margin-left:auto">${e.v}</span></div>`).join('')}
-      </div>
-    </div>
-  `;
-
-  // Badge
-  document.getElementById('badge-revision').textContent = rev;
-}
-
-// ═══════════════════════════════════════════════════════
-//  LECCIONES
-// ═══════════════════════════════════════════════════════
-const PER_PAGE = 8;
-function getLeccionesFiltradas() {
-  const q = (document.getElementById('search-lecciones')||{}).value?.toLowerCase()||'';
-  const nivel = (document.getElementById('filter-nivel')||{}).value||'';
-  const estado = (document.getElementById('filter-estado')||{}).value||'';
-  const sort = (document.getElementById('sort-lecciones')||{}).value||'fecha-desc';
-  let data = DB.lecciones.filter(l=>{
-    if (q && !l.nombre.toLowerCase().includes(q) && !l.categoria.toLowerCase().includes(q)) return false;
-    if (nivel && l.nivel !== nivel) return false;
-    if (estado && l.estado !== estado) return false;
-    return true;
-  });
-  data.sort((a,b)=>{
-    if (sort==='nombre-asc') return a.nombre.localeCompare(b.nombre);
-    if (sort==='completado-desc') return b.completado - a.completado;
-    if (sort==='fecha-asc') return new Date(a.actualizado)-new Date(b.actualizado);
-    return new Date(b.actualizado)-new Date(a.actualizado);
-  });
-  return data;
-}
-
-function renderLeccionesTable() {
-  const data = getLeccionesFiltradas();
-  const page = DB.paginas.lecciones||1;
-  const pages = Math.ceil(data.length/PER_PAGE)||1;
-  const slice = data.slice((page-1)*PER_PAGE, page*PER_PAGE);
-
-  const tbody = document.getElementById('tbody-lecciones');
-  const empty = document.getElementById('empty-lecciones');
-  if (!tbody) return;
-
-  if (slice.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-  } else {
-    empty.style.display = 'none';
-    tbody.innerHTML = slice.map(l=>`
-      <tr onclick="openDetailLeccion('${l.id}')">
-        <td>
-          <div style="font-weight:700;font-size:13px">${l.nombre}</div>
-          <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px">${l.categoria}</div>
-        </td>
-        <td><span style="font-size:11px;color:var(--text2)">${l.nivel}</span></td>
-        <td>${statusTag(l.estado)}</td>
-        <td><span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)">🎬 ${l.multimedia}</span></td>
-        <td>
-          <div class="pbar-wrap"><div class="pbar-track"><div class="pbar-fill" style="width:${l.completado}%;background:${l.completado>70?'var(--accent)':l.completado>40?'var(--warn)':'var(--accent3)'}"></div></div></div>
-          <div class="pbar-pct">${l.completado}%</div>
-        </td>
-        <td><span style="font-size:11px;color:var(--muted)">${fmtDate(l.actualizado)}</span></td>
-        <td onclick="event.stopPropagation()">
-          <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost btn-sm btn-icon" title="Editar" onclick="editLeccion('${l.id}')">✏️</button>
-            <button class="btn btn-warn btn-sm btn-icon" title="Enviar a revisión" onclick="sendToRevision('${l.id}')">📋</button>
-            <button class="btn btn-danger btn-sm btn-icon" title="Eliminar" onclick="deleteLeccion('${l.id}')">🗑</button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  }
-  document.getElementById('lecciones-count').textContent = `${data.length} lecciones encontradas`;
-  document.getElementById('lecciones-page').textContent = `${page} / ${pages}`;
-  document.getElementById('btn-prev-lec').disabled = page <= 1;
-  document.getElementById('btn-next-lec').disabled = page >= pages;
-}
-
-function changePage(sec, dir) {
-  DB.paginas[sec] = Math.max(1, (DB.paginas[sec]||1) + dir);
-  if (sec==='lecciones') renderLeccionesTable();
-}
-
-function saveLeccion() {
-  const nombre = document.getElementById('lec-nombre').value.trim();
-  const nivel = document.getElementById('lec-nivel').value;
-  const categoria = document.getElementById('lec-categoria').value;
-  const objetivo = document.getElementById('lec-objetivo').value.trim();
-  let valid = true;
-  const setErr = (id,msg)=>{ document.getElementById(id).textContent=msg; valid=false; };
-  const clearErr = id=>document.getElementById(id).textContent='';
-  clearErr('err-nombre'); clearErr('err-nivel'); clearErr('err-categoria'); clearErr('err-objetivo');
-  if (!nombre) setErr('err-nombre','El nombre es obligatorio');
-  if (!nivel) setErr('err-nivel','Selecciona un nivel');
-  if (!categoria) setErr('err-categoria','Selecciona una categoría');
-  if (!objetivo) setErr('err-objetivo','El objetivo educativo es obligatorio');
-  if (!valid) return;
-
-  const editId = document.getElementById('lec-edit-id').value;
-  const now = new Date().toISOString();
-  if (editId) {
-    const idx = DB.lecciones.findIndex(l=>l.id===editId);
-    if (idx>=0) {
-      DB.lecciones[idx] = {...DB.lecciones[idx], nombre, nivel, categoria, objetivo,
-        duracion: document.getElementById('lec-duracion').value,
-        estado: document.getElementById('lec-estado').value,
-        notas: document.getElementById('lec-notas').value,
-        actualizado: now };
-      logActivity('leccion',`Lección actualizada: "${nombre}"`);
-      toast(`Lección "${nombre}" actualizada`);
-    }
-  } else {
-    const lec = {id:uid(),nombre,nivel,categoria,objetivo,
-      duracion: document.getElementById('lec-duracion').value,
-      estado: document.getElementById('lec-estado').value,
-      notas: document.getElementById('lec-notas').value,
-      completado:0,multimedia:0,creado:now,actualizado:now};
-    DB.lecciones.unshift(lec);
-    logActivity('leccion',`Nueva lección registrada: "${nombre}"`);
-    toast(`Lección "${nombre}" registrada exitosamente`);
-  }
-  saveDB();
-  closeModal('modal-leccion');
-  renderLeccionesTable();
-  populateLeccionSelects();
-  updateBadge();
-}
-
-function editLeccion(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  if (!l) return;
-  document.getElementById('modal-leccion-title').textContent = 'Editar Lección';
-  document.getElementById('lec-edit-id').value = id;
-  document.getElementById('lec-nombre').value = l.nombre;
-  document.getElementById('lec-nivel').value = l.nivel;
-  document.getElementById('lec-categoria').value = l.categoria;
-  document.getElementById('lec-objetivo').value = l.objetivo;
-  document.getElementById('lec-duracion').value = l.duracion;
-  document.getElementById('lec-estado').value = l.estado;
-  document.getElementById('lec-notas').value = l.notas||'';
-  ['err-nombre','err-nivel','err-categoria','err-objetivo'].forEach(id=>document.getElementById(id).textContent='');
-  openModal('modal-leccion');
-}
-
-function deleteLeccion(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  confirm2('Eliminar lección',`¿Eliminar "${l?.nombre}"? Esta acción no se puede deshacer.`,()=>{
-    DB.lecciones = DB.lecciones.filter(x=>x.id!==id);
-    logActivity('leccion',`Lección eliminada: "${l?.nombre}"`);
-    saveDB();
-    renderLeccionesTable();
-    toast(`Lección eliminada`,'warn');
-    updateBadge();
-  },'🗑️');
-}
-
-function sendToRevision(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  if (!l) return;
-  if (l.estado==='En revisión') { toast('Ya está en revisión','info'); return; }
-  l.estado = 'En revisión';
-  l.actualizado = new Date().toISOString();
-  logActivity('revision',`Lección enviada a revisión: "${l.nombre}"`);
-  saveDB();
-  renderLeccionesTable();
-  renderRevision();
-  updateBadge();
-  toast(`"${l.nombre}" enviada a revisión`,'info');
-}
-
-function openDetailLeccion(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  if (!l) return;
-  const mm = DB.multimedia.filter(m=>m.leccion===id);
-  openDetailPanel(l.nombre, `${l.nivel} · ${l.categoria}`, `
-    <div class="dp-section">
-      <div class="dp-label">Estado</div>
-      ${statusTag(l.estado)}
-    </div>
-    <div class="dp-section">
-      <div class="dp-label">Objetivo educativo</div>
-      <div class="dp-value">${l.objetivo}</div>
-    </div>
-    <div class="dp-section">
-      <div class="dp-label">Duración</div>
-      <div class="dp-value">${l.duracion||'No especificada'}</div>
-    </div>
-    <div class="dp-section">
-      <div class="dp-label">Progreso de completado</div>
-      <div style="margin-top:6px">
-        <div class="pbar-track" style="height:8px;border-radius:4px"><div class="pbar-fill" style="width:${l.completado}%;height:8px;border-radius:4px"></div></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace">${l.completado}% de usuarios completan esta lección</div>
-      </div>
-    </div>
-    <div class="dp-section">
-      <div class="dp-label">Material multimedia (${mm.length})</div>
-      ${mm.length>0 ? mm.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-size:18px">${m.tipo==='video'?'🎬':m.tipo==='imagen'?'🖼':'📄'}</div><div><div style="font-size:12px;font-weight:600">${m.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${m.size} · ${m.duracion}</div></div>${statusTag(m.estado)}</div>`).join('') : '<div style="color:var(--muted);font-size:12px">Sin multimedia asociada</div>'}
-    </div>
-    ${l.notas?`<div class="dp-section"><div class="dp-label">Notas</div><div class="dp-value" style="color:var(--text2)">${l.notas}</div></div>`:''}
-    <div class="dp-section">
-      <div class="dp-label">Fechas</div>
-      <div style="font-size:11px;color:var(--text2);font-family:'DM Mono',monospace">Creado: ${fmtDateFull(l.creado)}<br>Actualizado: ${fmtDateFull(l.actualizado)}</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
-      <button class="btn btn-primary" onclick="editLeccion('${l.id}');closeDetailPanel()">✏️ Editar lección</button>
-      <button class="btn btn-ghost" onclick="sendToRevision('${l.id}');closeDetailPanel()">📋 Enviar a revisión</button>
-      <button class="btn btn-danger" onclick="deleteLeccion('${l.id}');closeDetailPanel()">🗑 Eliminar</button>
-    </div>
-  `);
-}
-
-function exportLecciones() {
-  const data = getLeccionesFiltradas();
-  const header = 'Nombre,Nivel,Categoría,Estado,Completado,Actualizado';
-  const rows = data.map(l=>`"${l.nombre}","${l.nivel}","${l.categoria}","${l.estado}","${l.completado}%","${fmtDateFull(l.actualizado)}"`);
-  const csv = [header,...rows].join('\n');
-  downloadFile('lecciones_lsm.csv', csv, 'text/csv');
-  toast('CSV exportado exitosamente');
-}
-
-function downloadFile(name, content, type) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content],{type}));
-  a.download = name; a.click();
-}
-
-// ═══════════════════════════════════════════════════════
-//  MULTIMEDIA
-// ═══════════════════════════════════════════════════════
-function renderMediaGrid() {
-  const q = (document.getElementById('search-media')||{}).value?.toLowerCase()||'';
-  const tipo = (document.getElementById('filter-mm-tipo')||{}).value||'';
-  const estado = (document.getElementById('filter-mm-estado')||{}).value||'';
-  let data = DB.multimedia.filter(m=>{
-    if (q && !m.nombre.toLowerCase().includes(q) && !m.desc.toLowerCase().includes(q)) return false;
-    if (tipo && m.tipo !== tipo) return false;
-    if (estado && m.estado !== estado) return false;
-    return true;
-  });
-  const grid = document.getElementById('media-grid');
-  const empty = document.getElementById('empty-media');
-  if (!grid) return;
-  const videos = DB.multimedia.filter(m=>m.tipo==='video').length;
-  const images = DB.multimedia.filter(m=>m.tipo!=='video').length;
-  const vc = document.getElementById('mm-videos-count');
-  const ic = document.getElementById('mm-images-count');
-  if(vc) vc.textContent = videos;
-  if(ic) ic.textContent = images;
-
-  if (data.length===0) { grid.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
-  const icons = {video:'🎬',imagen:'🖼️',pdf:'📄'};
-  const tagMap = {video:'tag-video',imagen:'tag-image',pdf:'tag-pdf'};
-  grid.innerHTML = data.map(m=>`
-    <div class="media-card" onclick="openMediaDetail('${m.id}')">
-      <div class="mc-thumb">
-        <span>${icons[m.tipo]||'📁'}</span>
-        <div class="mc-type">${statusTag(m.estado)}</div>
-      </div>
-      <div class="mc-info">
-        <div class="mc-name" title="${m.nombre}">${m.nombre}</div>
-        <div class="mc-meta">${m.size} · ${m.duracion}</div>
-        <div class="mc-meta mt-1">${fmtDate(m.creado)}</div>
-        <div class="mc-actions" onclick="event.stopPropagation()">
-          <button class="btn btn-ghost btn-sm" onclick="approveMedia('${m.id}')">✅</button>
-          <button class="btn btn-danger btn-sm" onclick="rejectMedia('${m.id}')">❌</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteMedia('${m.id}')">🗑</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function openMediaDetail(id) {
-  const m = DB.multimedia.find(x=>x.id===id);
-  if (!m) return;
-  const leccion = DB.lecciones.find(l=>l.id===m.leccion);
-  const icons = {video:'🎬',imagen:'🖼️',pdf:'📄'};
-  document.getElementById('media-detail-title').textContent = m.nombre;
-  document.getElementById('media-detail-body').innerHTML = `
-    <div style="text-align:center;font-size:60px;margin-bottom:16px;background:var(--surface2);border-radius:12px;padding:24px">${icons[m.tipo]||'📁'}</div>
-    <table style="width:100%;font-size:12px">
-      <tr><td style="color:var(--muted);padding:7px 0;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border)">Tipo</td><td style="padding:7px 0;border-bottom:1px solid var(--border);font-weight:600"><span class="tag ${m.tipo==='video'?'tag-video':m.tipo==='imagen'?'tag-image':'tag-pdf'}">${m.tipo}</span></td></tr>
-      <tr><td style="color:var(--muted);padding:7px 0;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border)">Estado</td><td style="padding:7px 0;border-bottom:1px solid var(--border)">${statusTag(m.estado)}</td></tr>
-      <tr><td style="color:var(--muted);padding:7px 0;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border)">Tamaño</td><td style="padding:7px 0;border-bottom:1px solid var(--border);font-weight:600">${m.size}</td></tr>
-      <tr><td style="color:var(--muted);padding:7px 0;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border)">Duración</td><td style="padding:7px 0;border-bottom:1px solid var(--border);font-weight:600">${m.duracion}</td></tr>
-      <tr><td style="color:var(--muted);padding:7px 0;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border)">Lección</td><td style="padding:7px 0;border-bottom:1px solid var(--border);font-weight:600">${leccion?.nombre||'Sin asociar'}</td></tr>
-      <tr><td style="color:var(--muted);padding:7px 0;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px">Subido</td><td style="padding:7px 0;font-weight:600">${fmtDateFull(m.creado)}</td></tr>
-    </table>
-    ${m.desc?`<div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6">${m.desc}</div>`:''}
-  `;
-  document.getElementById('media-detail-foot').innerHTML = `
-    <button class="btn btn-ghost" onclick="closeModal('modal-media-detail')">Cerrar</button>
-    <button class="btn btn-warn btn-sm" onclick="approveMedia('${m.id}');closeModal('modal-media-detail')">✅ Aprobar</button>
-    <button class="btn btn-danger btn-sm" onclick="deleteMedia('${m.id}');closeModal('modal-media-detail')">🗑 Eliminar</button>
-  `;
-  openModal('modal-media-detail');
-}
-
-function saveMultimedia() {
-  const nombre = document.getElementById('mm-nombre').value.trim();
-  const tipo = document.getElementById('mm-tipo').value;
-  let valid = true;
-  const setErr = (id,msg)=>{ document.getElementById(id).textContent=msg; valid=false; };
-  document.getElementById('err-mm-nombre').textContent='';
-  document.getElementById('err-mm-tipo').textContent='';
-  if (!nombre) setErr('err-mm-nombre','El nombre es obligatorio');
-  if (!tipo) setErr('err-mm-tipo','Selecciona el tipo de archivo');
-  if (!valid) return;
-  const m = {id:uid(),nombre,tipo,leccion:document.getElementById('mm-leccion').value,
-    duracion:document.getElementById('mm-duracion').value||'—',
-    size:document.getElementById('mm-size').value||'—',
-    desc:document.getElementById('mm-desc').value,
-    estado:'En revisión',creado:new Date().toISOString()};
-  DB.multimedia.unshift(m);
-  // Update multimedia count for associated lesson
-  if (m.leccion) {
-    const lec = DB.lecciones.find(l=>l.id===m.leccion);
-    if (lec) { lec.multimedia++; lec.actualizado = new Date().toISOString(); }
-  }
-  logActivity('multimedia',`Archivo subido: "${nombre}" (${tipo})`);
-  saveDB();
-  closeModal('modal-upload');
-  renderMediaGrid();
-  toast(`"${nombre}" registrado correctamente`);
-  ['mm-nombre','mm-duracion','mm-size','mm-desc'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('mm-tipo').value='';
-}
-
-function approveMedia(id) {
-  const m = DB.multimedia.find(x=>x.id===id);
-  if (!m) return;
-  m.estado = 'Aprobado';
-  logActivity('multimedia',`Archivo aprobado: "${m.nombre}"`);
-  saveDB(); renderMediaGrid(); toast(`"${m.nombre}" aprobado`);
-}
-
-function rejectMedia(id) {
-  const m = DB.multimedia.find(x=>x.id===id);
-  if (!m) return;
-  m.estado = 'Rechazado';
-  logActivity('multimedia',`Archivo rechazado: "${m.nombre}"`);
-  saveDB(); renderMediaGrid(); toast(`"${m.nombre}" rechazado`,'warn');
-}
-
-function deleteMedia(id) {
-  const m = DB.multimedia.find(x=>x.id===id);
-  confirm2('Eliminar archivo',`¿Eliminar "${m?.nombre}"?`,()=>{
-    DB.multimedia = DB.multimedia.filter(x=>x.id!==id);
-    logActivity('multimedia',`Archivo eliminado: "${m?.nombre}"`);
-    saveDB(); renderMediaGrid(); toast('Archivo eliminado','warn');
-  },'🗑️');
-}
-
-// Drag & drop
-function dragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('dragover'); }
-function dragLeave(e) { document.getElementById('drop-zone').classList.remove('dragover'); }
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.remove('dragover');
-  simulateUpload([...e.dataTransfer.files]);
-}
-function handleFileSelect(e) { simulateUpload([...e.target.files]); }
-
-function simulateUpload(files) {
-  if (!files.length) return;
-  const queue = document.getElementById('upload-queue');
-  files.forEach(file=>{
-    const ext = file.name.split('.').pop().toLowerCase();
-    const tipo = ['mp4','mov','avi','webm'].includes(ext)?'video':['png','jpg','jpeg','gif','webp'].includes(ext)?'imagen':'pdf';
-    const icon = {video:'🎬',imagen:'🖼️',pdf:'📄'}[tipo]||'📁';
-    const itemId = uid();
-    const itemEl = document.createElement('div');
-    itemEl.className = 'upload-item';
-    itemEl.id = 'ui-'+itemId;
-    itemEl.innerHTML = `<div class="ui-icon">${icon}</div><div style="flex:1;min-width:0"><div class="ui-name">${file.name}</div><div class="ui-meta">${(file.size/1048576).toFixed(1)} MB</div><div class="ui-prog"><div class="ui-prog-fill" id="prog-${itemId}" style="width:0%"></div></div></div><div id="status-${itemId}" style="font-size:12px;color:var(--muted)">0%</div>`;
-    queue.appendChild(itemEl);
-    // Simulate upload progress
-    let pct = 0;
-    const interval = setInterval(()=>{
-      pct += Math.random()*15+5;
-      if (pct>=100) { pct=100; clearInterval(interval);
-        document.getElementById('prog-'+itemId).style.width='100%';
-        document.getElementById('status-'+itemId).innerHTML='<span style="color:var(--accent)">✓</span>';
-        // Auto-register
-        const m = {id:uid(),nombre:file.name,tipo,leccion:'',duracion:'—',size:`${(file.size/1048576).toFixed(1)} MB`,desc:'',estado:'En revisión',creado:new Date().toISOString()};
-        DB.multimedia.unshift(m);
-        logActivity('multimedia',`Archivo cargado por drag&drop: "${file.name}"`);
-        saveDB(); renderMediaGrid();
-        toast(`"${file.name}" cargado exitosamente`);
-        setTimeout(()=>itemEl.remove(),2000);
-      } else {
-        document.getElementById('prog-'+itemId).style.width=pct+'%';
-        document.getElementById('status-'+itemId).textContent=Math.floor(pct)+'%';
-      }
-    },120);
-  });
-}
-
-// ═══════════════════════════════════════════════════════
-//  REVISIÓN
-// ═══════════════════════════════════════════════════════
-function renderRevision() {
-  const pendientes = DB.lecciones.filter(l=>l.estado==='En revisión');
-  const aprobadas = DB.lecciones.filter(l=>l.estado==='Publicada');
-  const rechazadas = DB.lecciones.filter(l=>l.estado==='Rechazada');
-  document.getElementById('cnt-pendiente').textContent = pendientes.length;
-  document.getElementById('cnt-aprobadas').textContent = aprobadas.length;
-  document.getElementById('cnt-rechazadas').textContent = rechazadas.length;
-  document.getElementById('badge-revision').textContent = pendientes.length;
-
-  const renderRevList = (containerId, lecciones, showActions) => {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-    if (!lecciones.length) {
-      el.innerHTML = `<div class="empty-state"><div class="empty-icon">${containerId.includes('pend')?'⏳':containerId.includes('apr')?'✅':'❌'}</div><div class="empty-msg">Sin lecciones en esta categoría</div></div>`;
+    const list = document.getElementById('dashboard-list');
+    if (docs.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <i class="ph-tray-fill text-5xl block mb-3 opacity-30"></i>
+          <p class="font-semibold text-gray-500">Aún no has enviado contenido</p>
+          <p class="text-sm mt-1">Ve a "Enviar Contenido" para empezar</p>
+        </div>`;
       return;
     }
-    el.innerHTML = lecciones.map(l=>`
-      <div class="review-item" onclick="openRevisionModal('${l.id}')">
-        <div class="ri-left">
-          <div class="ri-day">${new Date(l.actualizado).getDate()}</div>
-          <div class="ri-mon">${new Date(l.actualizado).toLocaleString('es-MX',{month:'short'}).toUpperCase()}</div>
+
+    list.innerHTML = docs.slice(0, 5).map(d => `
+      <div class="flex items-center gap-4 py-3 border-b border-gray-50 last:border-0">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${tipoIconoBg(d.tipo)}">
+          ${tipoIcono(d.tipo)}
         </div>
-        <div class="ri-body">
-          <div class="ri-title">${l.nombre}</div>
-          <div class="ri-meta">${l.nivel} · ${l.categoria} · ⏱ ${l.duracion||'No especificada'}</div>
-          <div class="ri-note">${l.objetivo?.substring(0,80)}${l.objetivo?.length>80?'...':''}</div>
-          ${showActions?`<div style="display:flex;gap:8px;margin-top:10px" onclick="event.stopPropagation()">
-            <button class="btn btn-primary btn-sm" onclick="approveLeccion('${l.id}')">✅ Aprobar</button>
-            <button class="btn btn-danger btn-sm" onclick="rejectLeccion('${l.id}')">❌ Rechazar</button>
-            <button class="btn btn-ghost btn-sm" onclick="openRevisionModal('${l.id}')">👁 Ver detalle</button>
-          </div>`:''}
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-gray-800 text-sm truncate">${d.titulo}</p>
+          <p class="text-xs text-gray-400">${d.nivel} · ${d.tipo}</p>
         </div>
-      </div>
-    `).join('');
-  };
-
-  renderRevList('tab-revision-pendiente', pendientes, true);
-  renderRevList('tab-revision-aprobadas', aprobadas, false);
-  renderRevList('tab-revision-rechazadas', rechazadas, false);
+        <span class="badge badge-${d.estado}">${estadoLabel(d.estado)}</span>
+      </div>`).join('');
+  } catch (err) {
+    console.error('Error cargando dashboard:', err);
+  }
 }
 
-function openRevisionModal(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  if (!l) return;
-  const mm = DB.multimedia.filter(m=>m.leccion===id);
-  document.getElementById('rev-modal-title').textContent = `Revisión: ${l.nombre}`;
-  document.getElementById('rev-modal-body').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
-      <div><div class="dp-label" style="margin-bottom:4px">Estado actual</div>${statusTag(l.estado)}</div>
-      <div><div class="dp-label" style="margin-bottom:4px">Nivel</div><div style="font-size:12px;font-weight:600">${l.nivel}</div></div>
-      <div><div class="dp-label" style="margin-bottom:4px">Categoría</div><div style="font-size:12px;font-weight:600">${l.categoria}</div></div>
-      <div><div class="dp-label" style="margin-bottom:4px">Duración</div><div style="font-size:12px;font-weight:600">${l.duracion||'—'}</div></div>
-    </div>
-    <div class="mb-4">
-      <div class="dp-label mb-3">Objetivo educativo</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:13px;line-height:1.6">${l.objetivo}</div>
-    </div>
-    <div class="mb-4">
-      <div class="dp-label mb-3">Material multimedia asociado (${mm.length} archivos)</div>
-      ${mm.length>0?mm.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px"><span style="font-size:20px">${m.tipo==='video'?'🎬':m.tipo==='imagen'?'🖼':'📄'}</span><div style="flex:1"><div style="font-size:12px;font-weight:600">${m.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${m.size} · ${m.duracion}</div></div>${statusTag(m.estado)}</div>`).join(''):'<div style="color:var(--muted);font-size:12px;font-style:italic">Sin multimedia asociada</div>'}
-    </div>
-    ${l.notas?`<div class="mb-4"><div class="dp-label mb-3">Notas del creador</div><div style="background:var(--warn-dim);border:1px solid rgba(255,190,71,0.2);border-radius:10px;padding:12px;font-size:12px;color:var(--text2)">${l.notas}</div></div>`:''}
-    <div>
-      <div class="dp-label mb-3">Comentario de revisión</div>
-      <textarea class="form-textarea" id="rev-comentario" placeholder="Escribe tus observaciones o justificación de la decisión..." style="min-height:80px"></textarea>
-    </div>
-  `;
-  document.getElementById('rev-modal-foot').innerHTML = `
-    <button class="btn btn-ghost" onclick="closeModal('modal-revision')">Cerrar</button>
-    <button class="btn btn-danger" onclick="rejectLeccion('${l.id}');closeModal('modal-revision')">❌ Rechazar</button>
-    <button class="btn btn-primary" onclick="approveLeccion('${l.id}');closeModal('modal-revision')">✅ Aprobar y publicar</button>
-  `;
-  openModal('modal-revision');
+// ── CARGAR MIS ENVÍOS ────────────────────────────────────────────
+async function cargarMisEnvios() {
+  document.getElementById('envios-list').innerHTML = `
+    <div class="empty-state"><p class="font-semibold text-gray-400">Cargando...</p></div>`;
+  try {
+    const snap = await db.collection(COL)
+      .where('creado_por', '==', mmhUid || 'JesusRUTP')
+      .get();
+
+    // Ordenar en JS para evitar necesidad de índice compuesto en Firestore
+    todosLosEnvios = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const ta = a.fecha_envio?.toDate?.() || new Date(0);
+        const tb = b.fecha_envio?.toDate?.() || new Date(0);
+        return tb - ta;
+      });
+
+    renderEnvios(todosLosEnvios);
+  } catch (err) {
+    console.error('Error Firestore:', err);
+    document.getElementById('envios-list').innerHTML = `
+      <div class="empty-state">
+        <p class="text-red-400 font-semibold">Error al cargar datos.</p>
+        <p class="text-xs text-gray-400 mt-1">${err.message}</p>
+      </div>`;
+  }
 }
 
-function approveLeccion(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  if (!l) return;
-  l.estado = 'Publicada';
-  l.actualizado = new Date().toISOString();
-  const comentario = document.getElementById('rev-comentario')?.value||'';
-  logActivity('revision',`Lección aprobada y publicada: "${l.nombre}"${comentario?' — '+comentario:''}`);
-  saveDB(); renderRevision(); renderDashboard();
-  toast(`"${l.nombre}" aprobada y publicada`, 'success');
-  updateBadge();
-}
-
-function rejectLeccion(id) {
-  const l = DB.lecciones.find(x=>x.id===id);
-  if (!l) return;
-  l.estado = 'Rechazada';
-  l.actualizado = new Date().toISOString();
-  const comentario = document.getElementById('rev-comentario')?.value||'';
-  logActivity('revision',`Lección rechazada: "${l.nombre}"${comentario?' — '+comentario:''}`);
-  saveDB(); renderRevision(); renderDashboard();
-  toast(`"${l.nombre}" rechazada`, 'error');
-  updateBadge();
-}
-
-// ═══════════════════════════════════════════════════════
-//  MEJORAS
-// ═══════════════════════════════════════════════════════
-function renderMejoras() {
-  const el = document.getElementById('mejoras-list');
-  if (!el) return;
-  const priorColors = {alta:'var(--accent3)',media:'var(--warn)',baja:'var(--accent)'};
-  const priorLabel = {alta:'🔴 Alta',media:'🟡 Media',baja:'🟢 Baja'};
-  if (!DB.mejoras.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-msg">Sin propuestas de mejora</div><div class="empty-sub">Registra tu primera propuesta usando el botón de arriba</div></div>`;
+function renderEnvios(docs) {
+  const list = document.getElementById('envios-list');
+  if (docs.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <i class="ph-tray-fill text-5xl block mb-3 opacity-30"></i>
+        <p class="font-semibold text-gray-500">No hay envíos en esta categoría</p>
+      </div>`;
     return;
   }
-  el.innerHTML = DB.mejoras.map(m=>{
-    const lec = DB.lecciones.find(l=>l.id===m.leccion);
-    return `
-    <div class="improve-card">
-      <div class="ic-head">
-        <div class="ic-title">${m.titulo}</div>
-        ${statusTag(m.estado)}
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <span class="tag" style="background:${priorColors[m.prioridad]||'var(--muted)'}22;color:${priorColors[m.prioridad]||'var(--muted)'}">${priorLabel[m.prioridad]||m.prioridad}</span>
-        ${lec?`<span class="tag tag-review">📚 ${lec.nombre}</span>`:''}
-        <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;align-self:center">${fmtDate(m.creado)}</span>
-      </div>
-      <div class="ic-body">${m.desc}</div>
-      ${m.evidencia?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;color:var(--text2);margin-bottom:12px"><strong>📊 Evidencia:</strong> ${m.evidencia}</div>`:''}
-      <div class="ic-actions">
-        ${m.estado!=='Completada'?`<button class="btn btn-primary btn-sm" onclick="completeMejora('${m.id}')">✅ Marcar completada</button>`:''}
-        ${m.estado==='Pendiente'?`<button class="btn btn-warn btn-sm" onclick="startMejora('${m.id}')">▶ En proceso</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="editMejora('${m.id}')">✏️ Editar</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteMejora('${m.id}')">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function saveMejora() {
-  const titulo = document.getElementById('mej-titulo').value.trim();
-  const prioridad = document.getElementById('mej-prioridad').value;
-  const desc = document.getElementById('mej-desc').value.trim();
-  let valid = true;
-  const setErr = (id,msg)=>{ document.getElementById(id).textContent=msg; valid=false; };
-  ['err-mej-titulo','err-mej-prioridad','err-mej-desc'].forEach(id=>document.getElementById(id).textContent='');
-  if (!titulo) setErr('err-mej-titulo','El título es obligatorio');
-  if (!prioridad) setErr('err-mej-prioridad','Selecciona la prioridad');
-  if (!desc) setErr('err-mej-desc','La descripción es obligatoria');
-  if (!valid) return;
-
-  const editId = document.getElementById('mejora-edit-id').value;
-  if (editId) {
-    const idx = DB.mejoras.findIndex(m=>m.id===editId);
-    if (idx>=0) {
-      DB.mejoras[idx] = {...DB.mejoras[idx],titulo,prioridad,desc,
-        leccion:document.getElementById('mej-leccion').value,
-        evidencia:document.getElementById('mej-evidencia').value};
-      logActivity('mejora',`Mejora actualizada: "${titulo}"`);
-      toast(`Propuesta actualizada`);
-    }
-  } else {
-    const mej = {id:uid(),titulo,prioridad,desc,
-      leccion:document.getElementById('mej-leccion').value,
-      evidencia:document.getElementById('mej-evidencia').value,
-      estado:'Pendiente',creado:new Date().toISOString()};
-    DB.mejoras.unshift(mej);
-    logActivity('mejora',`Nueva propuesta de mejora: "${titulo}" (prioridad ${prioridad})`);
-    toast(`Propuesta registrada exitosamente`);
-  }
-  saveDB(); closeModal('modal-mejora'); renderMejoras();
-  document.getElementById('mejora-edit-id').value='';
-}
-
-function editMejora(id) {
-  const m = DB.mejoras.find(x=>x.id===id);
-  if (!m) return;
-  document.getElementById('mejora-edit-id').value = id;
-  document.getElementById('mej-titulo').value = m.titulo;
-  document.getElementById('mej-prioridad').value = m.prioridad;
-  document.getElementById('mej-desc').value = m.desc;
-  document.getElementById('mej-leccion').value = m.leccion||'';
-  document.getElementById('mej-evidencia').value = m.evidencia||'';
-  openModal('modal-mejora');
-}
-
-function completeMejora(id) {
-  const m = DB.mejoras.find(x=>x.id===id);
-  if (!m) return;
-  m.estado = 'Completada';
-  logActivity('mejora',`Mejora completada: "${m.titulo}"`);
-  saveDB(); renderMejoras(); toast(`Mejora marcada como completada`);
-}
-
-function startMejora(id) {
-  const m = DB.mejoras.find(x=>x.id===id);
-  if (!m) return;
-  m.estado = 'En proceso';
-  logActivity('mejora',`Mejora iniciada: "${m.titulo}"`);
-  saveDB(); renderMejoras(); toast(`Mejora marcada como en proceso`,'info');
-}
-
-function deleteMejora(id) {
-  const m = DB.mejoras.find(x=>x.id===id);
-  confirm2('Eliminar propuesta',`¿Eliminar "${m?.titulo}"?`,()=>{
-    DB.mejoras = DB.mejoras.filter(x=>x.id!==id);
-    logActivity('mejora',`Propuesta eliminada: "${m?.titulo}"`);
-    saveDB(); renderMejoras(); toast('Propuesta eliminada','warn');
-  },'🗑️');
-}
-
-// ═══════════════════════════════════════════════════════
-//  USUARIOS / PROGRESO
-// ═══════════════════════════════════════════════════════
-function renderUsuarios() {
-  const q = (document.getElementById('search-usuarios')||{}).value?.toLowerCase()||'';
-  const nivel = (document.getElementById('filter-usuario-nivel')||{}).value||'';
-  let data = DB.usuarios.filter(u=>{
-    if (q && !u.nombre.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
-    if (nivel && u.nivel !== nivel) return false;
-    return true;
-  });
-
-  // Summary
-  const total = DB.usuarios.length;
-  const activos = DB.usuarios.filter(u=>u.activo).length;
-  const avgProg = Math.round(DB.usuarios.reduce((s,u)=>s+u.progreso,0)/total);
-  document.getElementById('usuario-summary').innerHTML = `
-    <div class="metric-block"><div class="mb-title">Total usuarios</div><div class="mb-val" style="color:var(--accent)">${total}</div><div class="mb-sub">${activos} activos esta semana</div></div>
-    <div class="metric-block"><div class="mb-title">Progreso promedio</div><div class="mb-val" style="color:var(--accent2)">${avgProg}%</div><div class="mb-sub">Todos los niveles</div></div>
-    <div class="metric-block"><div class="mb-title">Lecciones promedio</div><div class="mb-val" style="color:var(--warn)">${Math.round(DB.usuarios.reduce((s,u)=>s+u.completadas,0)/total)}</div><div class="mb-sub">Completadas por usuario</div></div>
-  `;
-
-  // Ranking
-  const top = [...DB.usuarios].sort((a,b)=>b.progreso-a.progreso).slice(0,6);
-  document.getElementById('usuarios-ranking').innerHTML = top.map((u,i)=>`
-    <div class="user-row">
-      <div style="font-size:13px;font-weight:700;color:${i===0?'var(--warn)':i===1?'var(--text2)':i===2?'#cd7f32':'var(--muted)'};width:20px;font-family:'DM Mono',monospace">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
-      <div class="u-avatar" style="background:${u.color||avatarColor(u.nombre)}">${initials(u.nombre)}</div>
-      <div style="flex:1"><div class="u-name">${u.nombre}</div><div class="u-stats">${u.completadas} lecciones · ${u.activo?'<span style="color:var(--accent)">Activo</span>':'<span style="color:var(--muted)">Inactivo</span>'}</div></div>
-      <div>
-        <div class="pbar-wrap"><div class="pbar-track"><div class="pbar-fill" style="width:${u.progreso}%;background:${u.color||'var(--accent)'}"></div></div></div>
-        <div class="pbar-pct">${u.progreso}%</div>
-      </div>
-    </div>
-  `).join('');
-
-  // Abandono
-  const leccAband = [...DB.lecciones].sort((a,b)=>a.completado-b.completado).slice(0,5);
-  document.getElementById('abandono-list').innerHTML = leccAband.map(l=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="flex:1"><div style="font-size:12px;font-weight:700">${l.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${l.nivel}</div></div>
-      <div>
-        <div class="pbar-wrap"><div class="pbar-track"><div class="pbar-fill" style="width:${l.completado}%;background:${l.completado<50?'var(--accent3)':'var(--warn)'}"></div></div></div>
-        <div class="pbar-pct">${l.completado}%</div>
-      </div>
-    </div>
-  `).join('');
-
-  // Full table
-  document.getElementById('tbody-usuarios').innerHTML = data.map(u=>`
-    <tr>
-      <td>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="u-avatar" style="background:${u.color||avatarColor(u.nombre)};width:28px;height:28px;font-size:10px">${initials(u.nombre)}</div>
-          <div><div style="font-weight:700;font-size:12px">${u.nombre}</div><div style="font-size:10px;color:var(--muted)">${u.email}</div></div>
-        </div>
-      </td>
-      <td style="font-size:11px;color:var(--text2)">${u.nivel}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:12px">${u.completadas} / ${u.totalLec}</td>
-      <td>
-        <div class="pbar-wrap" style="width:120px"><div class="pbar-track"><div class="pbar-fill" style="width:${u.progreso}%;background:${u.progreso>70?'var(--accent)':u.progreso>40?'var(--warn)':'var(--accent3)'}"></div></div></div>
-        <div class="pbar-pct">${u.progreso}%</div>
-      </td>
-      <td style="font-size:11px;color:var(--muted)">${fmtDate(u.ultimoAcceso)}</td>
-      <td><span class="tag ${u.activo?'tag-published':'tag-draft'}">${u.activo?'Activo':'Inactivo'}</span></td>
-    </tr>
-  `).join('');
-}
-
-function exportUsuarios() {
-  const header = 'Nombre,Email,Nivel,Completadas,Progreso,Último acceso,Estado';
-  const rows = DB.usuarios.map(u=>`"${u.nombre}","${u.email}","${u.nivel}","${u.completadas}/${u.totalLec}","${u.progreso}%","${fmtDateFull(u.ultimoAcceso)}","${u.activo?'Activo':'Inactivo'}"`);
-  downloadFile('usuarios_progreso.csv',[header,...rows].join('\n'),'text/csv');
-  toast('Reporte de usuarios exportado');
-}
-
-// ═══════════════════════════════════════════════════════
-//  REPORTES
-// ═══════════════════════════════════════════════════════
-function renderReportes() {
-  const lec = DB.lecciones;
-  const pub = lec.filter(l=>l.estado==='Publicada').length;
-  const rev = lec.filter(l=>l.estado==='En revisión').length;
-  const avgComp = Math.round(lec.reduce((s,l)=>s+l.completado,0)/(lec.length||1));
-  const mmAprobado = DB.multimedia.filter(m=>m.estado==='Aprobado').length;
-
-  document.getElementById('analytics-metrics').innerHTML = `
-    <div class="metric-block"><div class="mb-title">Tasa de publicación</div><div class="mb-val" style="color:var(--accent)">${lec.length?Math.round(pub/lec.length*100):0}%</div><div class="mb-sub">${pub} de ${lec.length} lecciones publicadas</div></div>
-    <div class="metric-block"><div class="mb-title">Completado promedio</div><div class="mb-val" style="color:var(--accent2)">${avgComp}%</div><div class="mb-sub">Promedio de todas las lecciones</div></div>
-    <div class="metric-block"><div class="mb-title">Multimedia aprobada</div><div class="mb-val" style="color:var(--warn)">${DB.multimedia.length?Math.round(mmAprobado/DB.multimedia.length*100):0}%</div><div class="mb-sub">${mmAprobado} de ${DB.multimedia.length} archivos</div></div>
-    <div class="metric-block"><div class="mb-title">Mejoras completadas</div><div class="mb-val" style="color:var(--accent3)">${DB.mejoras.filter(m=>m.estado==='Completada').length}</div><div class="mb-sub">De ${DB.mejoras.length} propuestas totales</div></div>
-  `;
-
-  // Progreso por nivel
-  const niveles = ['Nivel 1 · Básico','Nivel 2 · Intermedio','Nivel 3 · Avanzado'];
-  document.getElementById('nivel-progress').innerHTML = niveles.map(n=>{
-    const lecsN = lec.filter(l=>l.nivel===n);
-    const avg = lecsN.length?Math.round(lecsN.reduce((s,l)=>s+l.completado,0)/lecsN.length):0;
-    const usersN = DB.usuarios.filter(u=>u.nivel===n);
-    return `
-      <div style="margin-bottom:20px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <div style="font-size:12px;font-weight:700">${n}</div>
-          <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${lecsN.length} lecciones · ${usersN.length} usuarios</div>
-        </div>
-        <div class="pbar-track" style="height:10px;border-radius:5px"><div class="pbar-fill" style="width:${avg}%;height:10px;border-radius:5px;background:${n.includes('1')?'var(--accent)':n.includes('2')?'var(--accent2)':'var(--accent3)'}"></div></div>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace">${avg}% completado promedio</div>
-      </div>
-    `;
-  }).join('');
-
-  // Tendencia mensual (bar chart)
-  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const maxT = Math.max(...DB.monthlyTrend);
-  document.getElementById('trend-chart').innerHTML = `
-    <div class="chart-wrap-outer">
-      <div class="chart-wrap" style="height:120px">${DB.monthlyTrend.map((v,i)=>`
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1">
-          <div class="chart-bar" style="height:${(v/maxT)*110}px;background:linear-gradient(to top,rgba(123,111,255,0.7),rgba(123,111,255,0.15))" title="${v} usuarios">
-            <div class="chart-bar-val">${v}</div>
+  list.innerHTML = docs.map(d => `
+    <div class="content-card ${d.estado}">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${tipoIconoBg(d.tipo)}">
+            ${tipoIcono(d.tipo)}
+          </div>
+          <div>
+            <p class="font-bold text-gray-800">${d.titulo}</p>
+            <p class="text-xs text-gray-400 mt-0.5">${d.nivel} · ${d.tipo} · ${fmtFecha(d.fecha_envio)}</p>
           </div>
         </div>
-      `).join('')}</div>
-      <div style="display:flex;gap:8px">${months.map(m=>`<div class="chart-bar-lbl" style="flex:1">${m}</div>`).join('')}</div>
-    </div>
-  `;
-}
-
-function generateReport() {
-  logActivity('sistema',`Reporte PDF generado manualmente`);
-  toast('Reporte generado — descarga simulada','info');
-  // Build text report
-  const lines = [
-    '=== REPORTE LSM · SeñasApp ===',
-    `Generado: ${new Date().toLocaleString('es-MX')}`,
-    '',
-    `LECCIONES TOTALES: ${DB.lecciones.length}`,
-    `  - Publicadas: ${DB.lecciones.filter(l=>l.estado==='Publicada').length}`,
-    `  - En revisión: ${DB.lecciones.filter(l=>l.estado==='En revisión').length}`,
-    `  - Borradores: ${DB.lecciones.filter(l=>l.estado==='Borrador').length}`,
-    '',
-    `MULTIMEDIA: ${DB.multimedia.length} archivos`,
-    `  - Aprobados: ${DB.multimedia.filter(m=>m.estado==='Aprobado').length}`,
-    '',
-    `USUARIOS: ${DB.usuarios.length} registrados`,
-    `  - Activos: ${DB.usuarios.filter(u=>u.activo).length}`,
-    `  - Progreso promedio: ${Math.round(DB.usuarios.reduce((s,u)=>s+u.progreso,0)/DB.usuarios.length)}%`,
-    '',
-    'DETALLE DE LECCIONES:',
-    ...DB.lecciones.map(l=>`  · ${l.nombre} | ${l.estado} | Completado: ${l.completado}%`),
-  ];
-  downloadFile('reporte_lsm.txt', lines.join('\n'), 'text/plain');
-}
-
-// ═══════════════════════════════════════════════════════
-//  ACTIVIDAD
-// ═══════════════════════════════════════════════════════
-function renderActividad() {
-  const filter = (document.getElementById('filter-actividad')||{}).value||'';
-  let data = filter ? DB.actividad.filter(a=>a.tipo===filter) : DB.actividad;
-  const el = document.getElementById('actividad-feed');
-  if (!el) return;
-  if (!data.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🕑</div><div class="empty-msg">Sin actividad registrada</div><div class="empty-sub">Las acciones del sistema aparecerán aquí</div></div>`;
-    return;
-  }
-  el.innerHTML = data.map((a,i)=>`
-    <div class="activity-item">
-      <div class="a-line">
-        <div class="a-dot" style="background:${actColors[a.tipo]||'var(--muted)'}"></div>
-        ${i<data.length-1?'<div class="a-tail"></div>':''}
+        <span class="badge badge-${d.estado} flex-shrink-0">${estadoLabel(d.estado)}</span>
       </div>
-      <div class="a-content">
-        <div class="a-msg">${a.msg}</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span class="tag" style="background:${actColors[a.tipo]||'var(--muted)'}22;color:${actColors[a.tipo]||'var(--muted)'};font-size:9px">${a.tipo}</span>
-          <span class="a-time">${fmtDate(a.ts)} · ${new Date(a.ts).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}</span>
-        </div>
+
+      <p class="text-sm text-gray-500 mt-3 leading-relaxed">${d.descripcion}</p>
+
+      <div class="mt-3 flex items-center gap-2">
+        <a href="${d.url}" target="_blank"
+          class="text-blue-500 hover:text-blue-700 text-sm font-semibold flex items-center gap-1">
+          <i class="ph-link-fill"></i> Ver contenido
+        </a>
       </div>
-    </div>
-  `).join('');
-  document.getElementById('notif-dot').style.display='none';
+
+      ${d.comentario_admin ? `
+        <div class="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-100">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Comentario del administrador</p>
+          <p class="text-sm text-gray-700">${d.comentario_admin}</p>
+        </div>` : ''}
+    </div>`).join('');
 }
 
-function clearActividad() {
-  confirm2('Limpiar historial','¿Eliminar todo el historial de actividad?',()=>{
-    DB.actividad = [];
-    saveDB(); renderActividad(); toast('Historial limpiado','warn');
-  },'🗑️');
-}
-
-// ═══════════════════════════════════════════════════════
-//  GLOBAL SEARCH
-// ═══════════════════════════════════════════════════════
-function globalSearch(q) {
-  if (!q || q.length < 2) return;
-  const lecs = DB.lecciones.filter(l=>l.nombre.toLowerCase().includes(q.toLowerCase()));
-  if (lecs.length > 0) {
-    navigate('lecciones', document.querySelector('[data-section=lecciones]'));
-    document.getElementById('search-lecciones').value = q;
-    renderLeccionesTable();
-    toast(`${lecs.length} lección(es) encontradas para "${q}"`, 'info');
-  } else {
-    toast(`Sin resultados para "${q}"`, 'warn');
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-//  TABS (within sections)
-// ═══════════════════════════════════════════════════════
-function switchTab(section, tabId, el) {
-  document.querySelectorAll(`[data-tab=${section}]`).forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll(`#section-${section} .tab-item`).forEach(t=>t.classList.remove('active'));
-  document.getElementById(`tab-${section}-${tabId}`).classList.add('active');
-  el.classList.add('active');
-}
-
-// ═══════════════════════════════════════════════════════
-//  HELPERS: populate selects
-// ═══════════════════════════════════════════════════════
-function populateLeccionSelects() {
-  const selects = ['mm-leccion','mej-leccion'];
-  selects.forEach(id=>{
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    const prev = sel.value;
-    sel.innerHTML = `<option value="">${id==='mm-leccion'?'Sin asociar':'General / Sin lección específica'}</option>`;
-    DB.lecciones.forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=l.nombre; sel.appendChild(o); });
-    sel.value = prev;
+function filtrarEnvios(estado, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.className = 'tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600';
   });
+  btn.className = 'tab-btn px-4 py-2 rounded-full text-sm font-semibold bg-blue-500 text-white';
+  const filtrados = estado === 'todos'
+    ? todosLosEnvios
+    : todosLosEnvios.filter(d => d.estado === estado);
+  renderEnvios(filtrados);
 }
 
-function updateBadge() {
-  const rev = DB.lecciones.filter(l=>l.estado==='En revisión').length;
-  document.getElementById('badge-revision').textContent = rev;
+// ── HELPERS ──────────────────────────────────────────────────────
+function estadoLabel(e) {
+  return { pendiente:'⏳ Pendiente', aprobado:'✅ Aprobado', rechazado:'❌ Rechazado' }[e] || e;
+}
+function tipoIcono(t) {
+  return { video:'🎥', imagen:'🖼️', enlace:'🔗', documento:'📄' }[t] || '📁';
+}
+function tipoIconoBg(t) {
+  return { video:'bg-blue-50', imagen:'bg-pink-50', enlace:'bg-indigo-50', documento:'bg-amber-50' }[t] || 'bg-gray-50';
+}
+function fmtFecha(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' });
 }
 
-function resetFormModal(modalId) {
-  const modal = document.getElementById(modalId);
-  modal.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(el=>{ el.value=''; if(el.classList.contains('error')) el.classList.remove('error'); });
-  modal.querySelectorAll('.field-error').forEach(el=>el.textContent='');
-}
-
-// ─── Reset lec modal on open
-document.getElementById('modal-leccion').addEventListener('click',()=>{});
-const origOpen = openModal;
-
-// ═══════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════
-async function init() {
-  await loadDB();
-  // Date
-  document.getElementById('fecha-hoy').textContent = new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  populateLeccionSelects();
-  renderDashboard();
-  updateBadge();
-
-  // Add some initial activity if empty
-  if (!DB.actividad.length) {
-    logActivity('sistema','Sistema iniciado — Panel LSM activo');
-    logActivity('leccion','Catálogo inicial de 8 lecciones cargado');
-    logActivity('multimedia','6 archivos multimedia disponibles en biblioteca');
-    await saveDB();
-  }
-
-  // Clear leccion modal on open
-  document.getElementById('modal-leccion').addEventListener('click', function(){});
-  // Override + Nueva Lección button to always reset form
-  document.querySelectorAll('[onclick*=\"openModal(\'modal-leccion\')\"]').forEach(btn=>{
-    const orig = btn.getAttribute('onclick');
-    btn.setAttribute('onclick', `resetFormModal('modal-leccion');document.getElementById('lec-edit-id').value='';document.getElementById('modal-leccion-title').textContent='Nueva Lección LSM';${orig}`);
-  });
-}
-
-init();
+// ── INIT ─────────────────────────────────────────────────────────
+cargarDashboard();
 </script>
 </body>
 </html>
