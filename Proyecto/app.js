@@ -201,13 +201,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         return;
     }
 
-    // NOTA (limitación documentada del proyecto): validar el token contra la
-    // API de Google (siteverify) requiere la Secret Key, la cual nunca debe
-    // exponerse en el frontend. Como el proyecto se aloja en GitHub Pages sin
-    // servidor propio, esa verificación queda fuera del alcance actual (ver
-    // sección 2.6 "Limitaciones del Proyecto") y se considera trabajo futuro,
-    // junto con el panel de administración. Aquí solo confirmamos que el
-    // usuario completó el checkbox antes de continuar.
+
 
     messageEl.textContent = 'Verificando credenciales...';
     messageEl.style.color = '#6b7280';
