@@ -1,6 +1,4 @@
-// diccionario.js
-
-// 1. ESTRUCTURA DE DATOS COMBINADA DE TODOS LOS NIVELES
+import { diccionarioData } from './glosario-data.js';
 const diccionarioData = {
     // 🛑 Nivel 1: Abecedario (usando la estructura de tu nivel1.js)
     1: {

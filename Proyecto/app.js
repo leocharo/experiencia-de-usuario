@@ -5,7 +5,10 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    sendEmailVerification,
+    updateProfile,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {
     getFirestore,
@@ -75,33 +78,37 @@ async function resolveInputToEmail(input) {
 
 async function handleSignUp(email, password, username) {
     try {
-        // 1. Crear el usuario en Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: username });
+        await sendEmailVerification(cred.user);
+        await signOut(auth);
 
-        // 2. Guardar datos adicionales en Firestore
-        await setDoc(doc(db, "perfiles", user.uid), {
-            username: username,
-            email: email, // Usamos el email del input
-            rol: "usuario",
-            nivel_actual: 1,
-            created_at: new Date()
-        });
-
-        return { success: true, message: '¡Registro exitoso! Ya puedes iniciar sesión.' };
-
+        return {
+            success: true,
+            message: '📧 Te enviamos un correo de verificación. Confírmalo (revisa también SPAM) y después inicia sesión.'
+        };
     } catch (error) {
-        console.error("Error detallado:", error.code, error.message);
+        console.error(error.code, error.message);
 
-        // Si el usuario se creó en Auth pero falló Firestore, el usuario ya existe
         if (error.code === 'auth/email-already-in-use') {
+            // Puede ser una cuenta registrada pero nunca verificada
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, password);
+                if (!cred.user.emailVerified) {
+                    await sendEmailVerification(cred.user);
+                    await signOut(auth);
+                    return { success: true, message: 'Ese correo ya estaba registrado sin verificar. Te reenviamos el enlace de verificación.' };
+                }
+                await signOut(auth);
+            } catch (_) { /* contraseña distinta u otro error */ }
             return { success: false, message: 'Este correo ya está registrado.' };
         }
-
+        if (error.code === 'auth/invalid-email') {
+            return { success: false, message: 'El correo ingresado no es válido.' };
+        }
         if (error.code === 'auth/weak-password') {
             return { success: false, message: 'La contraseña debe tener al menos 6 caracteres.' };
         }
-
         return { success: false, message: 'Error interno: ' + error.code };
     }
 }
@@ -138,7 +145,65 @@ document.getElementById('login-form').addEventListener('submit', async(e) => {
         messageEl.style.color = 'red';
     }
 });
+async function handleSignIn(input, password) {
+    try {
+        const email = await resolveInputToEmail(input);
+        if (!email) {
+            return { success: false, message: 'Usuario o correo no encontrado. Si acabas de registrarte, inicia sesión con tu correo.' };
+        }
 
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
+        const ref = doc(db, "perfiles", user.uid);
+        let snap = await getDoc(ref);
+
+        // Sin perfil = cuenta nueva: exige verificación y crea el perfil
+        if (!snap.exists()) {
+            if (!user.emailVerified) {
+                try { await sendEmailVerification(user); } catch (_) {}
+                await signOut(auth);
+                return {
+                    success: false,
+                    message: '⚠️ Tu correo aún no está verificado. Te reenviamos el enlace, revisa tu bandeja o SPAM.'
+                };
+            }
+            await setDoc(ref, {
+                username: user.displayName || email.split('@')[0],
+                email: user.email,
+                rol: "usuario",
+                nivel_actual: 1,
+                created_at: new Date()
+            });
+            snap = await getDoc(ref);
+        }
+        if (snap.data().activo === false) {
+            await signOut(auth);
+            localStorage.removeItem('MMH_role');
+            localStorage.removeItem('MMH_uid');
+            return {
+                success: false,
+                message: '🚫 Tu cuenta está suspendida. Contacta al administrador para más información.'
+            };
+        }
+        const rol = snap.data().rol;
+        localStorage.setItem('MMH_role', rol || 'usuario');
+        localStorage.setItem('MMH_uid', user.uid);
+
+        window.location.href = rol === 'admin'
+            ? 'admin-dashboard-actualizado.html'
+            : 'pagina_inicio.html';
+        return { success: true };
+    } catch (error) {
+        console.error(error.code, error.message);
+        if (['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found'].includes(error.code)) {
+            return { success: false, message: 'Correo/usuario o contraseña incorrectos.' };
+        }
+        if (error.code === 'auth/too-many-requests') {
+            return { success: false, message: 'Demasiados intentos. Intenta más tarde.' };
+        }
+        return { success: false, message: 'Error al iniciar sesión: ' + error.code };
+    }
+}
 document.getElementById('register-form').addEventListener('submit', async(e) => {
     e.preventDefault();
     const email = document.getElementById('register-email').value;
