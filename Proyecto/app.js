@@ -71,121 +71,7 @@ async function resolveInputToEmail(input) {
     }
 }
 
-async function ensureInternalUser(userUid) {
-    if (!userUid) return null;
-    const profileRef = doc(db, "perfiles", userUid);
-    try {
-        const payload = {
-            username: 'JesusRUTP',
-            email: 'jjrockg@hotmail.com',
-            rol: 'empleado',
-            nivel_actual: 4,
-            nivel1_completado: true,
-            nivel2_completado: true,
-            nivel3_completado: true,
-            nivel4_completado: true,
-            progreso_dias_completados: 10,
-            progreso_meses_completados: 12,
-            photoURL: 'https://placehold.co/120x120/d1d5db/4b5563?text=👤',
-            hasSeenWelcomeModal: true,
-            created_at: new Date()
-        };
-        await setDoc(profileRef, payload, { merge: true });
-        const profileSnap = await getDoc(profileRef);
-        if (profileSnap.exists()) {
-            return profileSnap;
-        }
-        return null;
-    } catch (err) {
-        console.error('Error garantizando usuario interno en Firestore', err);
-        return null;
-    }
-}
 
-async function handleSignIn(input, password) {
-    const normal = input.trim().toLowerCase();
-    const isInternal = (normal === 'jesusempleado' && password === '12345678') || (normal === 'jesusrutp' && password === 'jesusutp') || (normal === 'jjrockg@hotmail.com' && password === 'jesusutp');
-    // Soporte especial para usuarios internos de prueba
-    if (isInternal) {
-        try {
-            console.log('[DEBUG] Iniciando login especial interno', input);
-            // Asegurar usuario en Firestore con ID fijo JesusRUTP
-            const userId = 'JesusRUTP';
-            const profileRef = doc(db, 'perfiles', userId);
-            await setDoc(profileRef, {
-                username: 'JesusRUTP',
-                email: 'jjrockg@hotmail.com',
-                rol: 'empleado',
-                nivel_actual: 4,
-                nivel1_completado: true,
-                nivel2_completado: true,
-                nivel3_completado: true,
-                nivel4_completado: true,
-                progreso_dias_completados: 10,
-                progreso_meses_completados: 12,
-                photoURL: 'https://placehold.co/120x120/d1d5db/4b5563?text=👤',
-                hasSeenWelcomeModal: true,
-                created_at: new Date()
-            }, { merge: true });
-            localStorage.setItem('MMH_role', 'empleado');
-            localStorage.setItem('MMH_uid', userId);
-            window.location.href = 'pagina_inicio.html';
-            return { success: true, message: 'Redirigiendo al menú principal (usuario interno especial).' };
-        } catch (err) {
-            console.error('Error acceso interno fijo', err);
-            return { success: false, message: 'No se pudo iniciar sesión interna.' };
-        }
-    }
-
-    const email = await resolveInputToEmail(input);
-    if (!email) {
-        console.warn('[DEBUG] resolveInputToEmail no encontró usuario:', input);
-        if (isInternal) {
-            // ya manejado antes, pero si llega aquí, volvemos a intentar con correo especial
-            return { success: false, message: 'Usuario interno no encontrado tras creación. Reintenta.' };
-        }
-        return { success: false, message: 'Usuario no encontrado.' };
-    }
-
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // BUSCAR ROL EN FIRESTORE
-        const userDoc = await getDoc(doc(db, "perfiles", user.uid));
-
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-
-            // Redirección especial para el usuario JesusEmpleado
-            if (userData.username === 'JesusEmpleado' || input === 'JesusEmpleado') {
-                localStorage.setItem('MMH_role', userData.rol || 'empleado');
-                localStorage.setItem('MMH_uid', user.uid);
-                window.location.href = 'pagina_inicio.html';
-                return { success: true, message: 'Redirigiendo al menú principal.' };
-            }
-
-            if (userData.rol === "admin") {
-                localStorage.setItem('MMH_role', userData.rol || 'admin');
-                localStorage.setItem('MMH_uid', user.uid);
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                localStorage.setItem('MMH_role', userData.rol || 'usuario');
-                localStorage.setItem('MMH_uid', user.uid);
-                window.location.href = 'pagina_inicio.html';
-            }
-            return { success: true, message: 'Redirigiendo...' };
-        } else {
-                localStorage.setItem('MMH_role', 'usuario');
-                localStorage.setItem('MMH_uid', user.uid);
-                window.location.href = 'pagina_inicio.html';
-                return { success: true, message: 'Sesión iniciada.' };
-        }
-    } catch (error) {
-        console.error('Error login regular:', error);
-        return { success: false, message: 'Credenciales incorrectas.' };
-    }
-}
 
 async function handleSignUp(email, password, username) {
     try {
@@ -194,7 +80,6 @@ async function handleSignUp(email, password, username) {
         const user = userCredential.user;
 
         // 2. Guardar datos adicionales en Firestore
-        // Asegúrate de que la colección se llame "perfiles" como en tu login
         await setDoc(doc(db, "perfiles", user.uid), {
             username: username,
             email: email, // Usamos el email del input
