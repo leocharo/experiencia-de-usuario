@@ -1,0 +1,17 @@
+{
+  "name": "mis-manos-hablaran",
+  "version": "1.0.0",
+  "description": "Plataforma web para el aprendizaje de la Lengua de Señas Mexicana (LSM)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "bash scripts/setup-env.sh",
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "deploy": "bash scripts/deploy.sh",
+    "pipeline": "npm test && npm run build && npm run deploy"
+  }
+}

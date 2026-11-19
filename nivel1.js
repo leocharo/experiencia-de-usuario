@@ -128,12 +128,11 @@ btnAnterior.addEventListener("click", () => {
     }
 });
 
-// 🎯 CORRECCIÓN DEL EVENT LISTENER DE SIGUIENTE
 btnSiguiente.addEventListener("click", () => {
     // Evita que el botón funcione si ya estamos en el quiz
     if (leccionDiv.style.display === "none") {
         console.warn("Botón Siguiente ignorado. El quiz ya está activo.");
-        return;
+        return
     }
 
     if (index < letras.length - 1) {
@@ -182,7 +181,6 @@ function iniciarQuiz() {
     });
 }
 
-// 🎯 CORRECCIÓN DE LA LÓGICA DE VERIFICACIÓN Y FINALIZACIÓN DEL QUIZ
 async function verificarRespuesta(correcto) {
     // Deshabilitar opciones temporalmente para evitar doble clic
     quizOpciones.querySelectorAll('button').forEach(btn => btn.disabled = true);
@@ -202,9 +200,9 @@ async function verificarRespuesta(correcto) {
             }, 1500);
 
         } else {
-            // ⭐️ LÓGICA DE FINALIZACIÓN DEL NIVEL ⭐️
+         
 
-            // 1. Mensaje de resultado final
+         
             resultadoDiv.textContent = `🎉 ¡Felicidades! Nivel 1 Completado. 🎉`;
             resultadoDiv.style.color = "#22c55e"; // color verde
 
