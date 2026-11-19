@@ -1,4 +1,3 @@
-import { diccionarioData } from './glosario-data.js';
 const diccionarioData = {
     // 🛑 Nivel 1: Abecedario (usando la estructura de tu nivel1.js)
     1: {

@@ -1,0 +1,139 @@
+# =============================================================
+#  Mis Manos Hablarán - Pipeline de integración y despliegue continuo
+#  pull_request -> pruebas + construcción + despliegue de vista previa
+#  push a main  -> pruebas + construcción + despliegue a producción
+# =============================================================
+name: CI/CD Mis Manos Hablarán
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  pruebas:
+    name: Pruebas del entorno de liberación
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Ejecutar pruebas
+        run: npm test
+
+  construccion:
+    name: Construcción del paquete de liberación
+    needs: pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Construir dist/
+        run: npm run build
+
+      - name: Publicar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitio-dist
+          path: dist/
+          retention-days: 7
+
+  despliegue-preview:
+    name: Despliegue de vista previa (Pull Request)
+    if: github.event_name == 'pull_request'
+    needs: construccion
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sitio-dist
+          path: dist/
+
+      - name: Generar entorno de liberación
+        run: bash scripts/setup-env.sh
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Desplegar vista previa
+        id: deploy
+        run: bash scripts/deploy.sh --preview
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Comentar URL en el Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Vista previa desplegada: ${{ steps.deploy.outputs.url }}`
+            })
+
+  despliegue-produccion:
+    name: Despliegue a producción (Netlify)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: construccion
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: produccion
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sitio-dist
+          path: dist/
+
+      - name: Generar entorno de liberación
+        run: bash scripts/setup-env.sh
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Desplegar a producción
+        id: deploy
+        run: bash scripts/deploy.sh
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
