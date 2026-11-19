@@ -39,6 +39,13 @@ for attempt in 1 2 3 4 5; do
     [ -n "${GITHUB_OUTPUT:-}" ] && echo "url=$URL" >> "$GITHUB_OUTPUT"
     exit 0
   fi
+  # Netlify protege las vistas previas (no producción) con autenticación:
+  # HTTP 401 indica que el despliegue existe pero requiere iniciar sesión.
+  if [ "${1:-}" = "--preview" ] && [ "$STATUS" = "401" ]; then
+    echo "Vista previa publicada en $URL (protegida por Netlify: HTTP 401)"
+    [ -n "${GITHUB_OUTPUT:-}" ] && echo "url=$URL" >> "$GITHUB_OUTPUT"
+    exit 0
+  fi
   echo "    Intento $attempt: HTTP $STATUS, reintentando en 10 s..."
   sleep 10
 done
